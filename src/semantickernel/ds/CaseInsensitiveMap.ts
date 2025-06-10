@@ -3,8 +3,16 @@ import { IDTagged } from "./IDTagged";
 class CaseInsensitiveMap<V extends IDTagged> {
   private argSet: Record<string, V> = {};
 
+  constructor();
+  constructor(map: Map<string, V>);
+  constructor(map?: Map<string, V>) {
+    map?.forEach((v, k) => {
+      this.putForKey(k, v);
+    });
+  }
+
   private _add(key: string, value: V): [string, V] {
-    const _key = key.toLowerCase();
+    const _key = this.makeKey(key);
     if (this.contains(_key)) {
       throw new Error(`Duplicate key: value for ${_key} already exists`);
     }
@@ -13,7 +21,7 @@ class CaseInsensitiveMap<V extends IDTagged> {
   }
 
   private _remove(key: string): boolean {
-    const _key = key.toLowerCase();
+    const _key = this.makeKey(key);
     if (this.contains(_key)) {
       delete this.argSet[_key];
       return true;
@@ -22,7 +30,7 @@ class CaseInsensitiveMap<V extends IDTagged> {
   }
 
   put(value: V): ReturnType<typeof this._add> {
-    return this._add(value.getID(), value);
+    return this._add(value.getID?.(), value);
   }
 
   putForKey(key: string, value: V): ReturnType<typeof this._add> {
@@ -35,11 +43,23 @@ class CaseInsensitiveMap<V extends IDTagged> {
     if (typeof kOrV === "string") {
       return this._remove(kOrV);
     }
-    return this._remove(kOrV.getID());
+    return this._remove(kOrV.getID?.());
+  }
+
+  get(key: string) {
+    return this.argSet[this.makeKey(key)];
   }
 
   contains(key: string) {
-    return !!this.argSet[key.toLowerCase()];
+    return !!this.argSet[this.makeKey(key)];
+  }
+
+  toString() {
+    return this.argSet.toString();
+  }
+
+  private makeKey(key: string) {
+    return key.toLowerCase();
   }
 }
 

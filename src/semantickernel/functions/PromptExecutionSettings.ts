@@ -1,7 +1,5 @@
 import { JsonCreator } from "../decorators/JsonCreator";
 import { JsonProperty } from "../decorators/JsonProperty";
-import { IDTagged } from "../ds/IDTagged";
-import Jsonable, { JSONObject } from "../ds/Jsonable";
 import { clamp } from "../utils/clamp";
 import ResponseFormat from "./responseformat/ResponseFormat";
 
@@ -48,7 +46,7 @@ class PromptExecutionSettings {
     defaultValue: PromptExecutionSettings.DEFAULT_SERVICE_ID,
     required: true,
   })
-  private serviceId: string;
+  serviceId: string;
 
   @JsonProperty(PromptExecutionSettings.MODEL_ID_JSON_FIELD)
   private modelId: string;
