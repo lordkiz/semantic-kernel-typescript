@@ -1,0 +1,111 @@
+import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
+import { IDTagged } from "../ds/IDTagged";
+import KernelArguments from "../functions/KernelArguments";
+
+export default class FunctionResultMetadata<UsageType> {
+  /**
+   * The key for id metadata.
+   */
+  static ID: string = "id";
+  /**
+   * The key for usage metadata.
+   */
+  static USAGE: string = "usage";
+
+  /**
+   * The key for createdAt metadata.
+   */
+  static CREATED_AT = "createdAt";
+
+  private metadata: CaseInsensitiveMap<KernelArguments>;
+
+  constructor();
+  constructor(metadata: CaseInsensitiveMap<KernelArguments>);
+  constructor(metadata?: CaseInsensitiveMap<KernelArguments>) {
+    this.metadata = new CaseInsensitiveMap(metadata!!);
+  }
+
+  static build<UsageType>(id: string): FunctionResultMetadata<UsageType>;
+  static build<UsageType>(
+    id: string,
+    usage?: UsageType,
+    createdAt?: Date
+  ): FunctionResultMetadata<UsageType> {
+    const metadata = new CaseInsensitiveMap<KernelArguments>();
+    metadata.put(
+      FunctionResultMetadata.ID,
+      new KernelArguments().set(FunctionResultMetadata.ID, id)
+    );
+    if (usage) {
+      metadata.put(
+        FunctionResultMetadata.USAGE,
+        new KernelArguments().set(FunctionResultMetadata.USAGE, usage)
+      );
+    }
+    if (createdAt) {
+      metadata.put(
+        FunctionResultMetadata.CREATED_AT,
+        new KernelArguments().set(FunctionResultMetadata.CREATED_AT, createdAt)
+      );
+    }
+
+    return new FunctionResultMetadata<UsageType>(metadata);
+  }
+
+  /**
+   * Create a new instance of FunctionResultMetadata with no metadata.
+   *
+   * @return A new instance of FunctionResultMetadata.
+   */
+  static empty<UsageType>(): FunctionResultMetadata<UsageType> {
+    return new FunctionResultMetadata<UsageType>(new CaseInsensitiveMap());
+  }
+
+  /**
+   * Get the metadata about the result of the function invocation.
+   *
+   * @return The metadata about the result of the function invocation.
+   */
+  getMetadata() {
+    return new CaseInsensitiveMap(this.metadata);
+  }
+
+  /**
+   * Get the id of the result of the function invocation.
+   *
+   * @return The id of the result of the function invocation.
+   */
+  getId() {
+    const id = this.metadata.getOrDefault(
+      FunctionResultMetadata.ID,
+      new KernelArguments()
+    );
+    return id.get(FunctionResultMetadata.ID) as string | undefined;
+  }
+
+  /**
+   * Get the usage of the result of the function invocation.
+   *
+   * @return The usage of the result of the function invocation.
+   */
+  getUsage(): UsageType | undefined {
+    const usage = this.metadata.getOrDefault(
+      FunctionResultMetadata.USAGE,
+      new KernelArguments()
+    );
+    return usage.get(FunctionResultMetadata.USAGE) as UsageType | undefined;
+  }
+
+  /**
+   * Get the time the result was created.
+   *
+   * @return The time the result was created.
+   */
+  getCreatedAt(): Date | undefined {
+    const date = this.metadata.getOrDefault(
+      FunctionResultMetadata.CREATED_AT,
+      new KernelArguments()
+    );
+    return date.get(FunctionResultMetadata.CREATED_AT) as Date | undefined;
+  }
+}

@@ -1,7 +1,7 @@
 import { JsonCreator } from "../decorators/JsonCreator";
 import { JsonProperty } from "../decorators/JsonProperty";
 import { clamp } from "../utils/clamp";
-import ResponseFormat from "./responseformat/ResponseFormat";
+import ResponseFormat from "../functions/responseformat/ResponseFormat";
 
 @JsonCreator()
 class PromptExecutionSettings {

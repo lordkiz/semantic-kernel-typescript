@@ -1,8 +1,9 @@
 import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
 import SKException from "../exceptions/SKException";
-import PromptExecutionSettings from "./PromptExecutionSettings";
+import Variable from "../variables/Variable";
+import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
 
-export default class KernelArguments implements Map<string, any> {
+export default class KernelArguments implements Map<string, Variable<unknown>> {
   /**
    * Default key for the main input.
    */
@@ -13,11 +14,11 @@ export default class KernelArguments implements Map<string, any> {
 
   constructor();
   constructor(
-    variables: Map<string, any>,
+    variables: Map<string, Variable<unknown>>,
     executionSettings: Map<string, PromptExecutionSettings>
   );
   constructor(
-    variables?: Map<string, any>,
+    variables?: Map<string, Variable<unknown>>,
     executionSettings?: Map<string, PromptExecutionSettings>
   ) {
     if (variables) {
@@ -44,43 +45,58 @@ export default class KernelArguments implements Map<string, any> {
   }
 
   clear(): void {
-    throw new Error("Method not implemented.");
+    this.variables.clear();
+    this.size = this.variables.size;
   }
+
   delete(key: string): boolean {
-    throw new Error("Method not implemented.");
+    const deleted = this.variables.delete(key);
+    this.size = this.variables.size;
+    return deleted;
   }
+
   forEach(
     callbackfn: (value: any, key: string, map: Map<string, any>) => void,
     thisArg?: any
   ): void {
-    throw new Error("Method not implemented.");
+    return this.variables.forEach(callbackfn, thisArg);
   }
+
   get(key: string) {
     return this.variables.get(key);
   }
+
   has(key: string): boolean {
     return this.variables.contains(key);
   }
+
   set(key: string, value: any): this {
-    this.variables.putForKey(key, value);
+    this.variables.set(key, value);
+    this.size = this.variables.size;
     return this;
   }
 
   size: number = 0;
 
   entries(): MapIterator<[string, any]> {
-    throw new Error("Method not implemented.");
+    return this.variables.entries();
   }
+
   keys(): MapIterator<string> {
-    throw new Error("Method not implemented.");
+    return this.variables.keys();
   }
+
   values(): MapIterator<any> {
-    throw new Error("Method not implemented.");
+    return this.variables.values();
   }
+
   [Symbol.iterator](): MapIterator<[string, any]> {
-    throw new Error("Method not implemented.");
+    return this.variables[Symbol.iterator]();
   }
-  [Symbol.toStringTag]: string = "";
+
+  get [Symbol.toStringTag](): string {
+    return "KernelArguments";
+  }
 
   private static _Builder = {
     variablez: new Map<string, any>(),

@@ -1,61 +1,56 @@
-import { IDTagged } from "./IDTagged";
-
-class CaseInsensitiveMap<V extends IDTagged> {
-  private argSet: Record<string, V> = {};
-
+class CaseInsensitiveMap<V> extends Map<string, V> {
   constructor();
   constructor(map: Map<string, V>);
   constructor(map?: Map<string, V>) {
-    map?.forEach((v, k) => {
-      this.putForKey(k, v);
-    });
+    const _map = new Map();
+    if (map) {
+      map.forEach((v, k) => {
+        _map.set(this.makeKey(k), v);
+      });
+    }
+    super(_map);
   }
 
-  private _add(key: string, value: V): [string, V] {
+  override delete(key: string): boolean {
+    return super.delete(this.makeKey(key));
+  }
+
+  override has(key: string): boolean {
+    return super.has(this.makeKey(key));
+  }
+
+  override set(key: string, value: V): this {
     const _key = this.makeKey(key);
-    if (this.contains(_key)) {
+    if (this.has(key)) {
       throw new Error(`Duplicate key: value for ${_key} already exists`);
     }
-    this.argSet[_key] = value;
-    return [_key, value];
+    return super.set(this.makeKey(key), value);
   }
 
-  private _remove(key: string): boolean {
-    const _key = this.makeKey(key);
-    if (this.contains(_key)) {
-      delete this.argSet[_key];
-      return true;
+  override get(key: string): V | undefined {
+    return super.get(this.makeKey(key));
+  }
+
+  // ALIASES
+
+  put(key: string, value: V) {
+    return this.set(key, value);
+  }
+
+  remove(key: string) {
+    return this.delete(key);
+  }
+
+  getOrDefault(key: string, defaultValue: V) {
+    if (this.has(key)) {
+      return this.get(key)!!;
     }
-    return false;
-  }
 
-  put(value: V): ReturnType<typeof this._add> {
-    return this._add(value.getID?.(), value);
-  }
-
-  putForKey(key: string, value: V): ReturnType<typeof this._add> {
-    return this._add(key, value);
-  }
-
-  remove(value: V): boolean;
-  remove(key: string): boolean;
-  remove(kOrV: string | V): boolean {
-    if (typeof kOrV === "string") {
-      return this._remove(kOrV);
-    }
-    return this._remove(kOrV.getID?.());
-  }
-
-  get(key: string) {
-    return this.argSet[this.makeKey(key)];
+    return defaultValue;
   }
 
   contains(key: string) {
-    return !!this.argSet[this.makeKey(key)];
-  }
-
-  toString() {
-    return this.argSet.toString();
+    return this.has(key);
   }
 
   private makeKey(key: string) {
