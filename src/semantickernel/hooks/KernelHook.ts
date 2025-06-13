@@ -7,21 +7,31 @@ import { FunctionInvokedEvent, FunctionInvokingEvent } from "./FnInvokeEvents";
 import { PreToolCallEvent } from "./PreToolCallEvent";
 import { PromptRenderedEvent, PromptRenderingEvent } from "./PromptEvents";
 import { KernelHookEvent } from "./types/KernelHookEvent";
+import Predicate from "../ds/Predicate";
 
-abstract class Predicate<T> {
-  abstract test(t: T): boolean;
-}
-
+/**
+ * Represents a hook that can be used to intercept and modify arguments to {@code KernelFunction}s.
+ * A {@code KernelHook} implements a {@code Predicate} that determines if the hook is interested in
+ * a particular event, and a {@code Function} that can be used to modify the event. The
+ *
+ * @param <T> The type of the event that the hook is interested in
+ */
 export abstract class KernelHook<
   T extends KernelHookEvent
 > extends Predicate<KernelHookEvent> {
+  static DEFAULT_PRIORITY = 50;
+
+  execute(t: T): T {
+    return t;
+  }
+
   getPriority(): number {
-    return 50;
+    return KernelHook.DEFAULT_PRIORITY;
   }
 }
 
-export abstract class FunctionInvokingHook extends KernelHook<
-  FunctionInvokingEvent<unknown>
+export abstract class FunctionInvokingHook<T> extends KernelHook<
+  FunctionInvokingEvent<T>
 > {
   override test(argumentz: KernelHookEvent): boolean {
     return FunctionInvokingEvent.prototype.isPrototypeOf(
@@ -30,8 +40,8 @@ export abstract class FunctionInvokingHook extends KernelHook<
   }
 }
 
-export abstract class FunctionInvokedHook extends KernelHook<
-  FunctionInvokedEvent<unknown>
+export abstract class FunctionInvokedHook<T> extends KernelHook<
+  FunctionInvokedEvent<T>
 > {
   override test(argumentz: KernelHookEvent): boolean {
     return FunctionInvokedEvent.prototype.isPrototypeOf(

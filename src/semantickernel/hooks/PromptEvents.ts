@@ -31,7 +31,7 @@ export class PromptRenderedEvent extends PromptREvent {
     prompt: string
   ) {
     super(fn, kernelArguments);
-    this.prompt = this.prompt;
+    this.prompt = prompt;
   }
   getPrompt() {
     return this.prompt;

@@ -37,6 +37,12 @@ class CaseInsensitiveMap<V> extends Map<string, V> {
     return this.set(key, value);
   }
 
+  putAll(map: CaseInsensitiveMap<V>) {
+    for (const [k, v] of map) {
+      this.put(k, v);
+    }
+  }
+
   remove(key: string) {
     return this.delete(key);
   }
