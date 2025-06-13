@@ -8,6 +8,7 @@ import ToolCallBehavior from "./ToolCallBehavior";
 import { KernelHook } from "../hooks/KernelHook";
 import SKException from "../exceptions/SKException";
 import InvocationContext from "./InvocationContext";
+import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior";
 
 class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
   protected fn: KernelFunction<T>;

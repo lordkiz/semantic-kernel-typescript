@@ -1,5 +1,6 @@
 import SemanticKernelBuilder from "../builders/SemanticKernelBuilder";
 import SKException from "../exceptions/SKException";
+import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior";
 import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks";
 import { InvocationReturnMode } from "./InvocationReturnMode";
 import PromptExecutionSettings from "./PromptExecutionSettings";
