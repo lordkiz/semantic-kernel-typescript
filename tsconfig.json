@@ -18,7 +18,7 @@
       "es2022.string",
       "es2022.error"
     ],
-    "types": ["reflect-metadata"],
+    "types": ["reflect-metadata", "node"],
     "strict": true,
     "noEmit": true,
     "experimentalDecorators": true,
