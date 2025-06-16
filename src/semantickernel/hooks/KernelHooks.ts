@@ -223,8 +223,8 @@ export class UnmodifiableKernelHooks extends KernelHooks {
     super(kernelHooks);
   }
 
-  static construct(kernelHooks: KernelHooks) {
-    return new UnmodifiableKernelHooks(kernelHooks);
+  static construct(kernelHooks?: KernelHooks) {
+    return new UnmodifiableKernelHooks(kernelHooks || new KernelHooks());
   }
 
   override addFunctionInvokingHook<T>(

@@ -1,7 +1,7 @@
 import { JsonCreator } from "../decorators/JsonCreator";
 import { JsonProperty } from "../decorators/JsonProperty";
 import { clamp } from "../utils/clamp";
-import ResponseFormat from "../functions/responseformat/ResponseFormat";
+import ResponseFormat from "./responseformat/ResponseFormat";
 
 @JsonCreator()
 class PromptExecutionSettings {
@@ -175,6 +175,10 @@ class PromptExecutionSettings {
     ).reduce((acc, [k, v]) => ({ ...acc, [k]: clamp(v, -100, 100) }), {});
 
     this.responseFormat = responseFormat || ResponseFormat.TEXT;
+  }
+
+  getModelId(): string {
+    return this.modelId;
   }
 
   private static _Builder = {

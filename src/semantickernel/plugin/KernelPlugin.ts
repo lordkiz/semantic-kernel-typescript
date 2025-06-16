@@ -28,6 +28,17 @@ export default class KernelPlugin
   }
 
   /**
+   * Gets a function by name.
+   *
+   * @param functionName The name of the function.
+   * @param <T>          The return type of the function.
+   * @return The function with the specified name, or {@code null} if no such function exists.
+   */
+  get(functionName: string) {
+    return this.fns.get(functionName);
+  }
+
+  /**
    * Adds a function to the plugin.
    *
    * @param fn The function to add.

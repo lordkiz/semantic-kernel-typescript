@@ -2,6 +2,7 @@ import SemanticKernelBuilder from "../builders/SemanticKernelBuilder";
 import SKException from "../exceptions/SKException";
 import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior";
 import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks";
+import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry";
 import { InvocationReturnMode } from "./InvocationReturnMode";
 import PromptExecutionSettings from "./PromptExecutionSettings";
 import ToolCallBehavior from "./ToolCallBehavior";
@@ -34,6 +35,21 @@ export default class InvocationContext {
     this.invocationReturnMode =
       invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY;
     this.telemetry = telemetry;
+  }
+
+  static clone(invocationContext: InvocationContext): InvocationContext {
+    return new InvocationContext(
+      UnmodifiableKernelHooks.construct(invocationContext.getKernelHooks()),
+      invocationContext.getPromptExecutionSettings(),
+      invocationContext.getToolCallBehavior(),
+      invocationContext.getFunctionChoiceBehavior(),
+      invocationContext.invocationReturnMode,
+      invocationContext.getTelemetry()
+    );
+  }
+
+  clone(): InvocationContext {
+    return InvocationContext.clone(this);
   }
 
   getKernelHooks() {

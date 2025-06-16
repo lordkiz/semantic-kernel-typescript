@@ -9,9 +9,14 @@ export default class ToolCallBehavior {
 
   private maximumAutoInvokeAttempts: number;
 
-  constructor(maximumAutoInvokeAttempts: number) {
+  constructor(
+    maximumAutoInvokeAttempts:
+      | number
+      | undefined = ToolCallBehavior.DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS
+  ) {
     this.maximumAutoInvokeAttempts = maximumAutoInvokeAttempts;
   }
+
   /**
    * Allow all kernel functions. All Kernel functions will be passed to the model.
    *

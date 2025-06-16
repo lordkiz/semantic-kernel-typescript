@@ -1,4 +1,10 @@
-import { Observable, Observer, Subscription } from "rxjs";
+import {
+  lastValueFrom,
+  Observable,
+  Observer,
+  PartialObserver,
+  Subscription,
+} from "rxjs";
 import FunctionResult from "./FunctionResult";
 import KernelFunction from "../functions/KernelFunction";
 import KernelArguments from "../functions/KernelArguments";
@@ -9,8 +15,20 @@ import { KernelHook } from "../hooks/KernelHook";
 import SKException from "../exceptions/SKException";
 import InvocationContext from "./InvocationContext";
 import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior";
+import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry";
+import { Logger } from "../log/Logger";
+import Kernel from "../Kernel";
+import { InvocationReturnMode } from "./InvocationReturnMode";
 
-class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
+type FunctionInvocationObserver<T> =
+  | Partial<Observer<FunctionResult<T>>>
+  | ((value: FunctionResult<T>) => void)
+  | null
+  | undefined;
+
+export default class FunctionInvocation<T> extends Observable<
+  FunctionResult<T>
+> {
   protected fn: KernelFunction<T>;
   protected kernel: Kernel;
   protected kernelArguments: KernelArguments | undefined;
@@ -21,6 +39,8 @@ class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
   protected telemetry: SemanticKernelTelemetry | undefined;
 
   private isSubscribed: boolean = false;
+
+  private LOGGER = Logger;
 
   constructor(kernel: Kernel, fn: KernelFunction<T>) {
     super();
@@ -37,6 +57,20 @@ class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
     } else if (!!kernelHooks) {
       return kernelHooks.unmodifiableClone();
     }
+  }
+
+  private static performSubscribe<T>(
+    observer: FunctionInvocationObserver<T>,
+    kernel: Kernel,
+    kernelFunction: KernelFunction<T>,
+    kernelArguments?: KernelArguments,
+    invocationContext?: InvocationContext
+  ): Subscription {
+    const contextClone = invocationContext?.clone();
+
+    return kernelFunction
+      .invokeAsync(kernel, kernelArguments, contextClone)
+      .subscribe(observer);
   }
 
   /**
@@ -148,18 +182,30 @@ class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
    * @return this {@code FunctionInvocation} for fluent chaining.
    */
   withInvocationContext(invocationContext?: InvocationContext) {
-    if (!invocationContext) return this;
+    if (!invocationContext) {
+      return this;
+    }
 
     // this.withTypes(invocationContext.getContextVariableTypes());
-    this.withFunctionChoiceBehavior(
-      invocationContext.getFunctionChoiceBehavior()
-    );
+
+    const functionChoiceBehavior =
+      invocationContext.getFunctionChoiceBehavior();
+    if (functionChoiceBehavior) {
+      this.withFunctionChoiceBehavior(functionChoiceBehavior);
+    }
+
     this.withToolCallBehavior(invocationContext.getToolCallBehavior());
+
     this.withPromptExecutionSettings(
       invocationContext.getPromptExecutionSettings()
     );
+
     this.addKernelHooks(invocationContext.getKernelHooks());
-    this.withTelemetry(invocationContext.getTelemetry());
+
+    const telemetry = invocationContext.getTelemetry();
+    if (telemetry) {
+      this.withTelemetry(telemetry);
+    }
 
     return this;
   }
@@ -169,13 +215,36 @@ class FunctionInvocation<T> extends Observable<FunctionResult<T>> {
    *
    * @param observer The subscriber to subscribe to the function invocation.
    */
-  override subscribe(
-    observer:
-      | Partial<Observer<FunctionResult<T>>>
-      | ((value: FunctionResult<T>) => void)
-      | undefined
-      | null
-  ): Subscription {
+  override subscribe(observer: FunctionInvocationObserver<T>): Subscription {
+    if (this.isSubscribed) {
+      this.LOGGER.warn(
+        "function has already been subscribed to this is not necessarily an error but may be an unusual pattern"
+      );
+    }
+
+    if (!this.telemetry) {
+      this.telemetry = new SemanticKernelTelemetry();
+    }
+
     this.isSubscribed = true;
+
+    return FunctionInvocation.performSubscribe(
+      observer,
+      this.kernel,
+      this.fn,
+      this.kernelArguments,
+      new InvocationContext(
+        this.hooks,
+        this.promptExecutionSettings,
+        this.toolCallBehavior,
+        this.functionChoiceBehavior,
+        InvocationReturnMode.NEW_MESSAGES_ONLY,
+        this.telemetry
+      )
+    );
+  }
+
+  public block() {
+    return lastValueFrom(this);
   }
 }
