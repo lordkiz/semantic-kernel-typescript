@@ -1,5 +1,5 @@
 import KernelArguments from "../functions/KernelArguments";
-import Variable from "../variables/Variable";
+import Variable from "../variables/ContextVariable";
 import FunctionResultMetadata from "./FunctionResultMetadata";
 
 /**

@@ -21,6 +21,7 @@ export function JsonProperty(
   } else {
     options = keyOrOptions as JsonPropertyOptions;
   }
+
   return (target: Object, propertyKey: string | symbol) => {
     const defaultOptions: JsonPropertyOptions = {
       name: key || propertyKey.toString(),

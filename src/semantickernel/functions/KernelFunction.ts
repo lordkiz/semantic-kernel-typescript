@@ -1,27 +1,51 @@
 import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
+import SKException from "../exceptions/SKException";
 import Kernel from "../Kernel";
 import FunctionInvocation from "../orchestration/FunctionInvocation";
 import FunctionResult from "../orchestration/FunctionResult";
 import InvocationContext from "../orchestration/InvocationContext";
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
+import DefaultOriginalInstance from "./DefaultOriginalInstance";
 import KernelArguments from "./KernelArguments";
 import KernelFunctionMetadata from "./KernelFunctionMetadata";
-import RXJS from "rxjs";
+import RXJS, { Observer } from "rxjs";
+import _ from "lodash";
+import KernelFunctionFromMethod from "./KernelFunctionFromMethod";
 
 export default abstract class KernelFunction<T> {
-  private metadata: KernelFunctionMetadata<any>;
+  private method: Function;
+  private readonly instance: InstanceType<any>;
+  private metadata: KernelFunctionMetadata<T>;
   private executionSettings:
     | CaseInsensitiveMap<PromptExecutionSettings>
     | undefined;
 
   constructor(
-    metadata: KernelFunctionMetadata<any>,
+    method: Function,
+    metadata: KernelFunctionMetadata<T>,
+    instance?: InstanceType<any>,
     executionSettings?:
       | Map<string, PromptExecutionSettings>
       | CaseInsensitiveMap<PromptExecutionSettings>
   ) {
+    if (!method.name) {
+      throw new SKException(
+        "Anonymous functions are not valid as Kernel Functions"
+      );
+    }
+
+    this.method = method;
     this.metadata = metadata;
     this.executionSettings = new CaseInsensitiveMap<PromptExecutionSettings>();
+
+    const hasInstance = !!instance;
+    if (!hasInstance) {
+      const _instance: InstanceType<any> = new DefaultOriginalInstance();
+      _instance[this.method.name] = this.method;
+      this.instance = _instance;
+    } else {
+      this.instance = instance;
+    }
 
     if (executionSettings) {
       this.executionSettings.putAll(
@@ -40,8 +64,8 @@ export default abstract class KernelFunction<T> {
    *               This should be {@code null} if and only if {@code method} is a static method.
    * @return The created {@link KernelFunction} wrapper for {@code method}.
    */
-  static createFromMethod<T>(method: Function, target: object) {
-    return KernelFunctionFromMethod.builder<T>()
+  static createFromMethod<T>(method: Function, target: InstanceType<any>) {
+    return KernelFunctionFromMethod.Builder<T>()
       .withMethod(method)
       .withTarget(target);
   }
@@ -53,9 +77,9 @@ export default abstract class KernelFunction<T> {
    * @param <T>    The return type of the method
    * @return The builder for creating a {@link KernelFunction} instance.
    */
-  static createFromPrompt<T>(prompt: string): FromPromptBuilder<T> {
-    return KernelFunctionFromPrompt.builder<T>().withTemplate(prompt);
-  }
+  // static createFromPrompt<T>(prompt: string): FromPromptBuilder<T> {
+  //   return KernelFunctionFromPrompt.builder<T>().withTemplate(prompt);
+  // }
 
   /**
    * Builder for creating a {@link KernelFunction} instance for a given
@@ -65,13 +89,13 @@ export default abstract class KernelFunction<T> {
    * @param <T>                         The return type of the method
    * @return The builder for creating a {@link KernelFunction} instance.
    */
-  static createFromPrompt<T>(
-    promptTemplateConfiguration: PromptTemplateConfig
-  ): FromPromptBuilder<T> {
-    return KernelFunctionFromPrompt.builder<T>().withPromptTemplateConfig(
-      promptTemplateConfiguration
-    );
-  }
+  // static createFromPrompt<T>(
+  //   promptTemplateConfiguration: PromptTemplateConfig
+  // ): FromPromptBuilder<T> {
+  //   return KernelFunctionFromPrompt.builder<T>().withPromptTemplateConfig(
+  //     promptTemplateConfiguration
+  //   );
+  // }
 
   /**
    * Get the plugin name of the function.
@@ -95,6 +119,23 @@ export default abstract class KernelFunction<T> {
    */
   public getDescription() {
     return this.metadata.getDescription();
+  }
+
+  /**
+   * Get the instance that the method of this Kernel Function is defined on.
+   * Note: Multiple Kernel Functions can reference the same instance
+   * @returns A Proxy of the original instance
+   */
+  getInstance() {
+    return new Proxy(_.cloneDeep(this.instance), {
+      apply(target, _thisArg, argumentsList) {
+        return new target(...argumentsList);
+      },
+    });
+  }
+
+  getMethod() {
+    return this.method;
   }
 
   /**
@@ -156,7 +197,7 @@ export default abstract class KernelFunction<T> {
     kernel: Kernel,
     kernelArguments?: KernelArguments,
     invocationContext?: InvocationContext
-  ): FunctionInvocation<T>;
+  ): RXJS.Observable<FunctionResult<T>>;
 
   async invoke(
     kernel: Kernel,

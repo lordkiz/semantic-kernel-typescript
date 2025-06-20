@@ -1,5 +1,5 @@
 import FunctionResultMetadata from "../orchestration/FunctionResultMetadata";
-import Variable from "../variables/Variable";
+import Variable from "../variables/ContextVariable";
 import KernelContentImpl from "./KernelContentImpl";
 import { StreamingKernelContent } from "./types/StreamingKernelContent";
 

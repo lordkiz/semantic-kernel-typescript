@@ -19,6 +19,12 @@ import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernel
 import { Logger } from "../log/Logger";
 import Kernel from "../Kernel";
 import { InvocationReturnMode } from "./InvocationReturnMode";
+import {
+  KernelFunctionParameterMetadata,
+  NO_DEFAULT_VALUE,
+} from "../functions/decorators/KernelFunctionParameter";
+import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "../functions/decorators/constants";
+import ContextVariable from "../variables/ContextVariable";
 
 type FunctionInvocationObserver<T> =
   | Partial<Observer<FunctionResult<T>>>

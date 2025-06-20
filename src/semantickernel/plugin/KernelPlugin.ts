@@ -9,7 +9,7 @@ export default class KernelPlugin
 {
   private name: string;
   private description: string;
-  private fns: CaseInsensitiveMap<KernelFunction<unknown>>;
+  private functions: CaseInsensitiveMap<KernelFunction<unknown>>;
 
   constructor(
     name: string,
@@ -18,13 +18,15 @@ export default class KernelPlugin
   ) {
     this.name = name;
     this.description = description;
-    this.fns = new CaseInsensitiveMap<KernelFunction<unknown>>();
+    this.functions = new CaseInsensitiveMap<KernelFunction<unknown>>();
 
-    this.fns.putAll(plugins as CaseInsensitiveMap<KernelFunction<unknown>>);
+    this.functions.putAll(
+      plugins as CaseInsensitiveMap<KernelFunction<unknown>>
+    );
   }
 
   [Symbol.iterator](): Iterator<KernelFunction<unknown>, any, any> {
-    return this.fns.values()[Symbol.iterator]();
+    return this.functions.values()[Symbol.iterator]();
   }
 
   /**
@@ -35,7 +37,7 @@ export default class KernelPlugin
    * @return The function with the specified name, or {@code null} if no such function exists.
    */
   get(functionName: string) {
-    return this.fns.get(functionName);
+    return this.functions.get(functionName);
   }
 
   /**
@@ -44,7 +46,7 @@ export default class KernelPlugin
    * @param fn The function to add.
    */
   addFunction(fn: KernelFunction<unknown>) {
-    this.fns.put(fn.getName(), fn);
+    this.functions.put(fn.getName(), fn);
   }
 
   /**
@@ -53,7 +55,7 @@ export default class KernelPlugin
    * @return The functions in the plugin.
    */
   getFunctions() {
-    return Object.seal(this.fns);
+    return Object.seal(this.functions);
   }
 
   /**

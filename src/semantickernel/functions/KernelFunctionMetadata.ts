@@ -1,3 +1,6 @@
+import InputVariable from "./InputVariable";
+import OutputVariable from "./OutputVariable";
+
 /**
  * Metadata about a kernel function.
  *

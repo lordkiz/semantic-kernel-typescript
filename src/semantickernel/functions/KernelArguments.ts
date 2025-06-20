@@ -1,6 +1,6 @@
 import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
 import SKException from "../exceptions/SKException";
-import Variable from "../variables/Variable";
+import Variable from "../variables/ContextVariable";
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
 
 export default class KernelArguments implements Map<string, Variable<unknown>> {
@@ -9,7 +9,7 @@ export default class KernelArguments implements Map<string, Variable<unknown>> {
    */
   static MAIN_KEY = "input";
 
-  variables: CaseInsensitiveMap<any>;
+  variables: CaseInsensitiveMap<Variable<unknown>>;
   executionSettings: Map<string, PromptExecutionSettings>;
 
   constructor();
