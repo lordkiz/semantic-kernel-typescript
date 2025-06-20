@@ -1,8 +1,5 @@
 import SKException from "../../exceptions/SKException";
-import {
-  FunctionParameterType,
-  KERNEL_FUNCTION_PARAMETER_METADATA_KEY,
-} from "./constants";
+import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./constants";
 
 export const NO_DEFAULT_VALUE = "SKFunctionParameters__NO_INPUT_PROVIDED";
 
@@ -30,16 +27,16 @@ export interface KernelFunctionParameterOptions {
   /**
    * The type of the parameter (defaults to String)
    */
-  type?: FunctionParameterType;
+  type?: string;
 }
 
 export interface KernelFunctionParameterMetadata {
   index: number;
   name: string;
   description?: string;
-  defaultValue: string;
-  required: boolean;
-  type: any;
+  defaultValue?: string;
+  required?: boolean;
+  type?: string;
 }
 
 export function KernelFunctionParameter(
@@ -68,7 +65,7 @@ export function KernelFunctionParameter(
     const fullOptions = {
       defaultValue: NO_DEFAULT_VALUE,
       required: true,
-      type: String,
+      type: "string",
       ...opts,
     };
 

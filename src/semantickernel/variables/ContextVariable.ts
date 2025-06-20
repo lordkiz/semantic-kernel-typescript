@@ -1,4 +1,8 @@
+import { Logger } from "../log/Logger";
+
 export default class ContextVariable<T> {
+  private LOGGER = Logger;
+
   private value: T;
   constructor(value: T) {
     this.value = value;
@@ -21,19 +25,17 @@ export default class ContextVariable<T> {
   }
 
   private resolveValue(): T {
-    // typeof
-    switch (typeof this.value) {
-      case "number":
-      case "bigint":
-        return Number(this.value) as T;
-      case "boolean":
-        return Boolean(this.value) as T;
-      case "string":
-        return new String(this.value).toString() as T;
-      case "undefined":
-        return this.value;
-      default:
+    try {
+      if (typeof this.value === "string") {
+        return JSON.parse(this.value) as T;
+      }
+      return this.value;
+    } catch (e) {
+      Logger.warn(
+        `encountered error while resolving value. Returning raw value. Error: ${e}`
+      );
+
+      return this.getRawValue();
     }
-    return this.value;
   }
 }
