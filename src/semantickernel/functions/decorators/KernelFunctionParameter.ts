@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import SKException from "../../exceptions/SKException";
 import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./constants";
 
@@ -27,7 +28,7 @@ export interface KernelFunctionParameterOptions {
   /**
    * The type of the parameter (defaults to String)
    */
-  type?: string;
+  type?: any;
 }
 
 export interface KernelFunctionParameterMetadata {
@@ -36,7 +37,7 @@ export interface KernelFunctionParameterMetadata {
   description?: string;
   defaultValue?: string;
   required?: boolean;
-  type?: string;
+  type?: any;
 }
 
 export function KernelFunctionParameter(
@@ -65,7 +66,7 @@ export function KernelFunctionParameter(
     const fullOptions = {
       defaultValue: NO_DEFAULT_VALUE,
       required: true,
-      type: "string",
+      type: String,
       ...opts,
     };
 

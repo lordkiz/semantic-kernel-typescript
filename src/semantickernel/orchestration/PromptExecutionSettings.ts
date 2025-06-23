@@ -46,7 +46,7 @@ class PromptExecutionSettings {
     defaultValue: PromptExecutionSettings.DEFAULT_SERVICE_ID,
     required: true,
   })
-  serviceId: string;
+  private serviceId: string;
 
   @JsonProperty(PromptExecutionSettings.MODEL_ID_JSON_FIELD)
   private modelId: string;
@@ -179,6 +179,10 @@ class PromptExecutionSettings {
 
   getModelId(): string {
     return this.modelId;
+  }
+
+  getServiceId() {
+    return this.serviceId;
   }
 
   private static _Builder = {

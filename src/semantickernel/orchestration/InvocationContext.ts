@@ -48,6 +48,20 @@ export default class InvocationContext {
     );
   }
 
+  /**
+   * Create a new instance of InvocationContext by copying the values from another instance.
+   *
+   * @param context The context to copy.
+   * @return The new instance of InvocationContext.
+   */
+  static copy(context: InvocationContext): InvocationContextBuilder {
+    return new InvocationContextBuilder()
+      .withKernelHooks(context.getKernelHooks())
+      .withPromptExecutionSettings(context.getPromptExecutionSettings())
+      .withToolCallBehavior(context.getToolCallBehavior())
+      .withTelemetry(context.getTelemetry());
+  }
+
   clone(): InvocationContext {
     return InvocationContext.clone(this);
   }
@@ -113,7 +127,10 @@ class InvocationContextBuilder
    * @param hooks the hooks to add.
    * @return this {@link InvocationContextBuilder}
    */
-  withKernelHooks(hooks: KernelHooks) {
+  withKernelHooks(hooks?: KernelHooks) {
+    if (!hooks) {
+      return this;
+    }
     this.hooks = InvocationContext.unmodifiableClone(hooks);
     return this;
   }
@@ -125,7 +142,7 @@ class InvocationContextBuilder
    * @return this {@link InvocationContextBuilder}
    */
   withPromptExecutionSettings(
-    promptExecutionSettings: PromptExecutionSettings
+    promptExecutionSettings?: PromptExecutionSettings
   ) {
     this.promptExecutionSettings = promptExecutionSettings;
     return this;
@@ -137,8 +154,8 @@ class InvocationContextBuilder
    * @param toolCallBehavior the behavior to add.
    * @return this {@link InvocationContextBuilder}
    */
-  withToolCallBehavior(toolCallBehavior: ToolCallBehavior) {
-    if (toolCallBehavior != null && this.functionChoiceBehavior != null) {
+  withToolCallBehavior(toolCallBehavior?: ToolCallBehavior) {
+    if (toolCallBehavior && this.functionChoiceBehavior) {
       throw new SKException(
         "ToolCallBehavior cannot be set when FunctionChoiceBehavior is set."
       );
@@ -182,7 +199,7 @@ class InvocationContextBuilder
    * @param telemetry the tracer to add.
    * @return this {@link InvocationContextBuilder}
    */
-  withTelemetry(telemetry: SemanticKernelTelemetry) {
+  withTelemetry(telemetry?: SemanticKernelTelemetry) {
     this.telemetry = telemetry;
     return this;
   }

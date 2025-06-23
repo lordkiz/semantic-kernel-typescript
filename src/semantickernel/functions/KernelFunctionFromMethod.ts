@@ -100,6 +100,8 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
       new FunctionInvokingEvent(this, kernelArguments)
     );
 
+    console.log("updated state", updatedState.getArguments());
+
     const updatedArguments =
       updatedState?.getArguments() ?? kernelArguments ?? new KernelArguments();
 
@@ -110,38 +112,21 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
 
     const resolveResult = async (): Promise<FunctionResult<T>> => {
       // call function
-      const res = await instance[fn.name](...params);
+      const res: T = await instance[fn.name](...params);
 
       // execute FunctionInvokedHook
       const updatedResult = kernelHooks.executeHooks(
-        new FunctionInvokedEvent(this, updatedArguments, res)
+        new FunctionInvokedEvent(
+          this,
+          updatedArguments,
+          new FunctionResult(res)
+        )
       );
 
       return updatedResult.getResult();
     };
 
     return from(resolveResult());
-  }
-
-  getMethodParams(kernelArguments: KernelArguments): any[] {
-    const methodParams: KernelFunctionParameterMetadata[] =
-      Reflect.getMetadata(
-        KERNEL_FUNCTION_PARAMETER_METADATA_KEY,
-        this.getInstance(),
-        this.getMethod().name
-      ) ?? [];
-
-    return methodParams
-      .sort((a, b) => a.index - b.index)
-      .map((p) => {
-        const value =
-          kernelArguments?.get(p.name) ??
-          (p.defaultValue !== NO_DEFAULT_VALUE
-            ? ContextVariable.of<typeof p.type>(p.defaultValue)
-            : undefined);
-
-        return value ? value.getValue() : value;
-      });
   }
 
   static Builder<T>(): KernelFunctionFromMethodBuilder<T> {
@@ -160,8 +145,6 @@ class KernelFunctionFromMethodBuilder<T> {
   private target: InstanceType<any> | undefined;
 
   private pluginName: string | undefined;
-
-  private functionName: string | undefined;
 
   private description: string | undefined;
 
@@ -201,19 +184,6 @@ class KernelFunctionFromMethodBuilder<T> {
     pluginName: string
   ): KernelFunctionFromMethodBuilder<T> {
     this.pluginName = pluginName;
-    return this;
-  }
-
-  /**
-   * Sets the function name to use to build the function.
-   *
-   * @param functionName the function name to use
-   * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
-   */
-  public withFunctionName(
-    functionName: string
-  ): KernelFunctionFromMethodBuilder<T> {
-    this.functionName = functionName;
     return this;
   }
 

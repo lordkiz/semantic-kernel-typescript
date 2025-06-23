@@ -34,9 +34,7 @@ export abstract class FunctionInvokingHook<T> extends KernelHook<
   FunctionInvokingEvent<T>
 > {
   override test(argumentz: KernelHookEvent): boolean {
-    return FunctionInvokingEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof FunctionInvokingEvent;
   }
 }
 
@@ -44,48 +42,36 @@ export abstract class FunctionInvokedHook<T> extends KernelHook<
   FunctionInvokedEvent<T>
 > {
   override test(argumentz: KernelHookEvent): boolean {
-    return FunctionInvokedEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof FunctionInvokedEvent;
   }
 }
 
 export abstract class PromptRenderingHook extends KernelHook<PromptRenderingEvent> {
   override test(argumentz: KernelHookEvent): boolean {
-    return PromptRenderingEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof PromptRenderingEvent;
   }
 }
 
 export abstract class PreToolCallHook extends KernelHook<PreToolCallEvent> {
   override test(argumentz: KernelHookEvent): boolean {
-    return PreToolCallEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof PreToolCallEvent;
   }
 }
 
 export abstract class PromptRenderedHook extends KernelHook<PromptRenderedEvent> {
   override test(argumentz: KernelHookEvent): boolean {
-    return PromptRenderedEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof PromptRenderedEvent;
   }
 }
 
 export abstract class PreChatCompletionHook extends KernelHook<PreChatCompletionEvent> {
   override test(argumentz: KernelHookEvent): boolean {
-    return PreChatCompletionEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof PreChatCompletionEvent;
   }
 }
 
 export abstract class PostChatCompletionHook extends KernelHook<PostChatCompletionEvent> {
   override test(argumentz: KernelHookEvent): boolean {
-    return PostChatCompletionEvent.prototype.isPrototypeOf(
-      argumentz.constructor.prototype
-    );
+    return argumentz instanceof PostChatCompletionEvent;
   }
 }

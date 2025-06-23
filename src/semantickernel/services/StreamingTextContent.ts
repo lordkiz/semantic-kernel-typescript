@@ -8,7 +8,7 @@ import { StreamingKernelContent } from "./types/StreamingKernelContent";
  *
  * @param <T> The type of the content.
  */
-export default abstract class StreamingTextContent<T>
+export default abstract class StreamingTextContent<T = string>
   extends KernelContentImpl<T>
   implements StreamingKernelContent<T>
 {

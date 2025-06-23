@@ -1,0 +1,29 @@
+{
+  "cSpell.diagnosticLevel": "Hint",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": true
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.rulers": [100],
+  "editor.tabSize": 2,
+  "files.associations": {},
+  "files.exclude": {
+    "**/.git": true,
+    ".jest/": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "javascript.validate.enable": true,
+  "[json]": {
+    "editor.formatOnSave": false
+  },
+  "search.exclude": {
+    "**/node_modules": true
+  },
+  "todohighlight.exclude": ["node_modules/**", ".vscode/**", "externals/**"],
+  "typescript.format.enable": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "cSpell.ignoreWords": []
+}

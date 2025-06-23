@@ -159,7 +159,7 @@ export default class OrderedAIServiceSelector extends BaseAIServiceSelector {
     serviceType: new (...args: any[]) => AIService
   ): AIService[] {
     const services: AIService[] = [];
-    for (const [key, value] of this.services.entries()) {
+    for (const [_, value] of this.services.entries()) {
       if (value instanceof serviceType) {
         services.push(value);
       }

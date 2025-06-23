@@ -52,6 +52,10 @@ export default abstract class KernelContentImpl<T> implements KernelContent<T> {
     this.metadata = metadata;
   }
 
+  getModelId() {
+    return this.modelId;
+  }
+
   /**
    * Gets the inner content representation.
    *

@@ -2,23 +2,26 @@ import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
 import SKException from "../exceptions/SKException";
 import Variable from "../variables/ContextVariable";
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
+import ContextVariable from "../variables/ContextVariable";
 
-export default class KernelArguments implements Map<string, Variable<unknown>> {
+export default class KernelArguments
+  implements Map<string, ContextVariable<unknown>>
+{
   /**
    * Default key for the main input.
    */
   static MAIN_KEY = "input";
 
-  variables: CaseInsensitiveMap<Variable<unknown>>;
+  variables: CaseInsensitiveMap<ContextVariable<unknown>>;
   executionSettings: Map<string, PromptExecutionSettings>;
 
   constructor();
   constructor(
-    variables: Map<string, Variable<unknown>>,
+    variables: Map<string, ContextVariable<unknown>>,
     executionSettings: Map<string, PromptExecutionSettings>
   );
   constructor(
-    variables?: Map<string, Variable<unknown>>,
+    variables?: Map<string, ContextVariable<unknown>>,
     executionSettings?: Map<string, PromptExecutionSettings>
   ) {
     if (variables) {
@@ -71,7 +74,9 @@ export default class KernelArguments implements Map<string, Variable<unknown>> {
   }
 
   set(key: string, value: any): this {
-    this.variables.set(key, value);
+    const v =
+      value instanceof ContextVariable ? value : ContextVariable.of(value);
+    this.variables.set(key, v);
     this.size = this.variables.size;
     return this;
   }
@@ -128,7 +133,7 @@ export default class KernelArguments implements Map<string, Variable<unknown>> {
       executionSettingsArray: PromptExecutionSettings[]
     ) {
       for (const settings of executionSettingsArray) {
-        const serviceId = settings.serviceId;
+        const serviceId = settings.getServiceId();
         if (this.executionSettingz.has(serviceId)) {
           if (serviceId === PromptExecutionSettings.DEFAULT_SERVICE_ID) {
             throw new SKException(

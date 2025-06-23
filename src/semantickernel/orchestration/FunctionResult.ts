@@ -11,12 +11,12 @@ import FunctionResultMetadata from "./FunctionResultMetadata";
  * @param <T> The type of the result of the function invocation.
  */
 export default class FunctionResult<T> {
-  private result: Variable<T>;
+  private result: T;
   private metadata: FunctionResultMetadata<unknown>;
   private unconvertedResult: object;
 
   constructor(
-    result: Variable<T>,
+    result: T,
     metadata?: FunctionResultMetadata<unknown>,
     unconvertedResult?: Variable<T>
   ) {
@@ -35,7 +35,7 @@ export default class FunctionResult<T> {
    * @throws ClassCastException If the result is not of the expected type.
    */
   getResult(): T {
-    return this.result.getValue();
+    return this.result;
   }
 
   /**
@@ -44,7 +44,7 @@ export default class FunctionResult<T> {
    * @return The result of the function invocation.
    */
   getResultVariable(): Variable<T> {
-    return this.result;
+    return Variable.of(this.result);
   }
 
   /**
