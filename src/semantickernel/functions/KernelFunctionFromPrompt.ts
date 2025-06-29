@@ -1,27 +1,29 @@
 import { concatMap, last, map, Observable } from "rxjs"
-import Kernel from "../Kernel"
-import FunctionResult from "../orchestration/FunctionResult"
-import InvocationContext from "../orchestration/InvocationContext"
-import KernelArguments from "./KernelArguments"
-import KernelFunction from "./KernelFunction"
-import { Logger } from "../log/Logger"
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
-import { PromptTemplate } from "./prompttemplate/PromptTemplate"
-import KernelFunctionMetadata from "./KernelFunctionMetadata"
 import { v4 as uuid4 } from "uuid"
-import DefaultOriginalInstance from "./DefaultOriginalInstance"
-import InputVariable from "./InputVariable"
-import OutputVariable from "./OutputVariable"
-import KernelPromptTemplateFactory from "./KernelPromptTemplateFactory"
-import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
+import SKException from "../exceptions/SKException"
+import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
 import KernelHooks from "../hooks/KernelHooks"
 import { PromptRenderedEvent, PromptRenderingEvent } from "../hooks/PromptEvents"
-import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
-import SKException from "../exceptions/SKException"
-import { TextAIServiceKeyStub } from "../services/types/TextAIService"
+import Kernel from "../Kernel"
+import { Logger } from "../log/Logger"
+import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
+import FunctionResult from "../orchestration/FunctionResult"
+import InvocationContext from "../orchestration/InvocationContext"
+import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import { ChatCompletionService } from "../services/chatcompletion/ChatCompletionService"
 import { TextGenerationService } from "../services/textcompletion/TextGenerationService"
+import { TextAIServiceKeyStub } from "../services/types/TextAIService"
+import DefaultOriginalInstance from "./DefaultOriginalInstance"
+import HandlebarsPromptTemplateFactory from "./HandlebarsPromptTemplateFactory"
+import InputVariable from "./InputVariable"
+import KernelArguments from "./KernelArguments"
+import KernelFunction from "./KernelFunction"
+import KernelFunctionMetadata from "./KernelFunctionMetadata"
+import KernelPromptTemplateFactory from "./KernelPromptTemplateFactory"
+import OutputVariable from "./OutputVariable"
+import { PromptTemplate } from "./prompttemplate/PromptTemplate"
+import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
+import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 
 export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   private LOGGER = Logger
@@ -38,7 +40,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   constructor(
     template: PromptTemplate,
     promptConfig: PromptTemplateConfig,
-    executionSettings: Map<string, PromptExecutionSettings>
+    executionSettings: ExecutionSettingsForService
   ) {
     super(
       function m() {},
@@ -80,6 +82,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
       last(),
       concatMap((fnResult) => {
         const initialPrompt = fnResult.getResult()
+
         const promptHookResult = kernelHooks.executeHooks(
           new PromptRenderedEvent(this, updatedArguments, initialPrompt)
         )
@@ -96,7 +99,9 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
 
         args = KernelArguments.Builder()
           .withVariables(fnInvokingEvent.getArguments()!)
-          .withExecutionSettingsMap(this.getExecutionSettings() ?? new Map())
+          .withExecutionSettingsMap(
+            this.getExecutionSettings() ?? ExecutionSettingsForService.create()
+          )
           .build()
 
         const aiServiceSelection = kernel
@@ -169,7 +174,7 @@ export class FromPromptBuilder<T> {
 
   private name: string | undefined
 
-  private executionSettings: Map<string, PromptExecutionSettings> | undefined
+  private executionSettings: ExecutionSettingsForService | undefined
 
   private description: string | undefined
 
@@ -177,7 +182,7 @@ export class FromPromptBuilder<T> {
 
   private template: string | undefined
 
-  private templateFormat: string | undefined = PromptTemplateConfig.SEMANTIC_KERNEL_TEMPLATE_FORMAT
+  private templateFormat: string | undefined
 
   private outputVariable: OutputVariable<any> | undefined
 
@@ -203,15 +208,15 @@ export class FromPromptBuilder<T> {
     return this
   }
 
-  withExecutionSettings(executionSettings: Map<string, PromptExecutionSettings>): this {
-    this.executionSettings = new Map(executionSettings)
+  withExecutionSettings(executionSettings: ExecutionSettingsForService): this {
+    this.executionSettings = executionSettings
 
     return this
   }
 
   withDefaultExecutionSettings(executionSettings: PromptExecutionSettings) {
     if (!this.executionSettings) {
-      this.executionSettings = new Map()
+      this.executionSettings = ExecutionSettingsForService.create()
     }
 
     this.executionSettings.set(PromptExecutionSettings.DEFAULT_SERVICE_ID, executionSettings)
@@ -251,10 +256,10 @@ export class FromPromptBuilder<T> {
   }
 
   build(): KernelFunction<T> {
-    this.executionSettings = this.executionSettings ?? new Map()
+    this.executionSettings = this.executionSettings ?? ExecutionSettingsForService.create()
 
     this.templateFormat =
-      this.templateFormat ?? PromptTemplateConfig.SEMANTIC_KERNEL_TEMPLATE_FORMAT
+      this.templateFormat ?? HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT
 
     this.name = this.name ?? uuid4()
 
@@ -272,17 +277,16 @@ export class FromPromptBuilder<T> {
       )
     }
 
-    const config = new PromptTemplateConfig(
-      undefined,
-      this.name,
-      this.template,
-      this.templateFormat,
-      new Set(),
-      this.description,
-      this.inputVariables,
-      this.outputVariable,
-      this.executionSettings
-    )
+    const config = new PromptTemplateConfig({
+      name: this.name,
+      template: this.template,
+      templateFormat: this.templateFormat,
+      promptTemplateOptions: new Set(),
+      description: this.description,
+      inputVariables: this.inputVariables,
+      outputVariable: this.outputVariable,
+      executionSettings: this.executionSettings,
+    })
 
     return new KernelFunctionFromPrompt<T>(
       this.promptTemplate ?? new KernelPromptTemplateFactory().tryCreate(config),

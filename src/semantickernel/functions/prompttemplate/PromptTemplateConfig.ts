@@ -1,92 +1,102 @@
-import { JsonCreator } from "../../decorators/JsonCreator";
-import { JsonProperty } from "../../decorators/JsonProperty";
-import SKException from "../../exceptions/SKException";
-import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings";
-import InputVariable from "../InputVariable";
-import OutputVariable from "../OutputVariable";
-import { PromptTemplateOption } from "./PromptTemplateOption";
+import { JsonProperty } from "../../decorators/JsonProperty"
+import SKException from "../../exceptions/SKException"
+import { JsonCreator } from "../../implementations/JsonCreator"
+import ExecutionSettingsForService from "../../orchestration/ExecutionSettingsForService"
+import HandlebarsPromptTemplateFactory from "../HandlebarsPromptTemplateFactory"
+import InputVariable from "../InputVariable"
+import OutputVariable from "../OutputVariable"
+import { PromptTemplateOption } from "./PromptTemplateOption"
 
-@JsonCreator()
-export default class PromptTemplateConfig {
+export type PromptTemplateConfigurationType = {
+  schema?: number
+  name?: string
+  template?: string
+  templateFormat?: string
+  promptTemplateOptions?: Set<PromptTemplateOption>
+  description?: string
+  inputVariables?: InputVariable[]
+  outputVariable?: OutputVariable<any>
+  executionSettings?: ExecutionSettingsForService
+}
+
+export default class PromptTemplateConfig extends JsonCreator {
   /**
    * The current prompt template config schema version.
    */
-  static readonly CURRENT_SCHEMA = 1;
+  static readonly CURRENT_SCHEMA = 1
 
   /**
    * The default name for a prompt template config.
    */
-  static readonly DEFAULT_CONFIG_NAME = "default";
+  static readonly DEFAULT_CONFIG_NAME = "default"
 
   /**
    * The default template format for a prompt template config.
    */
-  static readonly SEMANTIC_KERNEL_TEMPLATE_FORMAT = "semantic-kernel";
+  // static readonly SEMANTIC_KERNEL_TEMPLATE_FORMAT = "semantic-kernel";
 
-  @JsonProperty("schema") private schema: number;
+  @JsonProperty("schema") private schema: number
 
-  @JsonProperty("name") private name: string | undefined;
+  @JsonProperty("name") private name: string | undefined
 
-  @JsonProperty("template") private template: string | undefined;
+  @JsonProperty("template") private template: string | undefined
 
   @JsonProperty({
     name: "template_format",
-    defaultValue: PromptTemplateConfig.SEMANTIC_KERNEL_TEMPLATE_FORMAT,
+    // defaultValue: HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT,
   })
-  private templateFormat: string;
+  private templateFormat: string
 
   @JsonProperty("prompt_template_options")
-  private promptTemplateOptions: Set<PromptTemplateOption>;
+  private promptTemplateOptions: Set<PromptTemplateOption>
 
-  @JsonProperty("description") private description: string | undefined;
+  @JsonProperty("description") private description: string | undefined
 
   @JsonProperty("input_variables")
-  private inputVariables: InputVariable[];
+  private inputVariables: InputVariable[]
 
   @JsonProperty("output_variable")
-  private outputVariable: OutputVariable<any>;
+  private outputVariable: OutputVariable<any>
 
-  @JsonProperty("execution_settings") private executionSettings: Map<
-    string,
-    PromptExecutionSettings
-  >;
+  @JsonProperty("execution_settings") private executionSettings: ExecutionSettingsForService
 
-  constructor(
-    schema?: number,
-    name?: string,
-    template?: string,
-    templateFormat?: string,
-    promptTemplateOptions?: Set<PromptTemplateOption>,
-    description?: string,
-    inputVariables?: InputVariable[],
-    outputVariable?: OutputVariable<any>,
-    executionSettings?: Map<string, PromptExecutionSettings>
-  ) {
-    this.schema = schema ?? PromptTemplateConfig.CURRENT_SCHEMA;
-    this.name = name;
-    this.template = template;
+  constructor({
+    schema,
+    name,
+    template,
+    templateFormat,
+    promptTemplateOptions,
+    description,
+    inputVariables,
+    outputVariable,
+    executionSettings,
+  }: PromptTemplateConfigurationType) {
+    super()
+    this.schema = schema ?? PromptTemplateConfig.CURRENT_SCHEMA
+    this.name = name
+    this.template = template
     this.templateFormat =
-      templateFormat ?? PromptTemplateConfig.SEMANTIC_KERNEL_TEMPLATE_FORMAT;
+      templateFormat ?? HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT
 
-    this.promptTemplateOptions = promptTemplateOptions ?? new Set();
-    this.description = description;
-    this.inputVariables = inputVariables ?? [];
-    this.outputVariable = outputVariable ?? new OutputVariable<string>();
-    this.executionSettings = executionSettings ?? new Map();
+    this.promptTemplateOptions = promptTemplateOptions ?? new Set()
+    this.description = description
+    this.inputVariables = inputVariables ?? []
+    this.outputVariable = outputVariable ?? new OutputVariable<string>()
+    this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
   }
 
   static fromPromptTemplateConfig(promptTemplate: PromptTemplateConfig) {
-    return new PromptTemplateConfig(
-      promptTemplate.schema,
-      promptTemplate.name,
-      promptTemplate.template,
-      promptTemplate.templateFormat,
-      promptTemplate.promptTemplateOptions,
-      promptTemplate.description,
-      promptTemplate.inputVariables,
-      promptTemplate.outputVariable,
-      promptTemplate.executionSettings
-    );
+    return new PromptTemplateConfig({
+      schema: promptTemplate.schema,
+      name: promptTemplate.name,
+      template: promptTemplate.template,
+      templateFormat: promptTemplate.templateFormat,
+      promptTemplateOptions: promptTemplate.promptTemplateOptions,
+      description: promptTemplate.description,
+      inputVariables: promptTemplate.inputVariables,
+      outputVariable: promptTemplate.outputVariable,
+      executionSettings: promptTemplate.executionSettings,
+    })
   }
 
   /**
@@ -98,20 +108,20 @@ export default class PromptTemplateConfig {
    */
   static parseFromJson(json: string): PromptTemplateConfig {
     try {
-      const res = JSON.parse(json);
-      return new PromptTemplateConfig(
-        res.schema,
-        res.name,
-        res.template,
-        res.template_format,
-        res.prompt_template_options,
-        res.description,
-        res.input_variables,
-        res.output_variable,
-        res.execution_settings
-      );
+      const res = JSON.parse(json)
+      return new PromptTemplateConfig({
+        schema: res.schema,
+        name: res.name,
+        template: res.template,
+        templateFormat: res.template_format,
+        promptTemplateOptions: res.prompt_template_options,
+        description: res.description,
+        inputVariables: res.input_variables,
+        outputVariable: res.output_variable,
+        executionSettings: res.execution_settings,
+      })
     } catch (e) {
-      throw new SKException(`Unable to parse prompt template config ${e}`);
+      throw new SKException(`Unable to parse prompt template config ${e}`)
     }
   }
 
@@ -121,94 +131,87 @@ export default class PromptTemplateConfig {
    * @return The prompt template config builder.
    */
   static Builder(): Builder {
-    return new Builder();
+    return new Builder()
   }
 
   getSchema() {
-    return this.schema;
+    return this.schema
   }
 
   getName() {
-    return this.name;
+    return this.name
   }
 
   getTemplate() {
-    return this.template;
+    return this.template
   }
 
   getTemplateFormat() {
-    return this.templateFormat;
+    return this.templateFormat
   }
 
   getPromptTemplateOptions() {
-    return Object.seal(this.promptTemplateOptions);
+    return Object.seal(this.promptTemplateOptions)
   }
 
   getDescription() {
-    return this.description;
+    return this.description
   }
 
   getInputVariables() {
-    return Object.seal(this.inputVariables);
+    return Object.seal(this.inputVariables)
   }
 
   getOutputVariable() {
-    return this.outputVariable;
+    return this.outputVariable
   }
 
   getExecutionSettings() {
-    return Object.seal(this.executionSettings);
+    return Object.seal(this.executionSettings)
   }
 
   copy(): Builder {
-    return new Builder(this);
+    return new Builder(this)
   }
 }
 
 class Builder {
-  private schema: number;
-  private name: string | undefined;
-  private template: string | undefined;
+  private schema: number
+  private name: string | undefined
+  private template: string | undefined
 
-  private templateFormat: string;
+  private templateFormat: string
 
-  private promptTemplateOptions: Set<PromptTemplateOption>;
-  private description: string | undefined;
+  private promptTemplateOptions: Set<PromptTemplateOption>
+  private description: string | undefined
 
-  private inputVariables: InputVariable[];
+  private inputVariables: InputVariable[]
 
-  private outputVariable: OutputVariable<any>;
-  private executionSettings: Map<string, PromptExecutionSettings>;
+  private outputVariable: OutputVariable<any>
+  private executionSettings: ExecutionSettingsForService | undefined
 
-  constructor();
-  constructor(promptTemplateConfig: PromptTemplateConfig);
+  constructor()
+  constructor(promptTemplateConfig: PromptTemplateConfig)
   constructor(promptTemplateConfig?: PromptTemplateConfig) {
-    this.schema =
-      promptTemplateConfig?.getSchema() ?? PromptTemplateConfig.CURRENT_SCHEMA;
+    this.schema = promptTemplateConfig?.getSchema() ?? PromptTemplateConfig.CURRENT_SCHEMA
 
-    this.name = promptTemplateConfig?.getName();
+    this.name = promptTemplateConfig?.getName()
 
-    this.template = promptTemplateConfig?.getTemplate();
+    this.template = promptTemplateConfig?.getTemplate()
 
     this.templateFormat =
       promptTemplateConfig?.getTemplateFormat() ??
-      PromptTemplateConfig.SEMANTIC_KERNEL_TEMPLATE_FORMAT;
+      HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT
 
-    this.promptTemplateOptions =
-      promptTemplateConfig?.getPromptTemplateOptions() ?? new Set();
+    this.promptTemplateOptions = promptTemplateConfig?.getPromptTemplateOptions() ?? new Set()
 
-    this.description = promptTemplateConfig?.getDescription();
+    this.description = promptTemplateConfig?.getDescription()
 
-    this.inputVariables = Array.from(
-      promptTemplateConfig?.getInputVariables() ?? []
-    );
+    this.inputVariables = Array.from(promptTemplateConfig?.getInputVariables() ?? [])
 
-    this.outputVariable =
-      promptTemplateConfig?.getOutputVariable() ?? new OutputVariable<string>();
+    this.outputVariable = promptTemplateConfig?.getOutputVariable() ?? new OutputVariable<string>()
 
-    this.executionSettings = new Map(
-      promptTemplateConfig?.getExecutionSettings()
-    );
+    this.executionSettings = promptTemplateConfig?.getExecutionSettings()
   }
 
   /**
@@ -218,8 +221,8 @@ class Builder {
    * @return {@code this} builder
    */
   withName(name: string) {
-    this.name = name;
-    return this;
+    this.name = name
+    return this
   }
 
   /**
@@ -229,8 +232,8 @@ class Builder {
    * @return {@code this} builder
    */
   addInputVariable(inputVariable: InputVariable) {
-    this.inputVariables.push(inputVariable);
-    return this;
+    this.inputVariables.push(inputVariable)
+    return this
   }
 
   /**
@@ -240,8 +243,8 @@ class Builder {
    * @return {@code this} builder
    */
   withTemplate(template: string) {
-    this.template = template;
-    return this;
+    this.template = template
+    return this
   }
 
   /**
@@ -251,8 +254,8 @@ class Builder {
    * @return {@code this} builder
    */
   withDescription(description: string) {
-    this.description = description;
-    return this;
+    this.description = description
+    return this
   }
 
   /**
@@ -262,8 +265,8 @@ class Builder {
    * @return {@code this} builder
    */
   withTemplateFormat(templateFormat: string) {
-    this.templateFormat = templateFormat;
-    return this;
+    this.templateFormat = templateFormat
+    return this
   }
 
   /**
@@ -272,8 +275,8 @@ class Builder {
    * @return {@code this} builder.
    */
   addPromptTemplateOption(option: PromptTemplateOption) {
-    this.promptTemplateOptions.add(option);
-    return this;
+    this.promptTemplateOptions.add(option)
+    return this
   }
 
   /**
@@ -283,8 +286,8 @@ class Builder {
    * @return {@code this} builder
    */
   withInputVariables(inputVariables: InputVariable[]) {
-    this.inputVariables = Array.from(inputVariables);
-    return this;
+    this.inputVariables = Array.from(inputVariables)
+    return this
   }
 
   /**
@@ -294,8 +297,8 @@ class Builder {
    * @return {@code this} builder
    */
   withOutputVariable(outputVariable: OutputVariable<any>) {
-    this.outputVariable = outputVariable;
-    return this;
+    this.outputVariable = outputVariable
+    return this
   }
 
   /**
@@ -304,11 +307,9 @@ class Builder {
    * @param executionSettings The prompt execution settings of the prompt template config.
    * @return {@code this} builder
    */
-  withExecutionSettings(
-    executionSettings: Map<string, PromptExecutionSettings>
-  ) {
-    this.executionSettings = new Map(executionSettings);
-    return this;
+  withExecutionSettings(executionSettings: ExecutionSettingsForService) {
+    this.executionSettings = executionSettings
+    return this
   }
 
   /**
@@ -317,16 +318,16 @@ class Builder {
    * @return The prompt template config.
    */
   public build(): PromptTemplateConfig {
-    return new PromptTemplateConfig(
-      this.schema,
-      this.name,
-      this.template,
-      this.templateFormat,
-      this.promptTemplateOptions,
-      this.description,
-      this.inputVariables,
-      this.outputVariable,
-      this.executionSettings
-    );
+    return new PromptTemplateConfig({
+      schema: this.schema,
+      name: this.name,
+      template: this.template,
+      templateFormat: this.templateFormat,
+      promptTemplateOptions: this.promptTemplateOptions,
+      description: this.description,
+      inputVariables: this.inputVariables,
+      outputVariable: this.outputVariable,
+      executionSettings: this.executionSettings,
+    })
   }
 }

@@ -1,123 +1,122 @@
-import { JsonCreator } from "../decorators/JsonCreator";
-import { JsonProperty } from "../decorators/JsonProperty";
-import { clamp } from "../utils/clamp";
-import ResponseFormat from "./responseformat/ResponseFormat";
+import { JsonProperty } from "../decorators/JsonProperty"
+import { JsonCreator } from "../implementations/JsonCreator"
+import { clamp } from "../utils/clamp"
+import ResponseFormat from "./responseformat/ResponseFormat"
 
-@JsonCreator()
-class PromptExecutionSettings {
+class PromptExecutionSettings extends JsonCreator {
   /**
    * The default for ServiceID. Defaults to "default"
    */
-  static DEFAULT_SERVICE_ID = "default";
+  static DEFAULT_SERVICE_ID = "default"
 
-  static DEFAULT_MAX_TOKENS = 256;
+  static DEFAULT_MAX_TOKENS = 256
 
-  static DEFAULT_TEMPERATURE = 1.0;
+  static DEFAULT_TEMPERATURE = 1.0
 
-  static DEFAULT_TOP_P = 1.0;
+  static DEFAULT_TOP_P = 1.0
 
-  static DEFAULT_PRESENCE_PENALTY = 0.0;
+  static DEFAULT_PRESENCE_PENALTY = 0.0
 
-  static DEFAULT_FREQUENCY_PENALTY = 0.0;
+  static DEFAULT_FREQUENCY_PENALTY = 0.0
 
-  static DEFAULT_BEST_OF = 1;
+  static DEFAULT_BEST_OF = 1
 
-  static DEFAULT_RESULTS_PER_PROMPT = 1;
+  static DEFAULT_RESULTS_PER_PROMPT = 1
 
   //
   // Keys used as both @JsonProperty names and keys to the Builder's value map.
   //
-  private static SERVICE_ID_JSON_FIELD = "service_id";
-  private static MODEL_ID_JSON_FIELD = "model_id";
-  private static TEMPERATURE_JSON_FIELD = "temperature";
-  private static TOP_P_JSON_FIELD = "top_p";
-  private static PRESENCE_PENALTY_JSON_FIELD = "presence_penalty";
-  private static FREQUENCY_PENALTY_JSON_FIELD = "frequency_penalty";
-  private static MAX_TOKENS_JSON_FIELD = "max_tokens";
-  private static BEST_OF_JSON_FIELD = "best_of";
-  private static USER_JSON_FIELD = "user";
-  private static STOP_SEQUENCES_JSON_FIELD = "stop_sequences";
-  private static RESULTS_PER_PROMPT_JSON_FIELD = "results_per_prompt";
-  private static TOKEN_SELECTION_BIASES_JSON_FIELD = "token_selection_biases";
-  private static RESPONSE_FORMAT_JSON_FIELD = "response_format";
+  private static SERVICE_ID_JSON_FIELD = "service_id"
+  private static MODEL_ID_JSON_FIELD = "model_id"
+  private static TEMPERATURE_JSON_FIELD = "temperature"
+  private static TOP_P_JSON_FIELD = "top_p"
+  private static PRESENCE_PENALTY_JSON_FIELD = "presence_penalty"
+  private static FREQUENCY_PENALTY_JSON_FIELD = "frequency_penalty"
+  private static MAX_TOKENS_JSON_FIELD = "max_tokens"
+  private static BEST_OF_JSON_FIELD = "best_of"
+  private static USER_JSON_FIELD = "user"
+  private static STOP_SEQUENCES_JSON_FIELD = "stop_sequences"
+  private static RESULTS_PER_PROMPT_JSON_FIELD = "results_per_prompt"
+  private static TOKEN_SELECTION_BIASES_JSON_FIELD = "token_selection_biases"
+  private static RESPONSE_FORMAT_JSON_FIELD = "response_format"
 
   @JsonProperty({
     name: PromptExecutionSettings.SERVICE_ID_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_SERVICE_ID,
     required: true,
   })
-  private serviceId: string;
+  private serviceId: string
 
   @JsonProperty(PromptExecutionSettings.MODEL_ID_JSON_FIELD)
-  private modelId: string;
+  private modelId: string
 
   @JsonProperty({
     name: PromptExecutionSettings.TEMPERATURE_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_TEMPERATURE,
   })
-  private temperature: number;
+  private temperature: number
 
   @JsonProperty({
     name: PromptExecutionSettings.TOP_P_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_TOP_P,
   })
-  private topP: number;
+  private topP: number
 
   @JsonProperty({
     name: PromptExecutionSettings.PRESENCE_PENALTY_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_PRESENCE_PENALTY,
   })
-  private presencePenalty: number;
+  private presencePenalty: number
 
   @JsonProperty({
     name: PromptExecutionSettings.FREQUENCY_PENALTY_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_FREQUENCY_PENALTY,
     required: true,
   })
-  private frequencyPenalty: number;
+  private frequencyPenalty: number
 
   @JsonProperty({
     name: PromptExecutionSettings.MAX_TOKENS_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_MAX_TOKENS,
   })
-  private maxTokens: number;
+  private maxTokens: number
 
   @JsonProperty({
     name: PromptExecutionSettings.BEST_OF_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_BEST_OF,
   })
-  private bestOf: number;
+  private bestOf: number
 
   @JsonProperty({
     name: PromptExecutionSettings.RESULTS_PER_PROMPT_JSON_FIELD,
     defaultValue: PromptExecutionSettings.DEFAULT_RESULTS_PER_PROMPT,
   })
-  private resultsPerPrompt: number;
+  private resultsPerPrompt: number
 
   @JsonProperty(PromptExecutionSettings.USER_JSON_FIELD)
-  private user: string;
+  private user: string
 
   @JsonProperty({
     name: PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD,
     type() {
-      return Array;
+      return Array
     },
   })
-  private stopSequences: string[];
+  private stopSequences: string[]
 
   @JsonProperty({
     name: PromptExecutionSettings.TOKEN_SELECTION_BIASES_JSON_FIELD,
     type() {
-      return Object;
+      return Object
     },
   })
-  private tokenSelectionBiases: Record<number, number>;
+  private tokenSelectionBiases: Record<number, number>
 
   @JsonProperty({
     name: PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD,
     defaultValue: ResponseFormat.JSON_OBJECT,
   })
-  private responseFormat: ResponseFormat;
+  private responseFormat: ResponseFormat
 
   constructor(
     serviceId: string,
@@ -134,55 +133,49 @@ class PromptExecutionSettings {
     tokenSelectionBiases?: Record<number, number>,
     responseFormat?: ResponseFormat
   ) {
-    this.serviceId = serviceId ?? PromptExecutionSettings.DEFAULT_SERVICE_ID;
-    this.modelId = modelId ?? "";
-    this.temperature = clamp(
-      temperature || PromptExecutionSettings.DEFAULT_TEMPERATURE,
-      0,
-      2
-    );
-    this.topP = clamp(topP || PromptExecutionSettings.DEFAULT_TOP_P, 0, 1);
+    super()
+    this.serviceId = serviceId ?? PromptExecutionSettings.DEFAULT_SERVICE_ID
+    this.modelId = modelId ?? ""
+    this.temperature = clamp(temperature || PromptExecutionSettings.DEFAULT_TEMPERATURE, 0, 2)
+    this.topP = clamp(topP || PromptExecutionSettings.DEFAULT_TOP_P, 0, 1)
     this.presencePenalty = clamp(
       presencePenalty || PromptExecutionSettings.DEFAULT_PRESENCE_PENALTY,
       -2,
       2
-    );
+    )
     this.frequencyPenalty = clamp(
       frequencyPenalty || PromptExecutionSettings.DEFAULT_FREQUENCY_PENALTY,
       -2,
       2
-    );
+    )
     this.maxTokens = clamp(
       maxTokens || PromptExecutionSettings.DEFAULT_MAX_TOKENS,
       1,
       Number.MAX_VALUE
-    );
+    )
     this.resultsPerPrompt = clamp(
       resultsPerPrompt || PromptExecutionSettings.DEFAULT_RESULTS_PER_PROMPT,
       1,
       Number.MAX_VALUE
-    );
-    this.bestOf = clamp(
-      bestOf || PromptExecutionSettings.DEFAULT_BEST_OF,
-      1,
-      Number.MAX_VALUE
-    );
-    this.user = user ?? "";
-    this.stopSequences = stopSequences || [];
-    this.tokenSelectionBiases = tokenSelectionBiases || {};
-    this.tokenSelectionBiases = Object.entries(
-      this.tokenSelectionBiases
-    ).reduce((acc, [k, v]) => ({ ...acc, [k]: clamp(v, -100, 100) }), {});
+    )
+    this.bestOf = clamp(bestOf || PromptExecutionSettings.DEFAULT_BEST_OF, 1, Number.MAX_VALUE)
+    this.user = user ?? ""
+    this.stopSequences = stopSequences || []
+    this.tokenSelectionBiases = tokenSelectionBiases || {}
+    this.tokenSelectionBiases = Object.entries(this.tokenSelectionBiases).reduce(
+      (acc, [k, v]) => ({ ...acc, [k]: clamp(v, -100, 100) }),
+      {}
+    )
 
-    this.responseFormat = responseFormat || ResponseFormat.TEXT;
+    this.responseFormat = responseFormat || ResponseFormat.TEXT
   }
 
   getModelId(): string {
-    return this.modelId;
+    return this.modelId
   }
 
   getServiceId() {
-    return this.serviceId;
+    return this.serviceId
   }
 
   private static _Builder = {
@@ -195,11 +188,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withServiceId(serviceId: string) {
-      this.settings.set(
-        PromptExecutionSettings.SERVICE_ID_JSON_FIELD,
-        serviceId
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.SERVICE_ID_JSON_FIELD, serviceId)
+      return this
     },
 
     /**
@@ -209,8 +199,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withModelId(modelId: string) {
-      this.settings.set(PromptExecutionSettings.MODEL_ID_JSON_FIELD, modelId);
-      return this;
+      this.settings.set(PromptExecutionSettings.MODEL_ID_JSON_FIELD, modelId)
+      return this
     },
 
     /**
@@ -221,11 +211,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withTemperature(temperature: number) {
-      this.settings.set(
-        PromptExecutionSettings.TEMPERATURE_JSON_FIELD,
-        temperature
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.TEMPERATURE_JSON_FIELD, temperature)
+      return this
     },
 
     /**
@@ -236,8 +223,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withTopP(topP: number) {
-      this.settings.set(PromptExecutionSettings.TOP_P_JSON_FIELD, topP);
-      return this;
+      this.settings.set(PromptExecutionSettings.TOP_P_JSON_FIELD, topP)
+      return this
     },
 
     /**
@@ -248,11 +235,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withPresencePenalty(presencePenalty: number) {
-      this.settings.set(
-        PromptExecutionSettings.PRESENCE_PENALTY_JSON_FIELD,
-        presencePenalty
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.PRESENCE_PENALTY_JSON_FIELD, presencePenalty)
+      return this
     },
 
     /**
@@ -263,12 +247,9 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withFrequencyPenalty(frequencyPenalty: number) {
-      this.settings.set(
-        PromptExecutionSettings.FREQUENCY_PENALTY_JSON_FIELD,
-        frequencyPenalty
-      );
+      this.settings.set(PromptExecutionSettings.FREQUENCY_PENALTY_JSON_FIELD, frequencyPenalty)
 
-      return this;
+      return this
     },
 
     /**
@@ -279,11 +260,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withMaxTokens(maxTokens: number) {
-      this.settings.set(
-        PromptExecutionSettings.MAX_TOKENS_JSON_FIELD,
-        maxTokens
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.MAX_TOKENS_JSON_FIELD, maxTokens)
+      return this
     },
 
     /**
@@ -294,11 +272,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withResultsPerPrompt(resultsPerPrompt: number) {
-      this.settings.set(
-        PromptExecutionSettings.RESULTS_PER_PROMPT_JSON_FIELD,
-        resultsPerPrompt
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.RESULTS_PER_PROMPT_JSON_FIELD, resultsPerPrompt)
+      return this
     },
 
     /**
@@ -309,8 +284,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withBestOf(bestOf: number) {
-      this.settings.set(PromptExecutionSettings.BEST_OF_JSON_FIELD, bestOf);
-      return this;
+      this.settings.set(PromptExecutionSettings.BEST_OF_JSON_FIELD, bestOf)
+      return this
     },
 
     /**
@@ -320,8 +295,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withUser(user: string) {
-      this.settings.set(PromptExecutionSettings.USER_JSON_FIELD, user);
-      return this;
+      this.settings.set(PromptExecutionSettings.USER_JSON_FIELD, user)
+      return this
     },
 
     /**
@@ -331,11 +306,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withStopSequences(stopSequences: string[]) {
-      this.settings.set(
-        PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD,
-        stopSequences
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD, stopSequences)
+      return this
     },
 
     /**
@@ -349,8 +321,8 @@ class PromptExecutionSettings {
       this.settings.set(
         PromptExecutionSettings.TOKEN_SELECTION_BIASES_JSON_FIELD,
         tokenSelectionBiases
-      );
-      return this;
+      )
+      return this
     },
 
     /**
@@ -360,11 +332,8 @@ class PromptExecutionSettings {
      * @return This builder.
      */
     withResponseFormat(responseFormat: ResponseFormat) {
-      this.settings.set(
-        PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD,
-        responseFormat
-      );
-      return this;
+      this.settings.set(PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD, responseFormat)
+      return this
     },
 
     /**
@@ -378,8 +347,8 @@ class PromptExecutionSettings {
       this.settings.set(
         PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD,
         ResponseFormat.JSON_OBJECT
-      );
-      return this;
+      )
+      return this
     },
 
     build(): PromptExecutionSettings {
@@ -391,34 +360,27 @@ class PromptExecutionSettings {
           PromptExecutionSettings.DEFAULT_TEMPERATURE,
         this.settings.get(PromptExecutionSettings.TOP_P_JSON_FIELD) ??
           PromptExecutionSettings.DEFAULT_TOP_P,
-        this.settings.get(
-          PromptExecutionSettings.PRESENCE_PENALTY_JSON_FIELD
-        ) ?? PromptExecutionSettings.DEFAULT_PRESENCE_PENALTY,
-        this.settings.get(
-          PromptExecutionSettings.FREQUENCY_PENALTY_JSON_FIELD
-        ) ?? PromptExecutionSettings.DEFAULT_FREQUENCY_PENALTY,
+        this.settings.get(PromptExecutionSettings.PRESENCE_PENALTY_JSON_FIELD) ??
+          PromptExecutionSettings.DEFAULT_PRESENCE_PENALTY,
+        this.settings.get(PromptExecutionSettings.FREQUENCY_PENALTY_JSON_FIELD) ??
+          PromptExecutionSettings.DEFAULT_FREQUENCY_PENALTY,
         this.settings.get(PromptExecutionSettings.MAX_TOKENS_JSON_FIELD) ??
           PromptExecutionSettings.DEFAULT_MAX_TOKENS,
-        this.settings.get(
-          PromptExecutionSettings.RESULTS_PER_PROMPT_JSON_FIELD
-        ) ?? PromptExecutionSettings.DEFAULT_RESULTS_PER_PROMPT,
+        this.settings.get(PromptExecutionSettings.RESULTS_PER_PROMPT_JSON_FIELD) ??
+          PromptExecutionSettings.DEFAULT_RESULTS_PER_PROMPT,
         this.settings.get(PromptExecutionSettings.BEST_OF_JSON_FIELD) ??
           PromptExecutionSettings.DEFAULT_BEST_OF,
         this.settings.get(PromptExecutionSettings.USER_JSON_FIELD) ?? "",
-        this.settings.get(PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD) ??
-          [],
-        this.settings.get(
-          PromptExecutionSettings.TOKEN_SELECTION_BIASES_JSON_FIELD
-        ) ?? {},
-        this.settings.get(PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD) ??
-          ResponseFormat.TEXT
-      );
+        this.settings.get(PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD) ?? [],
+        this.settings.get(PromptExecutionSettings.TOKEN_SELECTION_BIASES_JSON_FIELD) ?? {},
+        this.settings.get(PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD) ?? ResponseFormat.TEXT
+      )
     },
-  };
+  }
 
   static Builder(): typeof PromptExecutionSettings._Builder {
-    return PromptExecutionSettings._Builder;
+    return PromptExecutionSettings._Builder
   }
 }
 
-export default PromptExecutionSettings;
+export default PromptExecutionSettings

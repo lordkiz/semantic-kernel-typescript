@@ -1,24 +1,24 @@
-import SemanticKernelBuilder from "../builders/SemanticKernelBuilder";
-import SKException from "../exceptions/SKException";
-import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior";
-import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks";
-import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry";
-import { InvocationReturnMode } from "./InvocationReturnMode";
-import PromptExecutionSettings from "./PromptExecutionSettings";
-import ToolCallBehavior from "./ToolCallBehavior";
+import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
+import SKException from "../exceptions/SKException"
+import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior"
+import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks"
+import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry"
+import { InvocationReturnMode } from "./InvocationReturnMode"
+import PromptExecutionSettings from "./PromptExecutionSettings"
+import ToolCallBehavior from "./ToolCallBehavior"
 
 export default class InvocationContext {
-  private hooks: UnmodifiableKernelHooks | undefined;
+  private hooks: UnmodifiableKernelHooks | undefined
 
-  private promptExecutionSettings: PromptExecutionSettings | undefined;
+  private promptExecutionSettings: PromptExecutionSettings | undefined
 
-  private toolCallBehavior: ToolCallBehavior | undefined;
+  private toolCallBehavior: ToolCallBehavior | undefined
 
-  private functionChoiceBehavior: FunctionChoiceBehavior | undefined;
+  private functionChoiceBehavior: FunctionChoiceBehavior | undefined
 
-  private telemetry: SemanticKernelTelemetry | undefined;
+  private telemetry: SemanticKernelTelemetry | undefined
 
-  private invocationReturnMode: InvocationReturnMode;
+  private invocationReturnMode: InvocationReturnMode
 
   constructor(
     hooks?: KernelHooks,
@@ -28,13 +28,12 @@ export default class InvocationContext {
     invocationReturnMode?: InvocationReturnMode,
     telemetry?: SemanticKernelTelemetry
   ) {
-    this.hooks = hooks;
-    this.promptExecutionSettings = promptExecutionSettings;
-    this.toolCallBehavior = toolCallBehavior;
-    this.functionChoiceBehavior = functionChoiceBehavior;
-    this.invocationReturnMode =
-      invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY;
-    this.telemetry = telemetry;
+    this.hooks = hooks
+    this.promptExecutionSettings = promptExecutionSettings
+    this.toolCallBehavior = toolCallBehavior
+    this.functionChoiceBehavior = functionChoiceBehavior
+    this.invocationReturnMode = invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY
+    this.telemetry = telemetry
   }
 
   static clone(invocationContext: InvocationContext): InvocationContext {
@@ -45,7 +44,7 @@ export default class InvocationContext {
       invocationContext.getFunctionChoiceBehavior(),
       invocationContext.invocationReturnMode,
       invocationContext.getTelemetry()
-    );
+    )
   }
 
   /**
@@ -59,67 +58,62 @@ export default class InvocationContext {
       .withKernelHooks(context.getKernelHooks())
       .withPromptExecutionSettings(context.getPromptExecutionSettings())
       .withToolCallBehavior(context.getToolCallBehavior())
-      .withTelemetry(context.getTelemetry());
+      .withTelemetry(context.getTelemetry())
   }
 
   clone(): InvocationContext {
-    return InvocationContext.clone(this);
+    return InvocationContext.clone(this)
   }
 
   getKernelHooks() {
-    return this.hooks;
+    return this.hooks
   }
 
   getPromptExecutionSettings() {
-    return this.promptExecutionSettings;
+    return this.promptExecutionSettings
   }
 
   getToolCallBehavior() {
-    return this.toolCallBehavior;
+    return this.toolCallBehavior
   }
 
   getFunctionChoiceBehavior() {
-    return this.functionChoiceBehavior;
+    return this.functionChoiceBehavior
   }
 
   returnMode() {
-    return this.invocationReturnMode;
+    return this.invocationReturnMode
   }
 
   getTelemetry() {
-    return this.telemetry;
+    return this.telemetry
   }
 
-  static unmodifiableClone(
-    kernelHooks?: KernelHooks
-  ): UnmodifiableKernelHooks | undefined {
+  static unmodifiableClone(kernelHooks?: KernelHooks): UnmodifiableKernelHooks | undefined {
     if (kernelHooks instanceof UnmodifiableKernelHooks) {
-      return kernelHooks;
-    } else if (!!kernelHooks) {
-      return kernelHooks.unmodifiableClone();
+      return kernelHooks
+    } else if (kernelHooks) {
+      return kernelHooks.unmodifiableClone()
     }
   }
 
   static Builder(): InvocationContextBuilder {
-    return new InvocationContextBuilder();
+    return new InvocationContextBuilder()
   }
 }
 
-class InvocationContextBuilder
-  implements SemanticKernelBuilder<InvocationContext>
-{
-  private hooks: UnmodifiableKernelHooks | undefined;
+class InvocationContextBuilder implements SemanticKernelBuilder<InvocationContext> {
+  private hooks: UnmodifiableKernelHooks | undefined
 
-  private promptExecutionSettings: PromptExecutionSettings | undefined;
+  private promptExecutionSettings: PromptExecutionSettings | undefined
 
-  private toolCallBehavior: ToolCallBehavior | undefined;
+  private toolCallBehavior: ToolCallBehavior | undefined
 
-  private functionChoiceBehavior: FunctionChoiceBehavior | undefined;
+  private functionChoiceBehavior: FunctionChoiceBehavior | undefined
 
-  private telemetry: SemanticKernelTelemetry | undefined;
+  private telemetry: SemanticKernelTelemetry | undefined
 
-  private invocationReturnMode: InvocationReturnMode =
-    InvocationReturnMode.NEW_MESSAGES_ONLY;
+  private invocationReturnMode: InvocationReturnMode = InvocationReturnMode.NEW_MESSAGES_ONLY
 
   /**
    * Add kernel hooks to the builder.
@@ -129,10 +123,10 @@ class InvocationContextBuilder
    */
   withKernelHooks(hooks?: KernelHooks) {
     if (!hooks) {
-      return this;
+      return this
     }
-    this.hooks = InvocationContext.unmodifiableClone(hooks);
-    return this;
+    this.hooks = InvocationContext.unmodifiableClone(hooks)
+    return this
   }
 
   /**
@@ -141,11 +135,9 @@ class InvocationContextBuilder
    * @param promptExecutionSettings the settings to add.
    * @return this {@link InvocationContextBuilder}
    */
-  withPromptExecutionSettings(
-    promptExecutionSettings?: PromptExecutionSettings
-  ) {
-    this.promptExecutionSettings = promptExecutionSettings;
-    return this;
+  withPromptExecutionSettings(promptExecutionSettings?: PromptExecutionSettings) {
+    this.promptExecutionSettings = promptExecutionSettings
+    return this
   }
 
   /**
@@ -156,12 +148,10 @@ class InvocationContextBuilder
    */
   withToolCallBehavior(toolCallBehavior?: ToolCallBehavior) {
     if (toolCallBehavior && this.functionChoiceBehavior) {
-      throw new SKException(
-        "ToolCallBehavior cannot be set when FunctionChoiceBehavior is set."
-      );
+      throw new SKException("ToolCallBehavior cannot be set when FunctionChoiceBehavior is set.")
     }
-    this.toolCallBehavior = toolCallBehavior;
-    return this;
+    this.toolCallBehavior = toolCallBehavior
+    return this
   }
 
   /**
@@ -172,12 +162,10 @@ class InvocationContextBuilder
    */
   withFunctionChoiceBehavior(functionChoiceBehavior: FunctionChoiceBehavior) {
     if (functionChoiceBehavior != null && this.toolCallBehavior != null) {
-      throw new SKException(
-        "FunctionChoiceBehavior cannot be set when ToolCallBehavior is set."
-      );
+      throw new SKException("FunctionChoiceBehavior cannot be set when ToolCallBehavior is set.")
     }
-    this.functionChoiceBehavior = functionChoiceBehavior;
-    return this;
+    this.functionChoiceBehavior = functionChoiceBehavior
+    return this
   }
 
   /**
@@ -189,8 +177,8 @@ class InvocationContextBuilder
    * @return this {@link InvocationContextBuilder}
    */
   withReturnMode(invocationReturnMode: InvocationReturnMode) {
-    this.invocationReturnMode = invocationReturnMode;
-    return this;
+    this.invocationReturnMode = invocationReturnMode
+    return this
   }
 
   /**
@@ -200,13 +188,13 @@ class InvocationContextBuilder
    * @return this {@link InvocationContextBuilder}
    */
   withTelemetry(telemetry?: SemanticKernelTelemetry) {
-    this.telemetry = telemetry;
-    return this;
+    this.telemetry = telemetry
+    return this
   }
 
   build(): InvocationContext {
-    if (!this.telemetry == null) {
-      this.telemetry = new SemanticKernelTelemetry();
+    if (!this.telemetry) {
+      this.telemetry = new SemanticKernelTelemetry()
     }
     return new InvocationContext(
       this.hooks,
@@ -215,6 +203,6 @@ class InvocationContextBuilder
       this.functionChoiceBehavior,
       this.invocationReturnMode,
       this.telemetry
-    );
+    )
   }
 }

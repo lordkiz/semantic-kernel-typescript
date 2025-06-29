@@ -1,15 +1,14 @@
-import { JsonCreator } from "../decorators/JsonCreator";
-import { JsonProperty } from "../decorators/JsonProperty";
+import { JsonProperty } from "../decorators/JsonProperty"
+import { JsonCreator } from "../implementations/JsonCreator"
 
 /**
  * Input parameter for semantic functions
  */
 
-@JsonCreator()
-class InputParameter {
-  @JsonProperty("name") private readonly name: string;
-  @JsonProperty("description") private readonly description: string;
-  @JsonProperty("defaultValue") private readonly defaultValue: string;
+class InputParameter extends JsonCreator {
+  @JsonProperty("name") private readonly name: string
+  @JsonProperty("description") private readonly description: string
+  @JsonProperty("defaultValue") private readonly defaultValue: string
 
   /**
    * Creates a new instance of the {@link InputParameter} class.
@@ -19,9 +18,9 @@ class InputParameter {
    * @param defaultValue default value of the parameter
    */
   public constructor(name: string, description: string, defaultValue: string) {
-    this.name = name;
-    this.description = description;
-    this.defaultValue = defaultValue;
+    this.name = name
+    this.description = description
+    this.defaultValue = defaultValue
   }
 
   /**
@@ -31,7 +30,7 @@ class InputParameter {
    * @return name
    */
   public getName() {
-    return this.name;
+    return this.name
   }
 
   /**
@@ -40,7 +39,7 @@ class InputParameter {
    * @return description
    */
   public getDescription() {
-    return this.description;
+    return this.description
   }
 
   /**
@@ -49,8 +48,8 @@ class InputParameter {
    * @return the default value
    */
   public getDefaultValue() {
-    return this.defaultValue;
+    return this.defaultValue
   }
 }
 
-export default InputParameter;
+export default InputParameter

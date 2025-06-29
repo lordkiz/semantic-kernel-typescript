@@ -1,17 +1,17 @@
-import { JsonCreator } from "../decorators/JsonCreator";
-import { JsonProperty } from "../decorators/JsonProperty";
+import { JsonProperty } from "../decorators/JsonProperty"
+import { JsonCreator } from "../implementations/JsonCreator"
 
 /**
  * Metadata for an input variable of a {@link KernelFunction}.
  */
 @JsonCreator()
 class InputVariable {
-  @JsonProperty("name") private readonly name: string;
-  @JsonProperty("type") private readonly type: string;
-  @JsonProperty("description") private readonly description: string | undefined;
-  @JsonProperty("default") private readonly defaultValue: string | undefined;
-  @JsonProperty("is_required") private readonly required: boolean;
-  @JsonProperty("enum") private readonly enumValues: any[] | undefined;
+  @JsonProperty("name") private readonly name: string
+  @JsonProperty("type") private readonly type: string
+  @JsonProperty("description") private readonly description: string | undefined
+  @JsonProperty("default") private readonly defaultValue: string | undefined
+  @JsonProperty("is_required") private readonly required: boolean
+  @JsonProperty("enum") private readonly enumValues: any[] | undefined
 
   /**
    * Creates a new instance of {@link InputVariable}.
@@ -31,21 +31,21 @@ class InputVariable {
     required?: boolean,
     enumValues?: any[]
   ) {
-    this.name = name;
-    this.description = description;
-    this.defaultValue = defaultValue;
-    this.required = !!required;
+    this.name = name
+    this.description = description
+    this.defaultValue = defaultValue
+    this.required = !!required
 
     if (!type) {
-      type = "string";
+      type = "string"
     }
 
-    this.type = type;
+    this.type = type
 
     if (!!enumValues) {
-      this.enumValues = Object.seal(enumValues);
+      this.enumValues = Object.seal(enumValues)
     } else {
-      this.enumValues = enumValues;
+      this.enumValues = enumValues
     }
   }
 
@@ -68,14 +68,7 @@ class InputVariable {
     required?: boolean,
     enumValues?: any[]
   ): InputVariable {
-    return new InputVariable(
-      name,
-      type,
-      description,
-      defaultValue,
-      required,
-      enumValues
-    );
+    return new InputVariable(name, type, description, defaultValue, required, enumValues)
   }
 
   /**
@@ -84,7 +77,7 @@ class InputVariable {
    * @return the name of the input variable
    */
   public getName() {
-    return this.name;
+    return this.name
   }
 
   /**
@@ -93,7 +86,7 @@ class InputVariable {
    * @return the description of the input variable
    */
   public getDescription() {
-    return this.description;
+    return this.description
   }
 
   /**
@@ -102,7 +95,7 @@ class InputVariable {
    * @return the default value of the input variable
    */
   public getDefaultValue() {
-    return this.defaultValue;
+    return this.defaultValue
   }
 
   /**
@@ -111,7 +104,7 @@ class InputVariable {
    * @return whether the input variable is required
    */
   public isRequired() {
-    return this.isRequired;
+    return this.isRequired
   }
 
   /**
@@ -120,7 +113,7 @@ class InputVariable {
    * @return the type of the input variable
    */
   public getType() {
-    return this.type;
+    return this.type
   }
 
   /**
@@ -138,8 +131,8 @@ class InputVariable {
    * @return the possible enum values of the input variable
    */
   public getEnumValues() {
-    return this.enumValues;
+    return this.enumValues
   }
 }
 
-export default InputVariable;
+export default InputVariable

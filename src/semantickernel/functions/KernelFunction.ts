@@ -1,61 +1,40 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
-import SKException from "../exceptions/SKException";
-import Kernel from "../Kernel";
-import FunctionResult from "../orchestration/FunctionResult";
-import InvocationContext from "../orchestration/InvocationContext";
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
-import DefaultOriginalInstance from "./DefaultOriginalInstance";
-import KernelArguments from "./KernelArguments";
-import KernelFunctionMetadata from "./KernelFunctionMetadata";
-import _ from "lodash";
+import _ from "lodash"
+import { lastValueFrom, Observable } from "rxjs"
+import SKException from "../exceptions/SKException"
+import Kernel from "../Kernel"
+import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
+import FunctionResult from "../orchestration/FunctionResult"
+import InvocationContext from "../orchestration/InvocationContext"
+import ContextVariable from "../variables/ContextVariable"
+import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants"
 import {
   KernelFunctionParameterMetadata,
   NO_DEFAULT_VALUE,
-} from "./decorators/KernelFunctionParameter";
-import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants";
-import ContextVariable from "../variables/ContextVariable";
-import { lastValueFrom, Observable } from "rxjs";
+} from "./decorators/KernelFunctionParameter"
+import KernelArguments from "./KernelArguments"
+import KernelFunctionMetadata from "./KernelFunctionMetadata"
 
 export default abstract class KernelFunction<T> {
-  private method: Function;
-  private readonly instance: InstanceType<any>;
-  private metadata: KernelFunctionMetadata<T>;
-  private executionSettings:
-    | CaseInsensitiveMap<PromptExecutionSettings>
-    | undefined;
+  private method: Function
+  private readonly instance: InstanceType<any> | undefined
+  private metadata: KernelFunctionMetadata<T>
+  private executionSettings: ExecutionSettingsForService | undefined
 
   constructor(
     method: Function,
     metadata: KernelFunctionMetadata<T>,
     instance?: InstanceType<any>,
-    executionSettings?:
-      | Map<string, PromptExecutionSettings>
-      | CaseInsensitiveMap<PromptExecutionSettings>
+    executionSettings?: ExecutionSettingsForService
   ) {
     if (!method.name) {
-      throw new SKException(
-        "Anonymous functions are not valid as Kernel Functions"
-      );
+      throw new SKException("Anonymous functions are not valid as Kernel Functions")
     }
 
-    this.method = method;
-    this.metadata = metadata;
-    this.executionSettings = new CaseInsensitiveMap<PromptExecutionSettings>();
+    this.method = method
+    this.metadata = metadata
+    this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
 
-    const hasInstance = !!instance;
-    if (!hasInstance) {
-      const _instance: InstanceType<any> = new DefaultOriginalInstance();
-      _instance[this.method.name] = this.method;
-      this.instance = _instance;
-    } else {
-      this.instance = instance;
-    }
-
-    if (executionSettings) {
-      this.executionSettings.putAll(
-        executionSettings as CaseInsensitiveMap<PromptExecutionSettings>
-      );
-    }
+    this.instance = instance
   }
 
   /**
@@ -63,7 +42,7 @@ export default abstract class KernelFunction<T> {
    * @return The name of the plugin that this function is within
    */
   public getPluginName() {
-    return this.metadata.getPluginName();
+    return this.metadata.getPluginName()
   }
 
   /**
@@ -71,7 +50,7 @@ export default abstract class KernelFunction<T> {
    * @return The name of this function
    */
   public getName() {
-    return this.metadata.getName();
+    return this.metadata.getName()
   }
 
   /**
@@ -79,7 +58,7 @@ export default abstract class KernelFunction<T> {
    * @return A description of the function
    */
   public getDescription() {
-    return this.metadata.getDescription();
+    return this.metadata.getDescription()
   }
 
   /**
@@ -87,16 +66,18 @@ export default abstract class KernelFunction<T> {
    * Note: Multiple Kernel Functions can reference the same instance
    * @returns A Proxy of the original instance
    */
-  getInstance() {
-    return new Proxy(_.cloneDeep(this.instance), {
-      apply(target, _thisArg, argumentsList) {
-        return new target(...argumentsList);
-      },
-    });
+  getInstance(): InstanceType<any> | undefined {
+    if (this.instance) {
+      return new Proxy<InstanceType<any>>(_.cloneDeep(this.instance), {
+        apply(target, _thisArg, argumentsList) {
+          return new target(...argumentsList)
+        },
+      })
+    }
   }
 
   getMethod() {
-    return this.method;
+    return this.method
   }
 
   /**
@@ -105,7 +86,7 @@ export default abstract class KernelFunction<T> {
    * @return An unmodifiable map of the execution settings for the function
    */
   public getExecutionSettings() {
-    return Object.seal(this.executionSettings);
+    return Object.seal(this.executionSettings)
   }
 
   /**
@@ -114,7 +95,7 @@ export default abstract class KernelFunction<T> {
    * @return The metadata for the function
    */
   public getMetadata() {
-    return this.metadata;
+    return this.metadata
   }
 
   getMethodParams(kernelArguments: KernelArguments): any[] {
@@ -123,9 +104,7 @@ export default abstract class KernelFunction<T> {
         KERNEL_FUNCTION_PARAMETER_METADATA_KEY,
         this.getInstance(),
         this.getMethod().name
-      ) ?? [];
-
-    console.log("methodParams", methodParams);
+      ) ?? []
 
     return methodParams
       .sort((a, b) => a.index - b.index)
@@ -134,16 +113,14 @@ export default abstract class KernelFunction<T> {
           kernelArguments?.get(p.name) ??
           (p.defaultValue !== NO_DEFAULT_VALUE
             ? ContextVariable.of<typeof p.type>(p.defaultValue)
-            : undefined);
+            : undefined)
 
-        const v = value ? value.getValue() : value;
+        const v = value ? value.getValue() : value
         if (p.required && v === undefined) {
-          throw new SKException(
-            `no value provided for required parameter ${p.name}`
-          );
+          throw new SKException(`no value provided for required parameter ${p.name}`)
         }
-        return v;
-      });
+        return v
+      })
   }
 
   /**
@@ -166,7 +143,7 @@ export default abstract class KernelFunction<T> {
    * and {@link Integer} which have pre-defined {@code ContextVariableType}s.
    * <p>
    * The {@link InvocationContext} allows for customization of the behavior of function, including
-   * the ability to pass in {@link KernelHooks} {@link PromptExecutionSettings}, and
+   * the ability to pass in {@link KernelHooks} {@link ExecutionSettingsForService}, and
    * {@link ToolCallBehavior}.
    * <p>
    * The difference between calling the {@code KernelFunction.invokeAsync} method directly and
@@ -187,7 +164,7 @@ export default abstract class KernelFunction<T> {
     kernel: Kernel,
     kernelArguments?: KernelArguments,
     invocationContext?: InvocationContext
-  ): Observable<FunctionResult<T>>;
+  ): Observable<FunctionResult<T>>
 
   async invoke(
     kernel: Kernel,
@@ -196,8 +173,8 @@ export default abstract class KernelFunction<T> {
   ): Promise<FunctionResult<T>> {
     const functionResult = lastValueFrom(
       this.invokeAsync(kernel, kernelArguments, invocationContext)
-    );
+    )
 
-    return functionResult;
+    return functionResult
   }
 }

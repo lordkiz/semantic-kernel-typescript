@@ -1,8 +1,6 @@
-import KernelFunctionFromMethod from "./KernelFunctionFromMethod";
-import KernelFunctionFromPrompt, {
-  FromPromptBuilder,
-} from "./KernelFunctionFromPrompt";
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig";
+import KernelFunctionFromMethod from "./KernelFunctionFromMethod"
+import KernelFunctionFromPrompt, { FromPromptBuilder } from "./KernelFunctionFromPrompt"
+import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
 
 export default class KernelFunctionFactory {
   /**
@@ -15,10 +13,8 @@ export default class KernelFunctionFactory {
    *               This should be {@code null} if and only if {@code method} is a static method.
    * @return The created {@link KernelFunction} wrapper for {@code method}.
    */
-  static createFromMethod<T>(method: Function, target: InstanceType<any>) {
-    return KernelFunctionFromMethod.Builder<T>()
-      .withMethod(method)
-      .withTarget(target);
+  static createFromMethod<T>(method: Function, target?: InstanceType<any>) {
+    return KernelFunctionFromMethod.Builder<T>().withMethod(method).withTarget(target)
   }
 
   /**
@@ -29,7 +25,7 @@ export default class KernelFunctionFactory {
    * @return The builder for creating a {@link KernelFunction} instance.
    */
   static createFromPrompt<T>(prompt: string): FromPromptBuilder<T> {
-    return KernelFunctionFromPrompt.Builder<T>().withTemplate(prompt);
+    return KernelFunctionFromPrompt.Builder<T>().withTemplate(prompt)
   }
 
   /**
@@ -45,6 +41,6 @@ export default class KernelFunctionFactory {
   ): FromPromptBuilder<T> {
     return KernelFunctionFromPrompt.Builder<T>().withPromptTemplateConfig(
       promptTemplateConfiguration
-    );
+    )
   }
 }

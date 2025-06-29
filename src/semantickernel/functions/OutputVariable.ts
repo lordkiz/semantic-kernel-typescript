@@ -1,15 +1,14 @@
-import { JsonCreator } from "../decorators/JsonCreator";
-import { JsonProperty } from "../decorators/JsonProperty";
+import { JsonProperty } from "../decorators/JsonProperty"
+import { JsonCreator } from "../implementations/JsonCreator"
 
 /**
  * Metadata for an output variable of a kernel function.
  * @param <T> The type of the output variable.
  */
-@JsonCreator()
-class OutputVariable<T> {
-  @JsonProperty("description") private readonly description: string | undefined;
+class OutputVariable<T> extends JsonCreator {
+  @JsonProperty("description") private readonly description: string | undefined
   @JsonProperty({ name: "type", defaultValue: "string" })
-  private readonly type: string | undefined;
+  private readonly type: string | undefined
   /**
    * Constructor.
    *
@@ -17,9 +16,10 @@ class OutputVariable<T> {
    * @param description The description of the output variable.
    */
   public constructor(type?: string, description?: string) {
-    this.description = description;
+    super()
+    this.description = description
 
-    this.type = type || "string";
+    this.type = type || "string"
   }
 
   /**
@@ -28,7 +28,7 @@ class OutputVariable<T> {
    * @return The description of the output variable.
    */
   public getDescription() {
-    return this.description;
+    return this.description
   }
 
   /**
@@ -41,4 +41,4 @@ class OutputVariable<T> {
   // }
 }
 
-export default OutputVariable;
+export default OutputVariable

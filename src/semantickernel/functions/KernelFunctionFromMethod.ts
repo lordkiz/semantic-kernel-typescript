@@ -1,25 +1,16 @@
-import KernelFunction from "./KernelFunction";
-import InvocationContext from "../orchestration/InvocationContext";
-import KernelArguments from "./KernelArguments";
-import Kernel from "../Kernel";
-import { Logger } from "../log/Logger";
-import KernelFunctionMetadata from "./KernelFunctionMetadata";
-import InputVariable from "./InputVariable";
-import OutputVariable from "./OutputVariable";
-import SKException from "../exceptions/SKException";
-import KernelHooks from "../hooks/KernelHooks";
-import {
-  FunctionInvokedEvent,
-  FunctionInvokingEvent,
-} from "../hooks/FnInvokeEvents";
-import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants";
-import FunctionResult from "../orchestration/FunctionResult";
-import { from, Observable } from "rxjs";
-import {
-  KernelFunctionParameterMetadata,
-  NO_DEFAULT_VALUE,
-} from "./decorators/KernelFunctionParameter";
-import ContextVariable from "../variables/ContextVariable";
+import { from, Observable } from "rxjs"
+import SKException from "../exceptions/SKException"
+import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
+import KernelHooks from "../hooks/KernelHooks"
+import Kernel from "../Kernel"
+import { Logger } from "../log/Logger"
+import FunctionResult from "../orchestration/FunctionResult"
+import InvocationContext from "../orchestration/InvocationContext"
+import InputVariable from "./InputVariable"
+import KernelArguments from "./KernelArguments"
+import KernelFunction from "./KernelFunction"
+import KernelFunctionMetadata from "./KernelFunctionMetadata"
+import OutputVariable from "./OutputVariable"
 
 /**
  * A {@link KernelFunction} that is created from a method. This class is used to create a
@@ -29,7 +20,7 @@ import ContextVariable from "../variables/ContextVariable";
  * @param <T> the return type of the function
  */
 export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
-  private LOGGER = Logger;
+  private LOGGER = Logger
 
   private constructor(
     method: Function,
@@ -49,7 +40,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
         returnParameter
       ),
       instance
-    );
+    )
   }
 
   /**
@@ -72,7 +63,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
     parameters?: InputVariable[],
     returnParameter?: OutputVariable<any>
   ): KernelFunction<T> {
-    const _pluginName = pluginName || `${target.constructor.name}Plugin`;
+    const _pluginName = pluginName || ""
 
     return new KernelFunctionFromMethod<T>(
       method,
@@ -81,7 +72,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
       description ?? "",
       parameters ?? [],
       returnParameter ?? new OutputVariable()
-    );
+    )
   }
 
   invokeAsync(
@@ -89,48 +80,37 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
     kernelArguments?: KernelArguments,
     invocationContext?: InvocationContext
   ): Observable<FunctionResult<T>> {
-    const context = invocationContext || new InvocationContext();
+    const context = invocationContext || new InvocationContext()
 
-    const kernelHooks = KernelHooks.merge(
-      kernel.getGlobalKernelHooks(),
-      context.getKernelHooks()
-    );
+    const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.getKernelHooks())
 
-    const updatedState = kernelHooks.executeHooks(
-      new FunctionInvokingEvent(this, kernelArguments)
-    );
-
-    console.log("updated state", updatedState.getArguments());
+    const updatedState = kernelHooks.executeHooks(new FunctionInvokingEvent(this, kernelArguments))
 
     const updatedArguments =
-      updatedState?.getArguments() ?? kernelArguments ?? new KernelArguments();
+      updatedState?.getArguments() ?? kernelArguments ?? new KernelArguments()
 
-    const instance = this.getInstance();
-    const fn = this.getMethod();
+    const instance = this.getInstance()
+    const fn = this.getMethod()
 
-    const params: any[] = this.getMethodParams(updatedArguments);
+    const params: any[] = this.getMethodParams(updatedArguments)
 
     const resolveResult = async (): Promise<FunctionResult<T>> => {
       // call function
-      const res: T = await instance[fn.name](...params);
+      const res: T = instance ? await instance[fn.name](...params) : fn(...params)
 
       // execute FunctionInvokedHook
       const updatedResult = kernelHooks.executeHooks(
-        new FunctionInvokedEvent(
-          this,
-          updatedArguments,
-          new FunctionResult(res)
-        )
-      );
+        new FunctionInvokedEvent(this, updatedArguments, new FunctionResult(res))
+      )
 
-      return updatedResult.getResult();
-    };
+      return updatedResult.getResult()
+    }
 
-    return from(resolveResult());
+    return from(resolveResult())
   }
 
   static Builder<T>(): KernelFunctionFromMethodBuilder<T> {
-    return new KernelFunctionFromMethodBuilder();
+    return new KernelFunctionFromMethodBuilder()
   }
 }
 
@@ -140,17 +120,17 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
  * @param <T> the return type of the function
  */
 class KernelFunctionFromMethodBuilder<T> {
-  private method: Function | undefined;
+  private method: Function | undefined
 
-  private target: InstanceType<any> | undefined;
+  private target: InstanceType<any> | undefined
 
-  private pluginName: string | undefined;
+  private pluginName: string | undefined
 
-  private description: string | undefined;
+  private description: string | undefined
 
-  private parameters: InputVariable[] | undefined;
+  private parameters: InputVariable[] | undefined
 
-  private returnParameter: OutputVariable<T> | undefined;
+  private returnParameter: OutputVariable<T> | undefined
 
   /**
    * Sets the method to use to build the function.
@@ -159,8 +139,8 @@ class KernelFunctionFromMethodBuilder<T> {
    * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
    */
   public withMethod(method: Function): KernelFunctionFromMethodBuilder<T> {
-    this.method = method;
-    return this;
+    this.method = method
+    return this
   }
 
   /**
@@ -169,9 +149,9 @@ class KernelFunctionFromMethodBuilder<T> {
    * @param target the target to use
    * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
    */
-  public withTarget(target: object): KernelFunctionFromMethodBuilder<T> {
-    this.target = target;
-    return this;
+  public withTarget(target?: InstanceType<any>): KernelFunctionFromMethodBuilder<T> {
+    this.target = target
+    return this
   }
 
   /**
@@ -180,11 +160,9 @@ class KernelFunctionFromMethodBuilder<T> {
    * @param pluginName the plugin name to use
    * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
    */
-  public withPluginName(
-    pluginName: string
-  ): KernelFunctionFromMethodBuilder<T> {
-    this.pluginName = pluginName;
-    return this;
+  public withPluginName(pluginName: string): KernelFunctionFromMethodBuilder<T> {
+    this.pluginName = pluginName
+    return this
   }
 
   /**
@@ -193,11 +171,9 @@ class KernelFunctionFromMethodBuilder<T> {
    * @param description the description to use
    * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
    */
-  public withDescription(
-    description: string
-  ): KernelFunctionFromMethodBuilder<T> {
-    this.description = description;
-    return this;
+  public withDescription(description: string): KernelFunctionFromMethodBuilder<T> {
+    this.description = description
+    return this
   }
 
   /**
@@ -206,11 +182,9 @@ class KernelFunctionFromMethodBuilder<T> {
    * @param parameters the parameters to use
    * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
    */
-  public withParameters(
-    parameters: InputVariable[]
-  ): KernelFunctionFromMethodBuilder<T> {
-    this.parameters = Array.from(parameters);
-    return this;
+  public withParameters(parameters: InputVariable[]): KernelFunctionFromMethodBuilder<T> {
+    this.parameters = Array.from(parameters)
+    return this
   }
 
   /**
@@ -222,8 +196,8 @@ class KernelFunctionFromMethodBuilder<T> {
   public withReturnParameter(
     returnParameter: OutputVariable<T>
   ): KernelFunctionFromMethodBuilder<T> {
-    this.returnParameter = returnParameter;
-    return this;
+    this.returnParameter = returnParameter
+    return this
   }
 
   /**
@@ -233,14 +207,12 @@ class KernelFunctionFromMethodBuilder<T> {
    */
   build(): KernelFunction<T> {
     if (!this.method) {
-      throw new SKException(
-        "To build a KernelFunctionFromMethod, a method must be provided"
-      );
+      throw new SKException("To build a KernelFunctionFromMethod, a method must be provided")
     }
 
-    if (!this.target) {
-      throw new SKException("To build a plugin object must be provided");
-    }
+    // if (!this.target) {
+    //   throw new SKException("To build a plugin object must be provided")
+    // }
 
     return KernelFunctionFromMethod.create(
       this.method,
@@ -249,6 +221,6 @@ class KernelFunctionFromMethodBuilder<T> {
       this.description,
       this.parameters,
       this.returnParameter
-    );
+    )
   }
 }
