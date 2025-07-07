@@ -113,7 +113,7 @@ class PromptExecutionSettings extends JsonCreator {
   private tokenSelectionBiases: Record<number, number>
 
   @JsonProperty({
-    name: PromptExecutionSettings.STOP_SEQUENCES_JSON_FIELD,
+    name: PromptExecutionSettings.RESPONSE_FORMAT_JSON_FIELD,
     defaultValue: ResponseFormat.JSON_OBJECT,
   })
   private responseFormat: ResponseFormat
@@ -176,6 +176,18 @@ class PromptExecutionSettings extends JsonCreator {
 
   getServiceId() {
     return this.serviceId
+  }
+
+  getTokenSelectionBiases() {
+    return this.tokenSelectionBiases
+  }
+
+  getResultsPerPrompt() {
+    return this.resultsPerPrompt
+  }
+
+  getResponseFormat() {
+    return this.responseFormat
   }
 
   private static _Builder = {

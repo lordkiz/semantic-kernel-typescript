@@ -17,3 +17,18 @@ export enum AuthorRole {
    */
   TOOL = "tool",
 }
+
+export const authorRoleFromString = (name: string): AuthorRole => {
+  switch (name) {
+    case "user":
+      return AuthorRole.USER
+    case "system":
+      return AuthorRole.SYSTEM
+    case "assistant":
+      return AuthorRole.ASSISTANT
+    case "tool":
+      return AuthorRole.TOOL
+    default:
+      throw new Error("unrecognized author role")
+  }
+}

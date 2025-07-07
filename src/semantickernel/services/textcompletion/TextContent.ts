@@ -1,11 +1,11 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata";
-import KernelContentImpl from "../KernelContentImpl";
+import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
+import KernelContentImpl from "../KernelContentImpl"
 
 /**
  * Content from a text completion service.
  */
 export default class TextContent extends KernelContentImpl<string> {
-  private readonly content: string;
+  private readonly content: string
 
   /**
    * Initializes a new instance of the {@code TextContent} class with a provided content, model
@@ -15,13 +15,9 @@ export default class TextContent extends KernelContentImpl<string> {
    * @param modelId  The model ID.
    * @param metadata The metadata.
    */
-  constructor(
-    content: string,
-    modelId: string,
-    metadata: FunctionResultMetadata<string>
-  ) {
-    super(content, modelId, metadata);
-    this.content = content;
+  constructor(content: string, modelId: string, metadata: FunctionResultMetadata<string>) {
+    super(content, modelId, metadata)
+    this.content = content
   }
 
   /**
@@ -30,10 +26,10 @@ export default class TextContent extends KernelContentImpl<string> {
    * @return The content.
    */
   public getValue() {
-    return this.content;
+    return this.content
   }
 
-  public getContent() {
-    return this.content;
+  override getContent() {
+    return this.content
   }
 }

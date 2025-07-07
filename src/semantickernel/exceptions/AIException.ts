@@ -1,6 +1,5 @@
-import { ErrorCode } from "./abstracts/ErrorCode";
-import SKErrorCodedException from "./SKErrorCodedException";
-import SKException from "./SKException";
+import { ErrorCode } from "./abstracts/ErrorCode"
+import SKErrorCodedException from "./SKErrorCodedException"
 
 enum AIErrorCodeEnum {
   "UNKNOWN_ERROR" = "UNKNOWN_ERROR",
@@ -28,20 +27,22 @@ const aiCodeToMessageMap: Record<AIErrorCodeEnum, string> = {
   MODEL_NOT_AVAILABLE: "the request model is not available",
   INVALID_CONFIGURATION: "the supplied configuration was invalid",
   FUNCTION_TYPE_NOT_SUPPORTED: "the function is not supported",
-};
+}
 
 export class AIErrorCode implements ErrorCode {
-  code: AIErrorCodeEnum;
+  code: AIErrorCodeEnum
 
   constructor(code: AIErrorCodeEnum) {
-    this.code = code;
+    this.code = code
   }
 
+  static CODE = AIErrorCodeEnum
+
   getMessage() {
-    return aiCodeToMessageMap[this.code];
+    return aiCodeToMessageMap[this.code]
   }
 }
 
 class AIException extends SKErrorCodedException<AIErrorCode> {}
 
-export default AIException;
+export default AIException

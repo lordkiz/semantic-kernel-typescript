@@ -5,9 +5,19 @@ export enum ChatMessageContentType {
   /**
    * The content is text
    */
-  TEXT = "TEXT",
+  TEXT = "text",
   /**
    * The content is an image
    */
-  IMAGE_URL = "IMAGE_URL",
+  IMAGE_URL = "image_url",
+
+  /**
+   * The content is an input_audio
+   */
+  INPUT_AUDIO = "input_audio",
+
+  /**
+   * The content is file
+   */
+  FILE = "file",
 }

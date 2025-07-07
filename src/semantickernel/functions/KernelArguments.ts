@@ -31,6 +31,15 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
     this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
   }
 
+  /**
+   * Create a copy of the current instance
+   *
+   * @return copy of the current instance
+   */
+  copy() {
+    return new KernelArguments(this.variables, this.executionSettings)
+  }
+
   getExecutionSettings() {
     return Object.seal(this.executionSettings)
   }

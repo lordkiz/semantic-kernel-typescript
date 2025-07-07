@@ -1,20 +1,20 @@
-import KernelFunction from "../functions/KernelFunction";
+import KernelFunction from "../functions/KernelFunction"
 
 /**
  * Defines the behavior of a tool call. Currently, the only tool available is function calling.
  */
 export default class ToolCallBehavior {
-  static DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS = 5;
-  static FUNCTION_NAME_SEPARATOR = "-";
+  static DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS = 5
+  static FUNCTION_NAME_SEPARATOR = "-"
 
-  private maximumAutoInvokeAttempts: number;
+  private maximumAutoInvokeAttempts: number
 
   constructor(
     maximumAutoInvokeAttempts:
       | number
       | undefined = ToolCallBehavior.DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS
   ) {
-    this.maximumAutoInvokeAttempts = maximumAutoInvokeAttempts;
+    this.maximumAutoInvokeAttempts = maximumAutoInvokeAttempts
   }
 
   /**
@@ -26,7 +26,7 @@ export default class ToolCallBehavior {
    * @return A new ToolCallBehavior instance with all kernel functions allowed.
    */
   static allowAllKernelFunctions(autoInvoke: boolean): ToolCallBehavior {
-    return new AllowedKernelFunctions(true, autoInvoke, []);
+    return new AllowedKernelFunctions(true, autoInvoke, [])
   }
 
   /**
@@ -37,11 +37,11 @@ export default class ToolCallBehavior {
    * @return A new ToolCallBehavior instance with the required function.
    */
   static requireKernelFunction(fn: KernelFunction<any>): ToolCallBehavior {
-    return new RequiredKernelFunction(fn);
+    return new RequiredKernelFunction(fn)
   }
 
   static formFullFunctionName(pluginName: string, functionName: string) {
-    return `${pluginName}${ToolCallBehavior.FUNCTION_NAME_SEPARATOR},${functionName}`;
+    return `${pluginName}${ToolCallBehavior.FUNCTION_NAME_SEPARATOR}${functionName}`
   }
 
   /**
@@ -59,7 +59,7 @@ export default class ToolCallBehavior {
     autoInvoke: boolean,
     functions: KernelFunction<any>[]
   ): ToolCallBehavior {
-    return new AllowedKernelFunctions(false, autoInvoke, functions);
+    return new AllowedKernelFunctions(false, autoInvoke, functions)
   }
 
   /**
@@ -68,7 +68,7 @@ export default class ToolCallBehavior {
    * @return Whether auto-invocation is enabled.
    */
   isAutoInvokeAllowed() {
-    return this.maximumAutoInvokeAttempts > 0;
+    return this.maximumAutoInvokeAttempts > 0
   }
 
   /**
@@ -77,7 +77,7 @@ export default class ToolCallBehavior {
    * @return The maximum number of attempts.
    */
   getMaximumAutoInvokeAttempts() {
-    return this.maximumAutoInvokeAttempts;
+    return this.maximumAutoInvokeAttempts
   }
 }
 
@@ -87,7 +87,7 @@ export default class ToolCallBehavior {
  * Only one function can be required.
  */
 export class RequiredKernelFunction extends ToolCallBehavior {
-  private requiredFunction: KernelFunction<any>;
+  private requiredFunction: KernelFunction<any>
 
   /**
    * Create a new instance of RequiredKernelFunction.
@@ -95,8 +95,8 @@ export class RequiredKernelFunction extends ToolCallBehavior {
    * @param requiredFunction The function that is required.
    */
   constructor(requiredFunction: KernelFunction<any>) {
-    super(1);
-    this.requiredFunction = requiredFunction;
+    super(1)
+    this.requiredFunction = requiredFunction
   }
 
   /**
@@ -104,7 +104,7 @@ export class RequiredKernelFunction extends ToolCallBehavior {
    * @return the required function.
    */
   getRequiredFunction() {
-    return this.requiredFunction;
+    return this.requiredFunction
   }
 }
 
@@ -115,30 +115,23 @@ export class RequiredKernelFunction extends ToolCallBehavior {
  * If a function is allowed, it may be called. If it is not allowed, it will not be called.
  */
 export class AllowedKernelFunctions extends ToolCallBehavior {
-  private allowedFunctions: Set<string>;
-  private allKernelFunctionsAllowed: boolean;
+  private allowedFunctions: Set<string>
+  private allKernelFunctionsAllowed: boolean
 
   constructor(
     allKernelFunctionsAllowed: boolean,
     autoInvoke: boolean,
     allowedFunctions: KernelFunction<unknown>[]
   ) {
-    super(
-      autoInvoke
-        ? AllowedKernelFunctions.DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS
-        : 0
-    );
+    super(autoInvoke ? AllowedKernelFunctions.DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS : 0)
 
-    this.allKernelFunctionsAllowed = allKernelFunctionsAllowed;
-    this.allowedFunctions = new Set<string>();
+    this.allKernelFunctionsAllowed = allKernelFunctionsAllowed
+    this.allowedFunctions = new Set<string>()
 
     for (const fn of allowedFunctions) {
       this.allowedFunctions.add(
-        AllowedKernelFunctions.formFullFunctionName(
-          fn.getPluginName(),
-          fn.getName()
-        )
-      );
+        AllowedKernelFunctions.formFullFunctionName(fn.getPluginName(), fn.getName())
+      )
     }
   }
 
@@ -149,7 +142,7 @@ export class AllowedKernelFunctions extends ToolCallBehavior {
    * @return Whether the function is allowed.
    */
   isKernelFunctionAllowed(fn: KernelFunction<any>) {
-    return this.isFunctionAllowed(fn.getPluginName(), fn.getName());
+    return this.isFunctionAllowed(fn.getPluginName(), fn.getName())
   }
 
   /**
@@ -160,11 +153,8 @@ export class AllowedKernelFunctions extends ToolCallBehavior {
    * @return Whether the function is allowed.
    */
   isFunctionAllowed(pluginName: string, functionName: string) {
-    const key = AllowedKernelFunctions.formFullFunctionName(
-      pluginName,
-      functionName
-    );
-    return this.allowedFunctions.has(key);
+    const key = AllowedKernelFunctions.formFullFunctionName(pluginName, functionName)
+    return this.allowedFunctions.has(key)
   }
 
   /**
@@ -173,6 +163,6 @@ export class AllowedKernelFunctions extends ToolCallBehavior {
    * @return Whether all kernel functions are allowed.
    */
   isAllKernelFunctionsAllowed() {
-    return this.allKernelFunctionsAllowed;
+    return this.allKernelFunctionsAllowed
   }
 }

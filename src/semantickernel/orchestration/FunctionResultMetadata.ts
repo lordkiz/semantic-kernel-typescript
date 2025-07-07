@@ -1,55 +1,60 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
-import { IDTagged } from "../ds/IDTagged";
-import KernelArguments from "../functions/KernelArguments";
+import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
+import KernelArguments from "../functions/KernelArguments"
 
 export default class FunctionResultMetadata<UsageType> {
   /**
    * The key for id metadata.
    */
-  static ID: string = "id";
+  static ID: string = "id"
   /**
    * The key for usage metadata.
    */
-  static USAGE: string = "usage";
+  static USAGE: string = "usage"
 
   /**
    * The key for createdAt metadata.
    */
-  static CREATED_AT = "createdAt";
+  static CREATED_AT = "createdAt"
 
-  private metadata: CaseInsensitiveMap<KernelArguments>;
+  private metadata: CaseInsensitiveMap<KernelArguments>
 
-  constructor();
-  constructor(metadata: CaseInsensitiveMap<KernelArguments>);
+  constructor()
+  constructor(metadata: CaseInsensitiveMap<KernelArguments>)
   constructor(metadata?: CaseInsensitiveMap<KernelArguments>) {
-    this.metadata = new CaseInsensitiveMap(metadata!!);
+    this.metadata = new CaseInsensitiveMap(metadata!)
   }
 
-  static build<UsageType>(id: string): FunctionResultMetadata<UsageType>;
+  static build<UsageType>(id: string): FunctionResultMetadata<UsageType>
+  static build<UsageType>(id: string, usage?: UsageType): FunctionResultMetadata<UsageType>
+  static build<UsageType>(
+    id: string,
+    usage: UsageType,
+    createdAt: number
+  ): FunctionResultMetadata<UsageType>
   static build<UsageType>(
     id: string,
     usage?: UsageType,
-    createdAt?: Date
+    createdAt?: number
   ): FunctionResultMetadata<UsageType> {
-    const metadata = new CaseInsensitiveMap<KernelArguments>();
+    const metadata = new CaseInsensitiveMap<KernelArguments>()
     metadata.put(
       FunctionResultMetadata.ID,
       new KernelArguments().set(FunctionResultMetadata.ID, id)
-    );
+    )
     if (usage) {
       metadata.put(
         FunctionResultMetadata.USAGE,
         new KernelArguments().set(FunctionResultMetadata.USAGE, usage)
-      );
+      )
     }
     if (createdAt) {
       metadata.put(
         FunctionResultMetadata.CREATED_AT,
         new KernelArguments().set(FunctionResultMetadata.CREATED_AT, createdAt)
-      );
+      )
     }
 
-    return new FunctionResultMetadata<UsageType>(metadata);
+    return new FunctionResultMetadata<UsageType>(metadata)
   }
 
   /**
@@ -58,7 +63,7 @@ export default class FunctionResultMetadata<UsageType> {
    * @return A new instance of FunctionResultMetadata.
    */
   static empty<UsageType>(): FunctionResultMetadata<UsageType> {
-    return new FunctionResultMetadata<UsageType>(new CaseInsensitiveMap());
+    return new FunctionResultMetadata<UsageType>(new CaseInsensitiveMap())
   }
 
   /**
@@ -67,7 +72,7 @@ export default class FunctionResultMetadata<UsageType> {
    * @return The metadata about the result of the function invocation.
    */
   getMetadata() {
-    return new CaseInsensitiveMap(this.metadata);
+    return new CaseInsensitiveMap(this.metadata)
   }
 
   /**
@@ -76,11 +81,8 @@ export default class FunctionResultMetadata<UsageType> {
    * @return The id of the result of the function invocation.
    */
   getId() {
-    const id = this.metadata.getOrDefault(
-      FunctionResultMetadata.ID,
-      new KernelArguments()
-    );
-    return id.get(FunctionResultMetadata.ID) as string | undefined;
+    const id = this.metadata.getOrDefault(FunctionResultMetadata.ID, new KernelArguments())
+    return id.get(FunctionResultMetadata.ID) as string | undefined
   }
 
   /**
@@ -89,11 +91,8 @@ export default class FunctionResultMetadata<UsageType> {
    * @return The usage of the result of the function invocation.
    */
   getUsage(): UsageType | undefined {
-    const usage = this.metadata.getOrDefault(
-      FunctionResultMetadata.USAGE,
-      new KernelArguments()
-    );
-    return usage.get(FunctionResultMetadata.USAGE) as UsageType | undefined;
+    const usage = this.metadata.getOrDefault(FunctionResultMetadata.USAGE, new KernelArguments())
+    return usage.get(FunctionResultMetadata.USAGE) as UsageType | undefined
   }
 
   /**
@@ -101,11 +100,11 @@ export default class FunctionResultMetadata<UsageType> {
    *
    * @return The time the result was created.
    */
-  getCreatedAt(): Date | undefined {
+  getCreatedAt(): number | undefined {
     const date = this.metadata.getOrDefault(
       FunctionResultMetadata.CREATED_AT,
       new KernelArguments()
-    );
-    return date.get(FunctionResultMetadata.CREATED_AT) as Date | undefined;
+    )
+    return date.get(FunctionResultMetadata.CREATED_AT) as number | undefined
   }
 }

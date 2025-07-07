@@ -1,37 +1,31 @@
-import KernelFunction from "../functions/KernelFunction";
-import AutoFunctionChoiceBehavior from "./AutoFunctionChoiceBehavior";
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions";
-import NoneFunctionChoiceBehavior from "./NoneFunctionChoiceBehavior";
-import RequiredFunctionChoiceBehavior from "./RequiredFunctionChoiceBehavior";
+import KernelFunction from "../functions/KernelFunction"
+import AutoFunctionChoiceBehavior from "./AutoFunctionChoiceBehavior"
+import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
+import NoneFunctionChoiceBehavior from "./NoneFunctionChoiceBehavior"
+import RequiredFunctionChoiceBehavior from "./RequiredFunctionChoiceBehavior"
 
 /**
  * Defines the behavior of a tool call. Currently, the only tool available is function calling.
  */
 export default abstract class FunctionChoiceBehavior {
-  private fullFunctionNames: Set<String>;
+  private fullFunctionNames: Set<string>
 
-  protected fns: KernelFunction<any>[];
-  protected options: FunctionChoiceBehaviorOptions;
+  protected fns: KernelFunction<any>[]
+  protected options: FunctionChoiceBehaviorOptions
 
-  constructor(
-    fns?: KernelFunction<any>[],
-    options?: FunctionChoiceBehaviorOptions
-  ) {
-    this.fns = fns || [];
-    this.fullFunctionNames = new Set<string>();
+  constructor(fns?: KernelFunction<any>[], options?: FunctionChoiceBehaviorOptions) {
+    this.fns = fns || []
+    this.fullFunctionNames = new Set<string>()
 
     this.fns.forEach((fn) => {
       if (fn) {
         this.fullFunctionNames.add(
-          FunctionChoiceBehavior.formFullFunctionName(
-            fn.getPluginName(),
-            fn.getName()
-          )
-        );
+          FunctionChoiceBehavior.formFullFunctionName(fn.getPluginName(), fn.getName())
+        )
       }
-    });
+    })
 
-    this.options = options || FunctionChoiceBehaviorOptions.builder().build();
+    this.options = options || FunctionChoiceBehaviorOptions.builder().build()
   }
 
   /**
@@ -40,7 +34,7 @@ export default abstract class FunctionChoiceBehavior {
    * @return The functions that are allowed.
    */
   getFunctions() {
-    return Object.seal(this.fns);
+    return Object.seal(this.fns)
   }
 
   /**
@@ -49,7 +43,7 @@ export default abstract class FunctionChoiceBehavior {
    * @return The options for the function choice behavior.
    */
   getOptions() {
-    return this.options;
+    return this.options
   }
 
   /**
@@ -59,7 +53,7 @@ export default abstract class FunctionChoiceBehavior {
    *
    * @return A new ToolCallBehavior instance with all kernel functions allowed.
    */
-  static auto(autoInvoke: boolean): AutoFunctionChoiceBehavior;
+  static auto(autoInvoke: boolean): AutoFunctionChoiceBehavior
 
   /**
    * Gets an instance of the FunctionChoiceBehavior that provides either all the Kernel's plugins functions to the AI model to call or specific functions.
@@ -72,10 +66,7 @@ export default abstract class FunctionChoiceBehavior {
    *
    * @return A new FunctionChoiceBehavior instance with all kernel functions allowed.
    */
-  static auto(
-    autoInvoke: boolean,
-    fns?: KernelFunction<any>[]
-  ): AutoFunctionChoiceBehavior;
+  static auto(autoInvoke: boolean, fns?: KernelFunction<any>[]): AutoFunctionChoiceBehavior
 
   /**
    * Gets an instance of the FunctionChoiceBehavior that provides either all the Kernel's plugins functions to the AI model to call or specific functions.
@@ -94,7 +85,7 @@ export default abstract class FunctionChoiceBehavior {
     fns?: KernelFunction<any>[],
     options?: FunctionChoiceBehaviorOptions
   ) {
-    return new AutoFunctionChoiceBehavior(autoInvoke, fns, options);
+    return new AutoFunctionChoiceBehavior(autoInvoke, fns, options)
   }
 
   /**
@@ -106,10 +97,7 @@ export default abstract class FunctionChoiceBehavior {
    *
    * @return A new FunctionChoiceBehavior instance with the required function.
    */
-  static required(
-    autoInvoke: boolean,
-    fns: KernelFunction<any>[]
-  ): RequiredFunctionChoiceBehavior;
+  static required(autoInvoke: boolean, fns: KernelFunction<any>[]): RequiredFunctionChoiceBehavior
 
   /**
    * Gets an instance of the FunctionChoiceBehavior that provides either all the Kernel's plugins functions to the AI model to call or specific functions.
@@ -127,7 +115,7 @@ export default abstract class FunctionChoiceBehavior {
     fns?: KernelFunction<any>[],
     options?: FunctionChoiceBehaviorOptions
   ) {
-    return new RequiredFunctionChoiceBehavior(autoInvoke, fns, options);
+    return new RequiredFunctionChoiceBehavior(autoInvoke, fns, options)
   }
 
   /**
@@ -135,7 +123,7 @@ export default abstract class FunctionChoiceBehavior {
    * <p>
    * This behavior is useful if the user should first validate what functions the model will use.
    */
-  static none(): NoneFunctionChoiceBehavior;
+  static none(): NoneFunctionChoiceBehavior
 
   /**
    * Gets an instance of the FunctionChoiceBehavior that provides either all the Kernel's plugins functions to the AI model to call or specific functions.
@@ -145,11 +133,8 @@ export default abstract class FunctionChoiceBehavior {
    * @param functions Functions to provide to the model. If null, all the Kernel's plugins' functions are provided to the model.
    *                  If empty, no functions are provided to the model, which is equivalent to disabling function calling.
    */
-  static none(
-    fns?: KernelFunction<any>[],
-    options?: FunctionChoiceBehaviorOptions
-  ) {
-    return new NoneFunctionChoiceBehavior(fns, options);
+  static none(fns?: KernelFunction<any>[], options?: FunctionChoiceBehaviorOptions) {
+    return new NoneFunctionChoiceBehavior(fns, options)
   }
 
   /**
@@ -159,11 +144,8 @@ export default abstract class FunctionChoiceBehavior {
    * @param functionName The name of the function.
    * @return The key for the function.
    */
-  static formFullFunctionName(
-    pluginName: string,
-    functionName: string
-  ): string {
-    return `${pluginName}-${functionName}`;
+  static formFullFunctionName(pluginName: string, functionName: string): string {
+    return `${pluginName}-${functionName}`
   }
 
   /**
@@ -173,7 +155,7 @@ export default abstract class FunctionChoiceBehavior {
    * @return Whether the function is allowed.
    */
   isKernelFunctionAllowed(fn: KernelFunction<any>) {
-    return this.isFunctionAllowed(fn.getPluginName(), fn.getName());
+    return this.isFunctionAllowed(fn.getPluginName(), fn.getName())
   }
 
   /**
@@ -184,10 +166,7 @@ export default abstract class FunctionChoiceBehavior {
    * @return Whether the function is allowed.
    */
   isFunctionAllowed(pluginName: string, functionName: string) {
-    const key = FunctionChoiceBehavior.formFullFunctionName(
-      pluginName,
-      functionName
-    );
-    return this.fullFunctionNames.has(key);
+    const key = FunctionChoiceBehavior.formFullFunctionName(pluginName, functionName)
+    return this.fullFunctionNames.has(key)
   }
 }

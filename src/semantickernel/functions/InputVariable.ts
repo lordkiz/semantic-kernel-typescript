@@ -4,14 +4,14 @@ import { JsonCreator } from "../implementations/JsonCreator"
 /**
  * Metadata for an input variable of a {@link KernelFunction}.
  */
-@JsonCreator()
-class InputVariable {
-  @JsonProperty("name") private readonly name: string
-  @JsonProperty("type") private readonly type: string
-  @JsonProperty("description") private readonly description: string | undefined
-  @JsonProperty("default") private readonly defaultValue: string | undefined
-  @JsonProperty("is_required") private readonly required: boolean
-  @JsonProperty("enum") private readonly enumValues: any[] | undefined
+class InputVariable extends JsonCreator {
+  @JsonProperty("name") private name: string
+  @JsonProperty("type") private type: string
+  @JsonProperty("description") private description: string | undefined
+  @JsonProperty("default") private defaultValue: string | undefined
+  @JsonProperty("is_required") private required: boolean
+  @JsonProperty("enum") private enumValues: any[] | undefined
+  private inputVariables: InputVariable[] | undefined
 
   /**
    * Creates a new instance of {@link InputVariable}.
@@ -22,6 +22,7 @@ class InputVariable {
    * @param defaultValue the default value of the input variable
    * @param isRequired   whether the input variable is required
    * @param enumValues   the enum values of the input variable
+   * @param inputVariables  nested input variables
    */
   public constructor(
     name: string,
@@ -29,8 +30,10 @@ class InputVariable {
     description?: string,
     defaultValue?: string,
     required?: boolean,
-    enumValues?: any[]
+    enumValues?: any[],
+    inputVariables?: InputVariable[]
   ) {
+    super()
     this.name = name
     this.description = description
     this.defaultValue = defaultValue
@@ -42,11 +45,9 @@ class InputVariable {
 
     this.type = type
 
-    if (!!enumValues) {
-      this.enumValues = Object.seal(enumValues)
-    } else {
-      this.enumValues = enumValues
-    }
+    this.enumValues = enumValues ? Object.seal(enumValues) : enumValues
+
+    this.inputVariables = inputVariables
   }
 
   /**
@@ -104,7 +105,7 @@ class InputVariable {
    * @return whether the input variable is required
    */
   public isRequired() {
-    return this.isRequired
+    return this.required
   }
 
   /**
@@ -132,6 +133,60 @@ class InputVariable {
    */
   public getEnumValues() {
     return this.enumValues
+  }
+
+  addInputVariable(inputVariable: InputVariable) {
+    this.inputVariables = [...(this.inputVariables ?? []), inputVariable]
+    return this
+  }
+
+  toJsonSchema() {
+    const jSchema = this._toJsonSchema({})
+
+    return jSchema
+  }
+
+  private _toJsonSchema(initial: Record<string, any>): Record<string, any> {
+    const res: Record<string, any> = {
+      ...initial,
+      type: this.getType(),
+      name: this.getName(),
+      description: this.getDescription(),
+      properties: {},
+      enum: this.getEnumValues(),
+    }
+
+    const required = []
+
+    let i = 0
+    const ivs = this.inputVariables ?? []
+    const l = ivs.length
+
+    while (i < l) {
+      const variable = ivs[i]
+
+      if (variable.isRequired()) {
+        required.push(variable.getName())
+      }
+
+      const schema = variable._toJsonSchema(res)
+      const { name, ...restOfSchema } = schema
+
+      res.properties[name] = restOfSchema
+      i++
+    }
+
+    if (required.length) {
+      res.required = required
+    }
+
+    const { properties, ...restRes } = res
+
+    if (Object.keys(properties).length === 0) {
+      return restRes
+    }
+
+    return res
   }
 }
 
