@@ -125,17 +125,6 @@ export default abstract class KernelFunction<T> {
 
   /**
    * Invokes this KernelFunction.
-   *
-   * @param kernel The Kernel containing services, plugins, and other state for use throughout the
-   *               operation.
-   * @return The result of the function's execution.
-   */
-  // abstract invokeAsync(kernel: Kernel) {
-  //   return new FunctionInvocation(kernel, this);
-  // }
-
-  /**
-   * Invokes this KernelFunction.
    * <p>
    * If the {@code variableType} parameter is provided, the {@link ContextVariableType} is used to
    * convert the result of the function to the appropriate {@link FunctionResult}. The

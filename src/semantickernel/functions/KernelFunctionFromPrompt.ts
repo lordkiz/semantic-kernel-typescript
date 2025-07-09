@@ -131,7 +131,6 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
           result = client
             .getChatMessageContentsAsync(prompt, kernel, contextWithExecutionSettings)
             .pipe(
-              last(),
               map((chatMessageContent) => {
                 const fnRes = new FunctionResult(chatMessageContent) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
@@ -148,7 +147,6 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
               contextWithExecutionSettings.getPromptExecutionSettings()
             )
             .pipe(
-              last(),
               map((textContent) => {
                 const fnRes = new FunctionResult(textContent) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(

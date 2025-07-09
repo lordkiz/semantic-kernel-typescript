@@ -80,7 +80,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
     kernelArguments?: KernelArguments,
     invocationContext?: InvocationContext
   ): Observable<FunctionResult<T>> {
-    const context = invocationContext || new InvocationContext()
+    const context = invocationContext || InvocationContext.Builder().build()
 
     const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.getKernelHooks())
 
@@ -96,7 +96,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
 
     const resolveResult = async (): Promise<FunctionResult<T>> => {
       // call function
-      const res: T = instance ? await instance[fn.name](...params) : fn(...params)
+      const res: T = instance ? await instance[fn.name](...params) : await fn(...params)
 
       // execute FunctionInvokedHook
       const updatedResult = kernelHooks.executeHooks(
