@@ -57,6 +57,7 @@ import ChatHistory from "../../../semantickernel/services/chatcompletion/ChatHis
 import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
 import { ChatMessageContentType } from "../../../semantickernel/services/chatcompletion/message/ChatMessageContentType"
 import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
+import { OpenAiServiceBuilder } from "../../../semantickernel/services/openai/OpenAiServiceBuilder"
 import { TextAIService } from "../../../semantickernel/services/types/TextAIService"
 import { OpenAIService } from "../OpenAIService"
 import ChatMessages from "./ChatMessages"
@@ -416,6 +417,58 @@ export default class OpenAIChatCompletion
     })
   }
 
+  static formAssistantMessage(
+    message: ChatMessageContent<any>,
+    content?: string
+  ): ChatCompletionAssistantMessageParam {
+    const assistantMessage: ChatCompletionAssistantMessageParam = { role: "assistant", content }
+    const toolCalls = FunctionCallContent.getFunctionTools(message)
+
+    if (toolCalls) {
+      assistantMessage.tool_calls = toolCalls.map((toolCall) => {
+        const kernelArguments = toolCall.getArguments()
+        const args =
+          kernelArguments && kernelArguments.size > 0
+            ? JSON.stringify(
+                Object.keys(kernelArguments).reduce(
+                  (acc, key) => {
+                    acc[key] = kernelArguments.get(key)?.getValue()
+                    return acc
+                  },
+                  {} as Record<string, any>
+                )
+              )
+            : "{}"
+
+        let prefix = ""
+        if (toolCall.getPluginName()) {
+          prefix = toolCall.getPluginName() + ToolCallBehavior.FUNCTION_NAME_SEPARATOR
+        }
+
+        const name = prefix + toolCall.getFunctionName()
+        const fn = {
+          name,
+          arguments: args,
+        }
+        const functionToolCall: ChatCompletionMessageToolCall = {
+          id: name,
+          function: fn,
+          type: "function",
+        }
+        return functionToolCall
+      })
+    }
+
+    return assistantMessage
+  }
+
+  static formImageMessage(
+    message: ChatMessageContent<any>,
+    content?: string
+  ): ChatCompletionUserMessageParam {
+    throw new Error("formImageMessage Method not implemented")
+  }
+
   ///
 
   ////
@@ -436,7 +489,7 @@ export default class OpenAIChatCompletion
     promptOrChatHistory: string | ChatHistory,
     kernel: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<ChatMessageContent<string>> {
+  ): Observable<ChatMessageContent<string>[]> {
     if (typeof promptOrChatHistory === "string") {
       return this.getPromptChatMessageContentsAsync(promptOrChatHistory, kernel, invocationContext)
     } else if (promptOrChatHistory instanceof ChatHistory) {
@@ -454,7 +507,7 @@ export default class OpenAIChatCompletion
     promptOrChatHistory: string | ChatHistory,
     kernel: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<StreamingChatContent<any>> {
+  ): Observable<StreamingChatContent<any>[]> {
     let chatHistory: ChatHistory
     if (typeof promptOrChatHistory === "string") {
       chatHistory = new ChatHistory().addUserMessage(promptOrChatHistory)
@@ -475,7 +528,7 @@ export default class OpenAIChatCompletion
     prompt: string,
     kernel: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<ChatMessageContent<string>> {
+  ): Observable<ChatMessageContent<string>[]> {
     const parsedPromt = OpenAiXMLPromptParser.parse(prompt)
     const messages = new ChatMessages(parsedPromt.messages)
 
@@ -484,7 +537,7 @@ export default class OpenAIChatCompletion
       kernel,
       invocationContext ?? InvocationContext.Builder().build()
     ).pipe(
-      mergeMap((m) => {
+      map((m) => {
         let result = new ChatHistory(
           OpenAIChatCompletion.toOpenAIChatMessageContent(m.getAllMessages())
         )
@@ -504,14 +557,16 @@ export default class OpenAIChatCompletion
     chatHistory: ChatHistory,
     kernel: Kernel,
     invocationContext: InvocationContext
-  ): Observable<ChatMessageContent<string>> {
+  ): Observable<ChatMessageContent<string>[]> {
     const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCopleteionMessageParams(
       chatHistory.getMessages()
     )
     const chatMessages = new ChatMessages(chatCompletiontMessageParams)
 
-    return this.doChatMessageContentsAsync(chatMessages, kernel, invocationContext).pipe(
-      mergeMap((chatMessagesHistory) => {
+    return this.doChatMessageContentsAsync(chatMessages, kernel, invocationContext).pipe<
+      ChatMessageContent<any>[]
+    >(
+      map((chatMessagesHistory) => {
         let chatHistoryResult: ChatHistory
         if (invocationContext.returnMode() === InvocationReturnMode.FULL_HISTORY) {
           chatHistoryResult = new ChatHistory(chatHistory.getMessages())
@@ -543,7 +598,7 @@ export default class OpenAIChatCompletion
     chatHistory: ChatHistory,
     kernel?: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<StreamingChatContent<any>> {
+  ): Observable<StreamingChatContent<any>[]> {
     throw new Error("Method not implemented.")
   }
 
@@ -733,7 +788,7 @@ export default class OpenAIChatCompletion
     invocationContext: InvocationContext,
     functionToolCall: ChatCompletionMessageToolCall
   ): Observable<FunctionResult<string>> {
-    const functionCallContent: FunctionCallContent =
+    const functionCallContent: FunctionCallContent<any> =
       OpenAIChatCompletion.extractFunctionCallContent(functionToolCall)
     const pluginName = functionCallContent.getPluginName()
 
@@ -761,7 +816,7 @@ export default class OpenAIChatCompletion
 
   private static extractFunctionCallContent(
     toolCall: ChatCompletionMessageToolCall
-  ): FunctionCallContent {
+  ): FunctionCallContent<any> {
     // Split the full name of a function into plugin and function name
     const name = toolCall.function.name
     const parts = name.split(ToolCallBehavior.FUNCTION_NAME_SEPARATOR)
@@ -779,4 +834,25 @@ export default class OpenAIChatCompletion
   }
 }
 
-class OpenAIChatCompletionBuilder {}
+/**
+ * Builder for creating a new instance of {@link OpenAIChatCompletion}.
+ */
+class OpenAIChatCompletionBuilder extends OpenAiServiceBuilder<
+  OpenAI,
+  OpenAIChatCompletion,
+  OpenAIChatCompletionBuilder
+> {
+  LOGGER = Logger
+  public build(): OpenAIChatCompletion {
+    if (!this.client || !this.modelId) {
+      throw new AIException(new AIErrorCode(AIErrorCode.CODE.INVALID_REQUEST))
+    }
+
+    if (!this.deploymentName) {
+      this.LOGGER.debug("Deployment name is not provided, using model id as deployment name")
+      this.deploymentName = this.modelId
+    }
+
+    return new OpenAIChatCompletion(this.client, this.deploymentName, this.modelId, this.serviceId)
+  }
+}

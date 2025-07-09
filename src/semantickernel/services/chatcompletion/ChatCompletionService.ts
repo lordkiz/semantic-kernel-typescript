@@ -1,10 +1,10 @@
-import { Observable } from "rxjs";
-import { TextAIService } from "../types/TextAIService";
-import Kernel from "../../Kernel";
-import InvocationContext from "../../orchestration/InvocationContext";
-import ChatMessageContent from "./ChatMessageContent";
-import ChatHistory from "./ChatHistory";
-import { StreamingChatContent } from "./StreamingChatContent";
+import { Observable } from "rxjs"
+import Kernel from "../../Kernel"
+import InvocationContext from "../../orchestration/InvocationContext"
+import { TextAIService } from "../types/TextAIService"
+import ChatHistory from "./ChatHistory"
+import ChatMessageContent from "./ChatMessageContent"
+import { StreamingChatContent } from "./StreamingChatContent"
 
 /**
  * Chat completion service interface.
@@ -25,7 +25,7 @@ export abstract class ChatCompletionService extends TextAIService {
     promptOrChatHistory: string | ChatHistory,
     kernel?: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<ChatMessageContent<string>>;
+  ): Observable<ChatMessageContent<string>[]>
 
   /**
    * Gets the chat message contents asynchronously using {@code ChatHistory} or {@code prompt}
@@ -41,5 +41,5 @@ export abstract class ChatCompletionService extends TextAIService {
     promptOrChatHistory: string | ChatHistory,
     kernel?: Kernel,
     invocationContext?: InvocationContext
-  ): Observable<StreamingChatContent<any>>;
+  ): Observable<StreamingChatContent<any>[]>
 }

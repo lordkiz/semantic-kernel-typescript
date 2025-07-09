@@ -1,17 +1,17 @@
-import SemanticKernelBuilder from "../builders/SemanticKernelBuilder";
+import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
 
 export default class FunctionChoiceBehaviorOptions {
-  private parallelCallsAllowed: boolean;
+  private parallelCallsAllowed: boolean
 
   constructor(parallelCallsAllowed: boolean) {
-    this.parallelCallsAllowed = parallelCallsAllowed;
+    this.parallelCallsAllowed = parallelCallsAllowed
   }
 
   /**
    * Returns a new builder for {@link FunctionChoiceBehaviorOptions}.
    */
-  public static builder() {
-    return new Builder();
+  public static Builder() {
+    return new Builder()
   }
 
   /**
@@ -20,7 +20,7 @@ export default class FunctionChoiceBehaviorOptions {
    * @return True if parallel calls are allowed; otherwise, false.
    */
   isParallelCallsAllowed() {
-    return this.parallelCallsAllowed;
+    return this.parallelCallsAllowed
   }
 }
 
@@ -28,7 +28,7 @@ export default class FunctionChoiceBehaviorOptions {
  * Builder for {@link FunctionChoiceBehaviorOptions}.
  */
 class Builder implements SemanticKernelBuilder<FunctionChoiceBehaviorOptions> {
-  private allowParallelCalls = false;
+  private allowParallelCalls = false
 
   /**
    * Sets whether parallel calls to functions are allowed.
@@ -37,11 +37,11 @@ class Builder implements SemanticKernelBuilder<FunctionChoiceBehaviorOptions> {
    * @return The builder instance.
    */
   public withParallelCallsAllowed(allowParallelCalls: boolean) {
-    this.allowParallelCalls = allowParallelCalls;
-    return this;
+    this.allowParallelCalls = allowParallelCalls
+    return this
   }
 
   build() {
-    return new FunctionChoiceBehaviorOptions(this.allowParallelCalls);
+    return new FunctionChoiceBehaviorOptions(this.allowParallelCalls)
   }
 }
