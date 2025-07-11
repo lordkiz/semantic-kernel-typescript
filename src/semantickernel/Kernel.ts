@@ -49,42 +49,41 @@ export default class Kernel {
   }
 
   public invokeAsync<T>(
-    funcOrOpts: KernelFunction<T> | { pluginName: string; functionName: string }
+    functionOrOptionsOrPrompt:
+      | KernelFunction<T>
+      | { pluginName: string; functionName: string }
+      | string,
+    kernelArguments?: KernelArguments,
+    invocationContext?: InvocationContext
   ): Observable<FunctionResult<T>> {
     let func: KernelFunction<T>
-    if (funcOrOpts instanceof KernelFunction) {
-      func = funcOrOpts
+    if (functionOrOptionsOrPrompt instanceof KernelFunction) {
+      func = functionOrOptionsOrPrompt
+    } else if (typeof functionOrOptionsOrPrompt === "string") {
+      func = KernelFunctionFactory.createFromPrompt<T>(functionOrOptionsOrPrompt).build()
     } else {
-      func = this.getFunction(funcOrOpts.pluginName, funcOrOpts.functionName)
+      func = this.getFunction(
+        functionOrOptionsOrPrompt.pluginName,
+        functionOrOptionsOrPrompt.functionName
+      )
     }
-    return func.invokeAsync(this)
+    return func.invokeAsync(this, kernelArguments, invocationContext)
   }
 
   public async invoke<T>(
-    funcOrOpts: KernelFunction<T> | { pluginName: string; functionName: string }
+    funcOrOpts: KernelFunction<T> | { pluginName: string; functionName: string },
+    kernelArguments?: KernelArguments,
+    invocationContext?: InvocationContext
   ): Promise<FunctionResult<T>> {
-    return lastValueFrom(this.invokeAsync(funcOrOpts))
+    return lastValueFrom(this.invokeAsync(funcOrOpts, kernelArguments, invocationContext))
   }
 
-  public invokePromptAsync<T>(prompt: string): Observable<FunctionResult<T>> {
-    return this.invokeAsync(KernelFunctionFactory.createFromPrompt<T>(prompt).build())
-  }
-
-  public invokePromptWithArgsAsync<T>(
+  public invokePromptAsync<T>(
     prompt: string,
-    args: KernelArguments
+    kernelArguments?: KernelArguments,
+    invocationContext?: InvocationContext
   ): Observable<FunctionResult<T>> {
-    const func: KernelFunction<T> = KernelFunctionFactory.createFromPrompt<T>(prompt).build()
-    return func.invokeAsync(this, args)
-  }
-
-  public invokePromptWithContextAsync<T>(
-    prompt: string,
-    args: KernelArguments,
-    invocationContext: InvocationContext
-  ): Observable<FunctionResult<T>> {
-    const func: KernelFunction<T> = KernelFunctionFactory.createFromPrompt<T>(prompt).build()
-    return func.invokeAsync(this, args, invocationContext)
+    return this.invokeAsync(prompt, kernelArguments, invocationContext)
   }
 
   public getPlugin(pluginName: string): KernelPlugin | undefined {
@@ -97,9 +96,11 @@ export default class Kernel {
 
   public getFunction<T>(pluginName: string, functionName: string): KernelFunction<T> {
     const func = this.plugins.getFunction(pluginName, functionName)
+
     if (!func) {
       throw new Error(`Function ${functionName} not found in plugin ${pluginName}`)
     }
+
     return func as KernelFunction<T>
   }
 

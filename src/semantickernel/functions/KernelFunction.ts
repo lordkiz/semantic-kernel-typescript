@@ -99,6 +99,12 @@ export default abstract class KernelFunction<T> {
   }
 
   getMethodParams(kernelArguments: KernelArguments): any[] {
+    if (!this.getInstance()) {
+      throw new SKException(
+        `No instance provided: Method ${this.getMethod().name} is not attached to an instance.`
+      )
+    }
+
     const methodParams: KernelFunctionParameterMetadata[] =
       Reflect.getMetadata(
         KERNEL_FUNCTION_PARAMETER_METADATA_KEY,

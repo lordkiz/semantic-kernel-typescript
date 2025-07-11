@@ -1,32 +1,26 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap";
-import KernelFunction from "../functions/KernelFunction";
+import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
+import KernelFunction from "../functions/KernelFunction"
 
 /**
  * A plugin contains a collection of functions that can be invoked by the Semantic Kernel.
  */
-export default class KernelPlugin
-  implements Iterable<KernelFunction<unknown>, any, any>
-{
-  private name: string;
-  private description: string;
-  private functions: CaseInsensitiveMap<KernelFunction<unknown>>;
+export default class KernelPlugin implements Iterable<KernelFunction<any>, any, any> {
+  private name: string
+  private description: string
+  private functions: CaseInsensitiveMap<KernelFunction<any>>
 
-  constructor(
-    name: string,
-    description: string,
-    plugins: Map<string, KernelFunction<unknown>>
-  ) {
-    this.name = name;
-    this.description = description;
-    this.functions = new CaseInsensitiveMap<KernelFunction<unknown>>();
+  constructor(name: string, description: string, functions: KernelFunction<any>[]) {
+    this.name = name
+    this.description = description
+    this.functions = new CaseInsensitiveMap<KernelFunction<unknown>>()
 
-    this.functions.putAll(
-      plugins as CaseInsensitiveMap<KernelFunction<unknown>>
-    );
+    functions?.forEach((fn) => {
+      this.addFunction(fn)
+    })
   }
 
   [Symbol.iterator](): Iterator<KernelFunction<unknown>, any, any> {
-    return this.functions.values()[Symbol.iterator]();
+    return this.functions.values()[Symbol.iterator]()
   }
 
   /**
@@ -37,7 +31,7 @@ export default class KernelPlugin
    * @return The function with the specified name, or {@code null} if no such function exists.
    */
   get(functionName: string) {
-    return this.functions.get(functionName);
+    return this.functions.get(functionName)
   }
 
   /**
@@ -45,8 +39,8 @@ export default class KernelPlugin
    *
    * @param fn The function to add.
    */
-  addFunction(fn: KernelFunction<unknown>) {
-    this.functions.put(fn.getName(), fn);
+  addFunction(fn: KernelFunction<any>) {
+    this.functions.put(fn.getName(), fn)
   }
 
   /**
@@ -55,7 +49,7 @@ export default class KernelPlugin
    * @return The functions in the plugin.
    */
   getFunctions() {
-    return Object.seal(this.functions);
+    return Object.seal(this.functions)
   }
 
   /**
@@ -64,7 +58,7 @@ export default class KernelPlugin
    * @return The name of the plugin.
    */
   getName() {
-    return this.name;
+    return this.name
   }
 
   /**
@@ -73,6 +67,6 @@ export default class KernelPlugin
    * @return The description of the plugin.
    */
   getDescription() {
-    return this.description;
+    return this.description
   }
 }
