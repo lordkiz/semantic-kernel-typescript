@@ -111,7 +111,7 @@ class HandleBarsPromptTemplateHandler {
   private invokeFunctionForHelper(
     kernel: Kernel,
     kernelFunction: KernelFunction<any>,
-    _invocationContext: InvocationContext
+    invocationContext: InvocationContext
   ): HelperDelegate {
     return (ctx, opts) => {
       const kernelArgumentsBuilder = KernelArguments.Builder()
@@ -126,7 +126,7 @@ class HandleBarsPromptTemplateHandler {
         kernelArgumentsBuilder.withVariables(opts.hash)
       }
 
-      return kernelFunction.invoke(kernel)
+      return kernelFunction.invoke(kernel, kernelArgumentsBuilder.build(), invocationContext)
     }
   }
 }
