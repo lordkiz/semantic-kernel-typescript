@@ -1,14 +1,13 @@
-import FunctionResultMetadata from "../orchestration/FunctionResultMetadata";
-import Variable from "../variables/ContextVariable";
-import KernelContentImpl from "./KernelContentImpl";
-import { StreamingKernelContent } from "./types/StreamingKernelContent";
+import FunctionResultMetadata from "../orchestration/FunctionResultMetadata"
+import KernelContentImpl from "./KernelContentImpl"
+import { StreamingKernelContent } from "./types/StreamingKernelContent"
 
 /**
  * Base class which represents the content returned by a streaming AI service.
  *
  * @param <T> The type of the content.
  */
-export default abstract class StreamingTextContent<T = string>
+export default abstract class StreamingTextContent<T>
   extends KernelContentImpl<T>
   implements StreamingKernelContent<T>
 {
@@ -16,7 +15,7 @@ export default abstract class StreamingTextContent<T = string>
    * In a scenario of multiple choices per request, this represents the zero-based index of the
    * choice in the streaming sequence
    */
-  private choiceIndex: number;
+  private choiceIndex: number
 
   /**
    * Initializes a new instance of the {@link StreamingTextContent} class.
@@ -32,8 +31,8 @@ export default abstract class StreamingTextContent<T = string>
     modelId?: string,
     metadata?: FunctionResultMetadata<any>
   ) {
-    super(innerContent, modelId, metadata);
-    this.choiceIndex = choiceIndex;
+    super(innerContent, modelId, metadata)
+    this.choiceIndex = choiceIndex
   }
 
   /**
@@ -42,6 +41,6 @@ export default abstract class StreamingTextContent<T = string>
    * @return The zero-based index of the choice in the streaming sequence.
    */
   getChoiceIndex() {
-    return this.choiceIndex;
+    return this.choiceIndex
   }
 }

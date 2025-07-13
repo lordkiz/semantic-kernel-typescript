@@ -190,6 +190,10 @@ class PromptExecutionSettings extends JsonCreator {
     return this.responseFormat
   }
 
+  getMaxTokens() {
+    return this.maxTokens
+  }
+
   private static _Builder = {
     settings: new Map<string, any>(),
 

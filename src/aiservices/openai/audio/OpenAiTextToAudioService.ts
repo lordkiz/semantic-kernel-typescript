@@ -12,8 +12,8 @@ export default class OpenAiTextToAudioService
   extends OpenAIService<OpenAI>
   implements TextToAudioService
 {
-  constructor(client: OpenAI, modelId: string, deploymentName: string) {
-    super(client, deploymentName, modelId)
+  constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
+    super(client, modelId, deploymentName, serviceId)
   }
 
   static Builder(): OpenAiAudioToTextServiceBuilder {

@@ -1,4 +1,3 @@
-import { ErrorCode } from "./abstracts/ErrorCode"
 import SKErrorCodedException from "./SKErrorCodedException"
 
 enum AIErrorCodeEnum {
@@ -29,20 +28,13 @@ const aiCodeToMessageMap: Record<AIErrorCodeEnum, string> = {
   FUNCTION_TYPE_NOT_SUPPORTED: "the function is not supported",
 }
 
-export class AIErrorCode implements ErrorCode {
-  code: AIErrorCodeEnum
-
-  constructor(code: AIErrorCodeEnum) {
-    this.code = code
+class AIException extends SKErrorCodedException<AIErrorCodeEnum> {
+  constructor(errorCode: AIErrorCodeEnum, message?: string, cause?: Error) {
+    super(errorCode, message ?? aiCodeToMessageMap[errorCode], cause)
   }
-
-  static CODE = AIErrorCodeEnum
-
-  getMessage() {
-    return aiCodeToMessageMap[this.code]
+  static get ErrorCodes() {
+    return AIErrorCodeEnum
   }
 }
-
-class AIException extends SKErrorCodedException<AIErrorCode> {}
 
 export default AIException

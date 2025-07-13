@@ -6,7 +6,7 @@ export abstract class OpenAIService<Client> implements AIService {
   private readonly modelId: string
   private readonly deploymentName: string
 
-  constructor(client: Client, deploymentName: string, modelId: string, serviceId?: string) {
+  constructor(client: Client, modelId: string, deploymentName: string, serviceId?: string) {
     this.client = client
     this.serviceId = serviceId
     this.modelId = modelId

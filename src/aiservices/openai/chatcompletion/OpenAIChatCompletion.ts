@@ -24,7 +24,7 @@ import {
   throwError,
 } from "rxjs"
 import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import AIException, { AIErrorCode } from "../../../semantickernel/exceptions/AIException"
+import AIException from "../../../semantickernel/exceptions/AIException"
 import SKException from "../../../semantickernel/exceptions/SKException"
 import AutoFunctionChoiceBehavior from "../../../semantickernel/functionchoice/AutoFunctionChoiceBehavior"
 import FunctionChoiceBehavior from "../../../semantickernel/functionchoice/FunctionChoiceBehavior"
@@ -74,8 +74,8 @@ export default class OpenAIChatCompletion
 {
   private LOGGER = Logger
 
-  constructor(client: OpenAI, deploymentName: string, modelId: string, serviceId?: string) {
-    super(client, deploymentName, modelId, serviceId)
+  constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
+    super(client, modelId, deploymentName, serviceId)
   }
 
   static Builder(): OpenAIChatCompletionBuilder {
@@ -293,7 +293,7 @@ export default class OpenAIChatCompletion
       promptExecutionSettings.getResultsPerPrompt() > TextAIService.MAX_RESULTS_PER_PROMPT
     ) {
       throw new AIException(
-        new AIErrorCode(AIErrorCode.CODE.INVALID_REQUEST),
+        AIException.ErrorCodes.INVALID_REQUEST,
         `Results per prompt must be in range between 1 and ${TextAIService.MAX_RESULTS_PER_PROMPT}, inclusive.`
       )
     }
@@ -845,7 +845,7 @@ class OpenAIChatCompletionBuilder extends OpenAiServiceBuilder<
   LOGGER = Logger
   public build(): OpenAIChatCompletion {
     if (!this.client || !this.modelId) {
-      throw new AIException(new AIErrorCode(AIErrorCode.CODE.INVALID_REQUEST))
+      throw new AIException(AIException.ErrorCodes.INVALID_REQUEST)
     }
 
     if (!this.deploymentName) {

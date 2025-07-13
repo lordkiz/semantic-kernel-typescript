@@ -15,7 +15,7 @@ export default class TextContent extends KernelContentImpl<string> {
    * @param modelId  The model ID.
    * @param metadata The metadata.
    */
-  constructor(content: string, modelId: string, metadata: FunctionResultMetadata<string>) {
+  constructor(content: string, modelId: string, metadata: FunctionResultMetadata<object>) {
     super(content, modelId, metadata)
     this.content = content
   }

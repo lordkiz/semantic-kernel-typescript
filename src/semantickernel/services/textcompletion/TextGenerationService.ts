@@ -1,20 +1,16 @@
-import { Observable } from "rxjs";
-import { TextAIService } from "../types/TextAIService";
-import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings";
-import Kernel from "../../Kernel";
-import StreamingTextContent from "../StreamingTextContent";
-import { OpenAiServiceBuilder } from "../openai/OpenAiServiceBuilder";
-import { OpenAI as OpenAIClient } from "openai";
-import TextContent from "./TextContent";
+import { OpenAI as OpenAIClient } from "openai"
+import { Observable } from "rxjs"
+import Kernel from "../../Kernel"
+import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings"
+import StreamingTextContent from "../StreamingTextContent"
+import { OpenAiServiceBuilder } from "../openai/OpenAiServiceBuilder"
+import { TextAIService } from "../types/TextAIService"
+import TextContent from "./TextContent"
 
 /**
  * Builder for a TextGenerationService
  */
-abstract class Builder extends OpenAiServiceBuilder<
-  OpenAIClient,
-  TextGenerationService,
-  Builder
-> {}
+abstract class Builder extends OpenAiServiceBuilder<OpenAIClient, TextGenerationService, Builder> {}
 
 /**
  * Interface for text completion services
@@ -25,7 +21,7 @@ export abstract class TextGenerationService extends TextAIService {
    *
    * @return The builder
    */
-  static Builder = Builder;
+  static Builder = Builder
 
   /**
    * Creates a completion for the prompt and settings.
@@ -40,7 +36,7 @@ export abstract class TextGenerationService extends TextAIService {
     prompt: string,
     kernel?: Kernel,
     executionSettings?: PromptExecutionSettings
-  ): Observable<TextContent>;
+  ): Observable<TextContent[]>
 
   /**
    * Get streaming results for the prompt using the specified execution settings. Each modality
@@ -55,7 +51,7 @@ export abstract class TextGenerationService extends TextAIService {
    */
   abstract getStreamingTextContentsAsync(
     prompt: string,
-    executionSettings?: PromptExecutionSettings,
-    kernel?: Kernel
-  ): Observable<StreamingTextContent>;
+    kernel?: Kernel,
+    executionSettings?: PromptExecutionSettings
+  ): Observable<StreamingTextContent<TextContent>>
 }
