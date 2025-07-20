@@ -1,6 +1,4 @@
 import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
-import SKException from "../exceptions/SKException"
-import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import ContextVariable from "../variables/ContextVariable"
 
@@ -11,16 +9,16 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
   static MAIN_KEY = "input"
 
   variables: CaseInsensitiveMap<ContextVariable<any>>
-  executionSettings: ExecutionSettingsForService
+  executionSettings: PromptExecutionSettings
 
   constructor()
   constructor(
     variables: Map<string, ContextVariable<any>>,
-    executionSettings: ExecutionSettingsForService
+    executionSettings: PromptExecutionSettings
   )
   constructor(
     variables?: Map<string, ContextVariable<any>>,
-    executionSettings?: ExecutionSettingsForService
+    executionSettings?: PromptExecutionSettings
   ) {
     if (variables) {
       this.variables = new CaseInsensitiveMap<any>(variables)
@@ -28,7 +26,7 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
       this.variables = new CaseInsensitiveMap<any>()
     }
 
-    this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
+    this.executionSettings = executionSettings ?? PromptExecutionSettings.Builder().build()
   }
 
   /**
@@ -105,7 +103,7 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
 
   private static _Builder = {
     variablez: new Map<string, any>(),
-    executionSettingz: ExecutionSettingsForService.create(),
+    executionSettingz: PromptExecutionSettings.Builder().build(),
 
     withInput<T>(content: T) {
       this.variablez.set(KernelArguments.MAIN_KEY, content)
@@ -122,31 +120,9 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
       return this
     },
 
-    withExecutionSettingsMap(executionSettings: ExecutionSettingsForService) {
-      executionSettings.forEach((v, k) => this.executionSettingz.set(k, v))
-      return this
-    },
-
-    withExecutionSettingsArray(executionSettingsArray: PromptExecutionSettings[]) {
-      for (const settings of executionSettingsArray) {
-        const serviceId = settings.getServiceId()
-        if (this.executionSettingz.has(serviceId)) {
-          if (serviceId === PromptExecutionSettings.DEFAULT_SERVICE_ID) {
-            throw new SKException(
-              `Multiple prompt execution settings with the default service id '${PromptExecutionSettings.DEFAULT_SERVICE_ID}' or no service id have been provided. Specify a single default prompt execution settings and provide a unique service id for all other instances.`
-            )
-          }
-          throw new SKException(
-            `Multiple prompt execution settings with the service id '${serviceId}' have been provided. Specify a unique service id for all instances.`
-          )
-        }
-        this.executionSettingz.set(serviceId, settings)
-      }
-      return this
-    },
-
     withExecutionSettings(executionSettings: PromptExecutionSettings) {
-      return this.withExecutionSettingsArray([executionSettings])
+      this.executionSettingz = executionSettings
+      return this
     },
 
     build(): KernelArguments {

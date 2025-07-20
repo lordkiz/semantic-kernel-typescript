@@ -78,7 +78,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
   invokeAsync(
     kernel: Kernel,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<FunctionResult<T>> {
     const context = invocationContext || InvocationContext.Builder().build()
 

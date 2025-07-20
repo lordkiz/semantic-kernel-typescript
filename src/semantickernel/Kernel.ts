@@ -54,7 +54,7 @@ export default class Kernel {
       | { pluginName: string; functionName: string }
       | string,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<FunctionResult<T>> {
     let func: KernelFunction<T>
     if (functionOrOptionsOrPrompt instanceof KernelFunction) {
@@ -73,7 +73,7 @@ export default class Kernel {
   public async invoke<T>(
     funcOrOpts: KernelFunction<T> | { pluginName: string; functionName: string },
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Promise<FunctionResult<T>> {
     return lastValueFrom(this.invokeAsync(funcOrOpts, kernelArguments, invocationContext))
   }
@@ -81,7 +81,7 @@ export default class Kernel {
   public invokePromptAsync<T>(
     prompt: string,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<FunctionResult<T>> {
     return this.invokeAsync(prompt, kernelArguments, invocationContext)
   }

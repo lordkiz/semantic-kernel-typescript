@@ -1,7 +1,6 @@
 import KernelArguments from "../functions/KernelArguments"
 import KernelFunction from "../functions/KernelFunction"
 import { Logger } from "../log/Logger"
-import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import AIServiceCollection from "./AIServiceCollection"
 import AIServiceSelection from "./AIServiceSelection"
@@ -19,7 +18,7 @@ export default class OrderedAIServiceSelector extends BaseAIServiceSelector {
     serviceType: ServiceType<T>,
     kernelFunction?: KernelFunction<any>,
     kernelArguments?: KernelArguments,
-    services?: Map<ServiceType<T>, AIService>
+    _services?: Map<ServiceType<T>, AIService>
   ): AIServiceSelection<T> | undefined {
     if (!kernelFunction) {
       return this.selectAIService(serviceType, kernelArguments?.getExecutionSettings())
@@ -30,51 +29,37 @@ export default class OrderedAIServiceSelector extends BaseAIServiceSelector {
 
   private selectAIService<T extends AIService>(
     serviceType: ServiceType<T>,
-    executionSettings?: ExecutionSettingsForService
+    executionSettings?: PromptExecutionSettings
   ): AIServiceSelection<T> | undefined {
-    if (!executionSettings || executionSettings.size === 0) {
+    if (!executionSettings) {
       const service = this.getAnyService(serviceType)
       if (service) {
         return new AIServiceSelection(service) as AIServiceSelection<T>
       }
     } else {
-      for (const [serviceId, settings] of executionSettings) {
-        if (serviceId) {
-          const service = this.getService(serviceId)
-          if (service) {
-            return new AIServiceSelection(service, settings) as AIServiceSelection<T>
-          }
+      const serviceId = executionSettings.serviceId
+      if (serviceId) {
+        const service = this.getService(serviceId)
+        if (service && service instanceof serviceType) {
+          return new AIServiceSelection(service, executionSettings) as AIServiceSelection<T>
         }
       }
 
-      for (const [_, settings] of executionSettings) {
-        if (settings?.getModelId()) {
-          const service = this.getServiceByModelId(settings.getModelId())
+      for (const [k, _] of executionSettings) {
+        if (k === "modelId") {
+          const service = this.getServiceByModelId(executionSettings.get("modelId"))
           if (service) {
-            return new AIServiceSelection(service, settings) as AIServiceSelection<T>
+            return new AIServiceSelection(service, executionSettings) as AIServiceSelection<T>
           }
         }
       }
-    }
-
-    // Fallback to default service
-    const defaultService = this.getService(PromptExecutionSettings.DEFAULT_SERVICE_ID)
-    if (defaultService && defaultService instanceof serviceType) {
-      return new AIServiceSelection(defaultService) as AIServiceSelection<T>
     }
 
     // Final fallback
     const service = this.getAnyService(serviceType)
-    let settings: PromptExecutionSettings | undefined
-
-    if (executionSettings && executionSettings.size > 0) {
-      settings =
-        executionSettings.get(PromptExecutionSettings.DEFAULT_SERVICE_ID) ??
-        Array.from(executionSettings.values())[0]
-    }
 
     if (service) {
-      return new AIServiceSelection(service, settings) as AIServiceSelection<T>
+      return new AIServiceSelection(service, executionSettings) as AIServiceSelection<T>
     }
 
     console.warn("No service found meeting requirements")
@@ -107,7 +92,7 @@ export default class OrderedAIServiceSelector extends BaseAIServiceSelector {
       let service = this.services.get(serviceType)
 
       if (!service) {
-        for (const [key, value] of this.services.entries()) {
+        for (const [_, value] of this.services.entries()) {
           if (value instanceof serviceTypeOrId) {
             service = value as T
             break

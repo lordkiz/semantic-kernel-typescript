@@ -6,7 +6,6 @@ import KernelHooks from "../hooks/KernelHooks"
 import { PromptRenderedEvent, PromptRenderingEvent } from "../hooks/PromptEvents"
 import Kernel from "../Kernel"
 import { Logger } from "../log/Logger"
-import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
 import FunctionResult from "../orchestration/FunctionResult"
 import InvocationContext from "../orchestration/InvocationContext"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
@@ -40,7 +39,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   constructor(
     template: PromptTemplate,
     promptConfig: PromptTemplateConfig,
-    executionSettings: ExecutionSettingsForService
+    executionSettings: PromptExecutionSettings
   ) {
     super(
       function m() {},
@@ -64,7 +63,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   invokeAsync(
     kernel: Kernel,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<FunctionResult<T>> {
     const context = invocationContext || new InvocationContext()
 
@@ -99,8 +98,8 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
 
         args = KernelArguments.Builder()
           .withVariables(fnInvokingEvent.getArguments()!)
-          .withExecutionSettingsMap(
-            this.getExecutionSettings() ?? ExecutionSettingsForService.create()
+          .withExecutionSettings(
+            this.getExecutionSettings() ?? PromptExecutionSettings.Builder().build()
           )
           .build()
 
@@ -172,7 +171,7 @@ export class FromPromptBuilder<T> {
 
   private name: string | undefined
 
-  private executionSettings: ExecutionSettingsForService | undefined
+  private executionSettings: PromptExecutionSettings | undefined
 
   private description: string | undefined
 
@@ -206,22 +205,8 @@ export class FromPromptBuilder<T> {
     return this
   }
 
-  withExecutionSettings(executionSettings: ExecutionSettingsForService): this {
+  withExecutionSettings(executionSettings: PromptExecutionSettings): this {
     this.executionSettings = executionSettings
-
-    return this
-  }
-
-  withDefaultExecutionSettings(executionSettings: PromptExecutionSettings) {
-    if (!this.executionSettings) {
-      this.executionSettings = ExecutionSettingsForService.create()
-    }
-
-    this.executionSettings.set(PromptExecutionSettings.DEFAULT_SERVICE_ID, executionSettings)
-
-    if (executionSettings.getServiceId()) {
-      this.executionSettings.set(executionSettings.getServiceId(), executionSettings)
-    }
 
     return this
   }
@@ -254,7 +239,7 @@ export class FromPromptBuilder<T> {
   }
 
   build(): KernelFunction<T> {
-    this.executionSettings = this.executionSettings ?? ExecutionSettingsForService.create()
+    this.executionSettings = this.executionSettings ?? PromptExecutionSettings.Builder().build()
 
     this.templateFormat =
       this.templateFormat ?? HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT

@@ -2,9 +2,9 @@ import _ from "lodash"
 import { lastValueFrom, Observable } from "rxjs"
 import SKException from "../exceptions/SKException"
 import Kernel from "../Kernel"
-import ExecutionSettingsForService from "../orchestration/ExecutionSettingsForService"
 import FunctionResult from "../orchestration/FunctionResult"
 import InvocationContext from "../orchestration/InvocationContext"
+import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import ContextVariable from "../variables/ContextVariable"
 import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants"
 import {
@@ -18,13 +18,13 @@ export default abstract class KernelFunction<T> {
   private method: Function
   private readonly instance: InstanceType<any> | undefined
   private metadata: KernelFunctionMetadata<T>
-  private executionSettings: ExecutionSettingsForService | undefined
+  private executionSettings: PromptExecutionSettings<any> | undefined
 
   constructor(
     method: Function,
     metadata: KernelFunctionMetadata<T>,
     instance?: InstanceType<any>,
-    executionSettings?: ExecutionSettingsForService
+    executionSettings?: PromptExecutionSettings<any>
   ) {
     if (!method.name) {
       throw new SKException("Anonymous functions are not valid as Kernel Functions")
@@ -32,7 +32,7 @@ export default abstract class KernelFunction<T> {
 
     this.method = method
     this.metadata = metadata
-    this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
+    this.executionSettings = executionSettings ?? PromptExecutionSettings.Builder().build()
 
     this.instance = instance
   }
@@ -138,7 +138,7 @@ export default abstract class KernelFunction<T> {
    * and {@link Integer} which have pre-defined {@code ContextVariableType}s.
    * <p>
    * The {@link InvocationContext} allows for customization of the behavior of function, including
-   * the ability to pass in {@link KernelHooks} {@link ExecutionSettingsForService}, and
+   * the ability to pass in {@link KernelHooks} {@link PromptExecutionSettings}, and
    * {@link ToolCallBehavior}.
    * <p>
    * The difference between calling the {@code KernelFunction.invokeAsync} method directly and
@@ -158,13 +158,13 @@ export default abstract class KernelFunction<T> {
   abstract invokeAsync(
     kernel: Kernel,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<FunctionResult<T>>
 
   async invoke(
     kernel: Kernel,
     kernelArguments?: KernelArguments,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Promise<FunctionResult<T>> {
     const functionResult = lastValueFrom(
       this.invokeAsync(kernel, kernelArguments, invocationContext)

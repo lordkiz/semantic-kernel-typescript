@@ -7,10 +7,12 @@ import { InvocationReturnMode } from "./InvocationReturnMode"
 import PromptExecutionSettings from "./PromptExecutionSettings"
 import ToolCallBehavior from "./ToolCallBehavior"
 
-export default class InvocationContext {
+export default class InvocationContext<
+  ExecutionConfig extends Record<string, any> = Record<string, any>,
+> {
   private hooks: UnmodifiableKernelHooks | undefined
 
-  private promptExecutionSettings: PromptExecutionSettings | undefined
+  private promptExecutionSettings: PromptExecutionSettings<ExecutionConfig> | undefined
 
   private toolCallBehavior: ToolCallBehavior | undefined
 
@@ -22,7 +24,7 @@ export default class InvocationContext {
 
   constructor(
     hooks?: KernelHooks,
-    promptExecutionSettings?: PromptExecutionSettings,
+    promptExecutionSettings?: PromptExecutionSettings<ExecutionConfig>,
     toolCallBehavior?: ToolCallBehavior,
     functionChoiceBehavior?: FunctionChoiceBehavior,
     invocationReturnMode?: InvocationReturnMode,
@@ -36,7 +38,7 @@ export default class InvocationContext {
     this.telemetry = telemetry
   }
 
-  static clone(invocationContext: InvocationContext): InvocationContext {
+  static clone(invocationContext: InvocationContext<any>): InvocationContext<any> {
     return new InvocationContext(
       UnmodifiableKernelHooks.construct(invocationContext.getKernelHooks()),
       invocationContext.getPromptExecutionSettings(),
@@ -53,7 +55,7 @@ export default class InvocationContext {
    * @param context The context to copy.
    * @return The new instance of InvocationContext.
    */
-  static copy(context: InvocationContext): InvocationContextBuilder {
+  static copy(context: InvocationContext<any>): InvocationContextBuilder<any> {
     return new InvocationContextBuilder()
       .withKernelHooks(context.getKernelHooks())
       .withPromptExecutionSettings(context.getPromptExecutionSettings())
@@ -61,7 +63,7 @@ export default class InvocationContext {
       .withTelemetry(context.getTelemetry())
   }
 
-  clone(): InvocationContext {
+  clone(): InvocationContext<ExecutionConfig> {
     return InvocationContext.clone(this)
   }
 
@@ -97,15 +99,19 @@ export default class InvocationContext {
     }
   }
 
-  static Builder(): InvocationContextBuilder {
+  static Builder<
+    ExecutionConfig extends Record<string, any> = Record<string, any>,
+  >(): InvocationContextBuilder<ExecutionConfig> {
     return new InvocationContextBuilder()
   }
 }
 
-class InvocationContextBuilder implements SemanticKernelBuilder<InvocationContext> {
+class InvocationContextBuilder<ExecutionConfig extends Record<string, any> = Record<string, any>>
+  implements SemanticKernelBuilder<InvocationContext<ExecutionConfig>>
+{
   private hooks: UnmodifiableKernelHooks | undefined
 
-  private promptExecutionSettings: PromptExecutionSettings | undefined
+  private promptExecutionSettings: PromptExecutionSettings<ExecutionConfig> | undefined
 
   private toolCallBehavior: ToolCallBehavior | undefined
 
@@ -135,7 +141,7 @@ class InvocationContextBuilder implements SemanticKernelBuilder<InvocationContex
    * @param promptExecutionSettings the settings to add.
    * @return this {@link InvocationContextBuilder}
    */
-  withPromptExecutionSettings(promptExecutionSettings?: PromptExecutionSettings) {
+  withPromptExecutionSettings(promptExecutionSettings?: PromptExecutionSettings<ExecutionConfig>) {
     this.promptExecutionSettings = promptExecutionSettings
     return this
   }
@@ -192,7 +198,7 @@ class InvocationContextBuilder implements SemanticKernelBuilder<InvocationContex
     return this
   }
 
-  build(): InvocationContext {
+  build(): InvocationContext<ExecutionConfig> {
     if (!this.telemetry) {
       this.telemetry = new SemanticKernelTelemetry()
     }

@@ -1,7 +1,7 @@
 import { JsonProperty } from "../../decorators/JsonProperty"
 import SKException from "../../exceptions/SKException"
 import { JsonCreator } from "../../implementations/JsonCreator"
-import ExecutionSettingsForService from "../../orchestration/ExecutionSettingsForService"
+import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings"
 import HandlebarsPromptTemplateFactory from "../HandlebarsPromptTemplateFactory"
 import InputVariable from "../InputVariable"
 import OutputVariable from "../OutputVariable"
@@ -16,7 +16,7 @@ export type PromptTemplateConfigurationType = {
   description?: string
   inputVariables?: InputVariable[]
   outputVariable?: OutputVariable<any>
-  executionSettings?: ExecutionSettingsForService
+  executionSettings?: PromptExecutionSettings
 }
 
 export default class PromptTemplateConfig extends JsonCreator {
@@ -58,7 +58,7 @@ export default class PromptTemplateConfig extends JsonCreator {
   @JsonProperty("output_variable")
   private outputVariable: OutputVariable<any>
 
-  @JsonProperty("execution_settings") private executionSettings: ExecutionSettingsForService
+  @JsonProperty("execution_settings") private executionSettings: PromptExecutionSettings
 
   constructor({
     schema,
@@ -82,7 +82,7 @@ export default class PromptTemplateConfig extends JsonCreator {
     this.description = description
     this.inputVariables = inputVariables ?? []
     this.outputVariable = outputVariable ?? new OutputVariable<string>()
-    this.executionSettings = executionSettings ?? ExecutionSettingsForService.create()
+    this.executionSettings = executionSettings ?? PromptExecutionSettings.Builder<any>().build()
   }
 
   static fromPromptTemplateConfig(promptTemplate: PromptTemplateConfig) {
@@ -188,7 +188,7 @@ class Builder {
   private inputVariables: InputVariable[]
 
   private outputVariable: OutputVariable<any>
-  private executionSettings: ExecutionSettingsForService | undefined
+  private executionSettings: PromptExecutionSettings | undefined
 
   constructor()
   constructor(promptTemplateConfig: PromptTemplateConfig)
@@ -307,7 +307,7 @@ class Builder {
    * @param executionSettings The prompt execution settings of the prompt template config.
    * @return {@code this} builder
    */
-  withExecutionSettings(executionSettings: ExecutionSettingsForService) {
+  withExecutionSettings(executionSettings: PromptExecutionSettings) {
     this.executionSettings = executionSettings
     return this
   }

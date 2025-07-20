@@ -1,8 +1,8 @@
-import { Observable } from "rxjs";
-import Kernel from "../../Kernel";
-import InvocationContext from "../../orchestration/InvocationContext";
-import KernelArguments from "../KernelArguments";
-import FunctionResult from "../../orchestration/FunctionResult";
+import { Observable } from "rxjs"
+import Kernel from "../../Kernel"
+import FunctionResult from "../../orchestration/FunctionResult"
+import InvocationContext from "../../orchestration/InvocationContext"
+import KernelArguments from "../KernelArguments"
 
 /**
  * Represents a prompt template that can be rendered to a string.
@@ -22,6 +22,6 @@ export interface PromptTemplate<T = string> {
   renderAsync(
     kernel: Kernel,
     kernelArguments?: KernelArguments,
-    context?: InvocationContext
-  ): Observable<FunctionResult<T>>;
+    context?: InvocationContext<any>
+  ): Observable<FunctionResult<T>>
 }

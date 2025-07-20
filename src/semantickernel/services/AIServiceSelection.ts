@@ -1,5 +1,5 @@
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings";
-import { AIService } from "./types/AIService";
+import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
+import { AIService } from "./types/AIService"
 
 /**
  * The result of an AI service selection.
@@ -7,8 +7,8 @@ import { AIService } from "./types/AIService";
  * @param <T> The type of AI service.
  */
 export default class AIServiceSelection<T extends AIService> {
-  private service: T;
-  private settings: PromptExecutionSettings | undefined;
+  private service: T
+  private settings: PromptExecutionSettings | undefined
 
   /**
    * Creates a new AI service selection.
@@ -18,8 +18,8 @@ export default class AIServiceSelection<T extends AIService> {
    *                 even if a service is selected..
    */
   constructor(service: T, settings?: PromptExecutionSettings) {
-    this.service = service;
-    this.settings = settings;
+    this.service = service
+    this.settings = settings
   }
 
   /**
@@ -28,7 +28,7 @@ export default class AIServiceSelection<T extends AIService> {
    * @return The selected AI service.
    */
   getService(): T {
-    return this.service;
+    return this.service
   }
 
   /**
@@ -38,6 +38,6 @@ export default class AIServiceSelection<T extends AIService> {
    * service is selected.
    */
   getSettings(): PromptExecutionSettings | undefined {
-    return this.settings;
+    return this.settings
   }
 }

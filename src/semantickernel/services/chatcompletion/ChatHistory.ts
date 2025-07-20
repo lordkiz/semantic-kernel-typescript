@@ -1,56 +1,50 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata";
-import { AuthorRole } from "./AuthorRole";
-import ChatMessageContent from "./ChatMessageContent";
-import ChatMessageTextContent from "./message/ChatMessageTextContent";
+import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
+import { AuthorRole } from "./AuthorRole"
+import ChatMessageContent from "./ChatMessageContent"
+import ChatMessageTextContent from "./message/ChatMessageTextContent"
 
 /**
  * Provides a history of messages between the User, Assistant and System
  */
 export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
-  private chatMessageContents: ChatMessageContent<any>[];
+  private chatMessageContents: ChatMessageContent<any>[]
 
-  constructor();
+  constructor()
 
   /**
    * Constructor that adds the given system instructions to the chat history.
    *
    * @param instructions The instructions to add to the chat history
    */
-  constructor(instructions: string);
+  constructor(instructions: string)
   /**
    * Constructor that adds the given chat message contents to the chat history.
    *
    * @param chatMessageContents The chat message contents to add to the chat history
    */
-  constructor(chatMessageContents: ChatMessageContent<any>[]);
+  constructor(chatMessageContents: ChatMessageContent<any>[])
 
-  constructor(
-    instructionsOrChatMessageContents?: string | ChatMessageContent<any>[]
-  ) {
+  constructor(instructionsOrChatMessageContents?: string | ChatMessageContent<any>[]) {
     if (!instructionsOrChatMessageContents) {
-      this.chatMessageContents = [];
+      this.chatMessageContents = []
     } else if (typeof instructionsOrChatMessageContents === "string") {
-      const instructions = instructionsOrChatMessageContents;
-      this.chatMessageContents = [];
+      const instructions = instructionsOrChatMessageContents
+      this.chatMessageContents = []
       if (instructions.length) {
         this.chatMessageContents.push(
-          ChatMessageTextContent.systemMessage(
-            instructions
-          ) as ChatMessageContent<string>
-        );
+          ChatMessageTextContent.systemMessage(instructions) as ChatMessageContent<string>
+        )
       }
     } else if (Array.isArray(instructionsOrChatMessageContents)) {
-      const chatMessageContents = Array.from(instructionsOrChatMessageContents);
-      this.chatMessageContents = chatMessageContents;
+      const chatMessageContents = Array.from(instructionsOrChatMessageContents)
+      this.chatMessageContents = chatMessageContents
     } else {
-      throw new Error(
-        "Invalid argument supplied for instructions or ChatMessageContent"
-      );
+      throw new Error("Invalid argument supplied for instructions or ChatMessageContent")
     }
   }
 
   [Symbol.iterator](): Iterator<ChatMessageContent<any>, any, any> {
-    return this.chatMessageContents[Symbol.iterator]();
+    return this.chatMessageContents[Symbol.iterator]()
   }
 
   /**
@@ -59,7 +53,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return List of messages in the chat
    */
   getMessages() {
-    return Object.seal(Array.from(this.chatMessageContents));
+    return Object.seal(Array.from(this.chatMessageContents))
   }
 
   /**
@@ -69,12 +63,12 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    */
   getLastMessage<T = string>() {
     if (!this.chatMessageContents.length) {
-      return undefined;
+      return undefined
     }
 
     return ChatMessageContent.clone<T>(
       this.chatMessageContents[this.chatMessageContents.length - 1]
-    );
+    )
   }
 
   /**
@@ -83,10 +77,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @param value The chat history to add to this chat history
    */
   addAll(value: ChatHistory) {
-    this.chatMessageContents = [
-      ...this.chatMessageContents,
-      ...value.getMessages(),
-    ];
+    this.chatMessageContents = [...this.chatMessageContents, ...value.getMessages()]
   }
 
   /**
@@ -104,17 +95,19 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
     encoding?: BufferEncoding,
     metadata?: FunctionResultMetadata<any>
   ): ChatHistory {
-    let builder = ChatMessageTextContent.Builder()
-      .withAuthorRole(authorRole)
-      .withContent(content);
+    let builder = ChatMessageTextContent.Builder().withAuthorRole(authorRole).withContent(content)
     if (encoding) {
-      builder = builder.withEncoding(encoding);
+      builder = builder.withEncoding(encoding)
     }
     if (metadata) {
-      builder = builder.withMetadata(metadata);
+      builder = builder.withMetadata(metadata)
     }
-    this.chatMessageContents.push(builder.build() as ChatMessageContent<any>);
-    return this;
+    return this.addChatMessageContent(builder.build())
+  }
+
+  addChatMessageContent(chatMessageContent: ChatMessageContent<any>) {
+    this.chatMessageContents.push(chatMessageContent)
+    return this
   }
 
   /**
@@ -124,7 +117,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   addUserMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.USER, content);
+    return this.addMessage(AuthorRole.USER, content)
   }
 
   /**
@@ -134,7 +127,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   addAssistantMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.ASSISTANT, content);
+    return this.addMessage(AuthorRole.ASSISTANT, content)
   }
 
   /**
@@ -144,13 +137,13 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   public addSystemMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.SYSTEM, content);
+    return this.addMessage(AuthorRole.SYSTEM, content)
   }
 
   /**
    * Clear the chat history
    */
   clear() {
-    this.chatMessageContents = [];
+    this.chatMessageContents = []
   }
 }

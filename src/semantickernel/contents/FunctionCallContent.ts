@@ -1,4 +1,5 @@
 import KernelArguments from "../functions/KernelArguments"
+import ToolCallBehavior from "../orchestration/ToolCallBehavior"
 import ChatMessageContent from "../services/chatcompletion/ChatMessageContent"
 import KernelContentImpl from "../services/KernelContentImpl"
 
@@ -8,10 +9,10 @@ import KernelContentImpl from "../services/KernelContentImpl"
  * This class is used to represent a function call in the context of a chat message.
  */
 export default class FunctionCallContent<T> extends KernelContentImpl<T> {
-  private readonly id: string | undefined
-  private readonly pluginName: string | undefined
-  private readonly functionName: string
-  private readonly kernelArguments: KernelArguments | undefined
+  private _id: string | undefined
+  private _pluginName: string | undefined
+  private _functionName: string
+  private _kernelArguments: KernelArguments | undefined
 
   constructor(
     functionName: string,
@@ -20,27 +21,31 @@ export default class FunctionCallContent<T> extends KernelContentImpl<T> {
     kernelArguments?: KernelArguments
   ) {
     super()
-    this.functionName = functionName
-    this.pluginName = pluginName
-    this.id = id
-    this.kernelArguments = kernelArguments?.copy()
+    this._functionName = functionName
+    this._pluginName = pluginName
+    this._id = id
+    this._kernelArguments = kernelArguments?.copy()
   }
 
   static getFunctionTools(messageContent: ChatMessageContent<any>) {
-    return messageContent.getItems()?.filter((item) => item instanceof FunctionCallContent)
+    return (messageContent.getItems() ?? []).filter((item) => item instanceof FunctionCallContent)
   }
 
-  getId() {
-    return this.id
+  get id() {
+    return this._id
   }
-  getPluginName() {
-    return this.pluginName
+  get pluginName() {
+    return this._pluginName
   }
-  getFunctionName() {
-    return this.functionName
+  get functionName() {
+    return this._functionName
   }
-  getArguments() {
-    return this.kernelArguments?.copy()
+  get kernelArguments() {
+    return this._kernelArguments?.copy()
+  }
+
+  get fullName() {
+    return ToolCallBehavior.formFullFunctionName(this._pluginName ?? "", this._functionName)
   }
 
   override getContent(): string | undefined {

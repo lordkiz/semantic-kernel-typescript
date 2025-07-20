@@ -24,7 +24,7 @@ export abstract class ChatCompletionService extends TextAIService {
   abstract getChatMessageContentsAsync(
     promptOrChatHistory: string | ChatHistory,
     kernel?: Kernel,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<ChatMessageContent<string>[]>
 
   /**
@@ -40,6 +40,6 @@ export abstract class ChatCompletionService extends TextAIService {
   abstract getStreamingChatMessageContentsAsync(
     promptOrChatHistory: string | ChatHistory,
     kernel?: Kernel,
-    invocationContext?: InvocationContext
+    invocationContext?: InvocationContext<any>
   ): Observable<StreamingChatContent<any>[]>
 }
