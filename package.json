@@ -4,20 +4,24 @@
   "description": "Semantic Kernel for Typescript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Kizito Egeonu",
   "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.23.9",
     "@babel/preset-env": "^7.23.9",
+    "@babel/preset-typescript": "^7.27.1",
     "@eslint/js": "^9.29.0",
     "@types/he": "^1.2.3",
+    "@types/jest": "^30.0.0",
     "@types/lodash": "^4.17.18",
     "@types/node": "^24.0.1",
     "@types/reflect-metadata": "^0.1.0",
     "eslint": "^9.29.0",
+    "jest": "^30.0.5",
     "prettier": "^3.6.0",
+    "ts-jest": "^29.4.0",
     "typescript": "^4.9.5",
     "typescript-eslint": "^8.35.0"
   },
