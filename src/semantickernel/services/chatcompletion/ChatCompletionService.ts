@@ -41,5 +41,5 @@ export abstract class ChatCompletionService extends TextAIService {
     promptOrChatHistory: string | ChatHistory,
     kernel?: Kernel,
     invocationContext?: InvocationContext<any>
-  ): Observable<StreamingChatContent<any>[]>
+  ): Observable<StreamingChatContent<any>>
 }

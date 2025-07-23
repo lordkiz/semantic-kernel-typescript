@@ -5,7 +5,7 @@ import { KernelHookEvent } from "./types/KernelHookEvent"
 /**
  * Represents a KernelHookEvent that is raised before a tool call is invoked.
  */
-export class PreToolCallEvent implements KernelHookEvent {
+export class PreToolCallEvent implements KernelHookEvent<any> {
   private functionName: string
   private kernelArguments: KernelArguments
   private fn: KernelFunction<any>
@@ -14,6 +14,9 @@ export class PreToolCallEvent implements KernelHookEvent {
     this.functionName = fnName
     this.kernelArguments = kernelArguments
     this.fn = fn
+  }
+  getOptions() {
+    throw new Error("Method not implemented.")
   }
 
   getFunction() {

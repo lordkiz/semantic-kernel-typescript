@@ -9,7 +9,7 @@ import {
   GoogleGenAI,
   Tool,
 } from "@google/genai"
-import { from, map, Observable, throwError } from "rxjs"
+import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
 import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
 import AIException from "../../../semantickernel/exceptions/AIException"
@@ -76,14 +76,14 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     promptOrChatHistory: string | ChatHistory,
     kernel: Kernel,
     invocationContext?: InvocationContext<GenerateContentConfig>
-  ): Observable<StreamingChatContent<any>[]> {
+  ): Observable<StreamingChatContent<any>> {
     this.LOGGER.warn(
       "Streaming has been called on GeminiChatCompletion service. " +
         "This is currently not supported in Gemini. " +
         "The results will be returned in a non streaming fashion."
     )
     return this.getChatMessageContentsAsync(promptOrChatHistory, kernel, invocationContext).pipe(
-      map((contents) => {
+      mergeMap((contents) => {
         return contents.map(
           (content) =>
             new GeminiStreamingChatMessageContent(

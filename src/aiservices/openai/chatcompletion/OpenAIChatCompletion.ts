@@ -2,6 +2,7 @@ import OpenAI from "openai"
 import {
   ChatCompletion,
   ChatCompletionAssistantMessageParam,
+  ChatCompletionContentPartImage,
   ChatCompletionCreateParams,
   ChatCompletionMessageParam,
   ChatCompletionMessageToolCall,
@@ -15,7 +16,6 @@ import {
   catchError,
   defaultIfEmpty,
   from,
-  last,
   map,
   mergeMap,
   Observable,
@@ -56,6 +56,7 @@ import { ChatCompletionService } from "../../../semantickernel/services/chatcomp
 import ChatHistory from "../../../semantickernel/services/chatcompletion/ChatHistory"
 import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
 import { ChatMessageContentType } from "../../../semantickernel/services/chatcompletion/message/ChatMessageContentType"
+import ChatMessageImageContent from "../../../semantickernel/services/chatcompletion/message/ChatMessageImageContent"
 import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
 import { OpenAiServiceBuilder } from "../../../semantickernel/services/openai/OpenAiServiceBuilder"
 import { TextAIService } from "../../../semantickernel/services/types/TextAIService"
@@ -64,6 +65,7 @@ import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 import OpenAIChatMessages from "./OpenAIChatMessages"
 import OpenAIFunction from "./OpenAIFunction"
+import OpenAIStreamingChatMessageContent from "./OpenAIStreamingChatMessageContent"
 import { OpenAIToolCallConfig } from "./OpenAIToolCallConfig"
 import { OpenAIToolChoice } from "./OpenAIToolChoice"
 import { OpenAiXMLPromptParser } from "./OpenAiXMLPromptParser"
@@ -243,7 +245,7 @@ export default class OpenAIChatCompletion
       })
   }
 
-  private static executeHook<T extends KernelHookEvent>(
+  private static executeHook<T extends KernelHookEvent<any>>(
     event: T,
     invocationContext?: InvocationContext<ChatCompletionCreateParams>,
     kernel?: Kernel
@@ -460,9 +462,24 @@ export default class OpenAIChatCompletion
 
   static formImageMessage(
     message: ChatMessageContent<any>,
-    content?: string
+    content: string
   ): ChatCompletionUserMessageParam {
-    throw new Error("formImageMessage Method not implemented")
+    const imageUrl: ChatCompletionContentPartImage.ImageURL = {
+      url: content,
+      detail: (message as ChatMessageImageContent<any>)
+        .getDetail()
+        ?.toLowerCase() as ChatCompletionContentPartImage.ImageURL["detail"],
+    }
+
+    return {
+      content: [
+        {
+          image_url: imageUrl,
+          type: "image_url",
+        },
+      ],
+      role: "user",
+    }
   }
 
   ///
@@ -503,7 +520,7 @@ export default class OpenAIChatCompletion
     promptOrChatHistory: string | ChatHistory,
     kernel: Kernel,
     invocationContext?: InvocationContext<ChatCompletionCreateParams>
-  ): Observable<StreamingChatContent<any>[]> {
+  ): Observable<StreamingChatContent<any>> {
     let chatHistory: ChatHistory
     if (typeof promptOrChatHistory === "string") {
       chatHistory = new ChatHistory().addUserMessage(promptOrChatHistory)
@@ -592,10 +609,68 @@ export default class OpenAIChatCompletion
 
   private getChatHistoryStreamingChatMessageContentsAsync(
     chatHistory: ChatHistory,
-    kernel?: Kernel,
-    invocationContext?: InvocationContext<ChatCompletionCreateParams>
-  ): Observable<StreamingChatContent<any>[]> {
-    throw new Error("Method not implemented.")
+    kernel: Kernel,
+    invocationContext:
+      | InvocationContext<ChatCompletionCreateParams>
+      | undefined = InvocationContext.Builder<ChatCompletionCreateParams>().build()
+  ): Observable<StreamingChatContent<any>> {
+    if (
+      invocationContext.getToolCallBehavior() &&
+      invocationContext.getToolCallBehavior()?.isAutoInvokeAllowed()
+    ) {
+      throw new SKException(
+        "ToolCallBehavior auto-invoke is not supported for streaming chat message contents"
+      )
+    }
+
+    if (
+      invocationContext.getFunctionChoiceBehavior() &&
+      invocationContext.getFunctionChoiceBehavior() instanceof AutoFunctionChoiceBehavior &&
+      (invocationContext.getFunctionChoiceBehavior() as AutoFunctionChoiceBehavior).isAutoInvoke()
+    ) {
+      throw new SKException(
+        "FunctionChoiceBehavior auto-invoke is not supported for streaming chat message contents"
+      )
+    }
+
+    if (invocationContext.returnMode() != InvocationReturnMode.NEW_MESSAGES_ONLY) {
+      throw new SKException(
+        "Streaming chat message contents only supports NEW_MESSAGES_ONLY return mode"
+      )
+    }
+
+    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCopleteionMessageParams(
+      chatHistory.getMessages()
+    )
+
+    const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
+
+    const fns: OpenAIFunction[] = []
+    if (kernel) {
+      kernel.getPlugins().forEach((plugin) => {
+        plugin.getFunctions().forEach((kernelFunction) => {
+          fns.push(
+            OpenAIFunction.build(kernelFunction.getMetadata(), kernelFunction.getPluginName())
+          )
+        })
+      })
+    }
+
+    const { options } = this.executePrechatHooks(chatMessages, kernel, fns, invocationContext, 0)
+
+    return from(this.getClient().chat.completions.stream({ ...options, stream: true })).pipe(
+      mergeMap((chunk) => {
+        return chunk.choices.map((message) => {
+          const role = message.delta.role ?? AuthorRole.ASSISTANT
+          return new OpenAIStreamingChatMessageContent(
+            chunk.id,
+            role as AuthorRole,
+            message.delta.content ?? "",
+            this.getModelId()
+          ) as StreamingChatContent<any>
+        })
+      })
+    )
   }
 
   private doChatMessageContentsAsync(
@@ -631,37 +706,20 @@ export default class OpenAIChatCompletion
     invocationContext: InvocationContext<ChatCompletionCreateParams>,
     requestIndex: number | undefined = 0
   ): Observable<OpenAIChatMessages> {
-    const toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
-      invocationContext ?? new InvocationContext(),
+    const { options, toolCallConfig } = this.executePrechatHooks(
+      messages,
+      kernel,
       fns,
-      messages.getAllMessages(),
+      invocationContext,
       requestIndex
     )
 
-    const options = OpenAIChatCompletion.executeHook(
-      new PreChatCompletionEvent(
-        OpenAIChatCompletion.getCompletionsOptions(
-          this,
-          messages.getAllMessages(),
-          invocationContext,
-          toolCallConfig
-        )
-      ),
-      invocationContext,
-      kernel
-    ).getOptions()
-
     return from(this.getClient().chat.completions.create({ ...options, stream: false })).pipe(
-      last(),
       mergeMap((chatCompletions) => {
         const responseMessages = chatCompletions.choices.map((m) => m.message).filter(Boolean)
 
         // execute PostChatCompletionHook
-        OpenAIChatCompletion.executeHook(
-          new PostChatCompletionEvent(chatCompletions),
-          invocationContext,
-          kernel
-        )
+        OpenAIChatCompletion.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
 
         // Just return the result:
         // If auto-invoking is not enabled
@@ -734,6 +792,36 @@ export default class OpenAIChatCompletion
         )
       })
     ) as Observable<OpenAIChatMessages>
+  }
+
+  private executePrechatHooks(
+    messages: OpenAIChatMessages,
+    kernel: Kernel,
+    fns: OpenAIFunction[],
+    invocationContext: InvocationContext<ChatCompletionCreateParams>,
+    requestIndex: number
+  ): { options: ChatCompletionCreateParams; toolCallConfig: OpenAIToolCallConfig | undefined } {
+    const toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
+      invocationContext,
+      fns,
+      messages.getAllMessages(),
+      requestIndex
+    )
+
+    const options = OpenAIChatCompletion.executeHook(
+      new PreChatCompletionEvent(
+        OpenAIChatCompletion.getCompletionsOptions(
+          this,
+          messages.getAllMessages(),
+          invocationContext,
+          toolCallConfig
+        )
+      ),
+      invocationContext,
+      kernel
+    ).getOptions()
+
+    return { options, toolCallConfig }
   }
 
   private extractChatCompletionMessages(completions: ChatCompletion): ChatCompletionMessageParam[] {

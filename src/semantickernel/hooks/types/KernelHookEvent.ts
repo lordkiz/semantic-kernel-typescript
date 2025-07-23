@@ -1,1 +1,3 @@
-export interface KernelHookEvent {}
+export interface KernelHookEvent<OptionsType> {
+  getOptions(): OptionsType
+}
