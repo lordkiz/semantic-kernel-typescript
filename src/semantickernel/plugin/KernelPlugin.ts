@@ -1,5 +1,6 @@
 import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
 import KernelFunction from "../functions/KernelFunction"
+import { Logger } from "../log/Logger"
 
 /**
  * A plugin contains a collection of functions that can be invoked by the Semantic Kernel.
@@ -40,6 +41,10 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    * @param fn The function to add.
    */
   addFunction(fn: KernelFunction<any>) {
+    if (this.functions.get(fn.getName())) {
+      Logger.warn(`function ${fn.getName()} already exists overwriting existing function`)
+    }
+
     this.functions.put(fn.getName(), fn)
   }
 

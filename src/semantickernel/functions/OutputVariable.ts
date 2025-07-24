@@ -36,7 +36,7 @@ class OutputVariable<T> extends JsonCreator {
    *
    * @return The type of the output variable.
    */
-  // public Class<?> getType() {
+  // public getType() {
   //     return KernelPluginFactory.getTypeForName(type);
   // }
 }

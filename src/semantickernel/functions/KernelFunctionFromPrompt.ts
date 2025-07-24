@@ -1,4 +1,4 @@
-import { concatMap, last, map, Observable } from "rxjs"
+import { concatMap, map, Observable } from "rxjs"
 import { v4 as uuid4 } from "uuid"
 import SKException from "../exceptions/SKException"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
@@ -75,7 +75,6 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
       preRenderingHookState?.getArguments() ?? kernelArguments ?? new KernelArguments()
 
     const rendered = this.template.renderAsync(kernel, updatedArguments, invocationContext).pipe(
-      last(),
       concatMap((fnResult) => {
         const initialPrompt = fnResult.getResult()
 

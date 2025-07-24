@@ -1,37 +1,35 @@
-import CaseInsensitiveMap from "./ds/CaseInsensitiveMap";
-import SKException from "./exceptions/SKException";
-import KernelFunction from "./functions/KernelFunction";
-import KernelFunctionMetadata from "./functions/KernelFunctionMetadata";
-import { Logger } from "./log/Logger";
-import KernelPlugin from "./plugin/KernelPlugin";
+import CaseInsensitiveMap from "./ds/CaseInsensitiveMap"
+import SKException from "./exceptions/SKException"
+import KernelFunction from "./functions/KernelFunction"
+import KernelFunctionMetadata from "./functions/KernelFunctionMetadata"
+import { Logger } from "./log/Logger"
+import KernelPlugin from "./plugin/KernelPlugin"
 
 export default class KernelPluginCollection {
-  private LOGGER = Logger;
-
-  private plugins = new CaseInsensitiveMap<KernelPlugin>();
+  private plugins = new CaseInsensitiveMap<KernelPlugin>()
 
   /**
    * Initialize a new instance of the {@link KernelPluginCollection} class with an empty
    * collection of plugins.
    */
-  constructor();
-  constructor(plugins: KernelPlugin[]);
+  constructor()
+  constructor(plugins: KernelPlugin[])
 
   /**
    * Initialize a new instance of the {@link KernelPluginCollection} class from a collection of
    * plugins.
    */
   constructor(plugins?: KernelPlugin[]) {
-    plugins?.forEach((plugin) => this.putOrMerge(plugin.getName(), plugin));
+    plugins?.forEach((plugin) => this.putOrMerge(plugin.getName(), plugin))
   }
 
   private putOrMerge(pluginName: string, plugin: KernelPlugin) {
     if (this.plugins.contains(pluginName)) {
       plugin.getFunctions().forEach((fn) => {
-        this.plugins.get(pluginName)?.addFunction(fn);
-      });
+        this.plugins.get(pluginName)?.addFunction(fn)
+      })
     } else {
-      this.plugins.put(pluginName, plugin);
+      this.plugins.put(pluginName, plugin)
     }
   }
 
@@ -44,22 +42,18 @@ export default class KernelPluginCollection {
    * @throws IllegalArgumentException If the plugin or function is not found.
    */
   getFunction(pluginName: string, functionName: string): KernelFunction<any> {
-    const plugin = this.plugins.get(pluginName);
+    const plugin = this.plugins.get(pluginName)
     if (!plugin) {
-      throw new SKException("Failed to find plugin " + pluginName);
+      throw new SKException("Failed to find plugin " + pluginName)
     }
-    const fn = plugin.get(functionName);
+    const fn = plugin.get(functionName)
 
     if (!fn) {
       throw new SKException(
-        "Function '" +
-          functionName +
-          "' not found in plugin '" +
-          pluginName +
-          "'"
-      );
+        "Function '" + functionName + "' not found in plugin '" + pluginName + "'"
+      )
     }
-    return fn;
+    return fn
   }
 
   /**
@@ -68,15 +62,9 @@ export default class KernelPluginCollection {
    * @return A list of all functions from all plugins.
    */
   getFunctions(): KernelFunction<any>[] {
-    return Array.from(this.plugins.values()).reduce(
-      (kernelFunctions, plugin) => {
-        return [
-          ...kernelFunctions,
-          ...Array.from(plugin.getFunctions().values()),
-        ];
-      },
-      [] as KernelFunction<any>[]
-    );
+    return Array.from(this.plugins.values()).reduce((kernelFunctions, plugin) => {
+      return [...kernelFunctions, ...Array.from(plugin.getFunctions().values())]
+    }, [] as KernelFunction<any>[])
   }
 
   /**
@@ -85,9 +73,7 @@ export default class KernelPluginCollection {
    * @return A list of all function metadata from all plugins.
    */
   getFunctionsMetadata(): KernelFunctionMetadata<any>[] {
-    return this.getFunctions().map((kernelFunction) =>
-      kernelFunction.getMetadata()
-    );
+    return this.getFunctions().map((kernelFunction) => kernelFunction.getMetadata())
   }
 
   /**
@@ -96,7 +82,7 @@ export default class KernelPluginCollection {
    * @return The plugins available through the kernel.
    */
   getPlugins(): KernelPlugin[] {
-    return Object.seal(Array.from(this.plugins.values()));
+    return Object.seal(Array.from(this.plugins.values()))
   }
 
   /**
@@ -106,7 +92,7 @@ export default class KernelPluginCollection {
    * @return The plugin with the specified name, or {@code null} if no such plugin exists.
    */
   getPlugin(pluginName: string): KernelPlugin | undefined {
-    return this.plugins.get(pluginName);
+    return this.plugins.get(pluginName)
   }
 
   /**
@@ -117,9 +103,9 @@ export default class KernelPluginCollection {
    */
   add(plugin: KernelPlugin) {
     if (this.plugins.has(plugin.getName())) {
-      this.LOGGER.warn("plugin already exists overwriting existing plugin");
+      Logger.warn("plugin already exists overwriting existing plugin")
     }
 
-    this.plugins.put(plugin.getName(), plugin);
+    this.plugins.put(plugin.getName(), plugin)
   }
 }
