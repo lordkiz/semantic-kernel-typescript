@@ -1,6 +1,6 @@
-import "reflect-metadata";
-import SKException from "../../exceptions/SKException";
-import { KERNEL_FUNCTION_METADATA_KEY, SKSample } from "./constants";
+import "reflect-metadata"
+import SKException from "../../exceptions/SKException"
+import { KERNEL_FUNCTION_METADATA_KEY, SKSample } from "./constants"
 
 export type DefineKernelFunctionOptions = Partial<{
   /**
@@ -11,14 +11,14 @@ export type DefineKernelFunctionOptions = Partial<{
    *
    * @return the description of the function, or an empty string if no description is provided.
    */
-  description?: string;
+  description?: string
 
   /**
    * The name of the function.
    *
    * @return the name of the function, or an empty string if no name is provided.
    */
-  name?: string;
+  name?: string
 
   /**
    * The fully qualified class name of the return value of the function, for example,
@@ -28,7 +28,7 @@ export type DefineKernelFunctionOptions = Partial<{
    *
    * @return the fully qualified class name of the return value of the function
    */
-  returnType?: string;
+  returnType?: string
 
   /**
    * The description of the return value of the function. The description should be short and
@@ -37,7 +37,7 @@ export type DefineKernelFunctionOptions = Partial<{
    * @return the description of the return value of the function, or an empty string if no
    * description is provided.
    */
-  returnDescription?: string;
+  returnDescription?: string
 
   /**
    * Examples of how to use the function. The examples should be short and concise. The Semantic
@@ -45,26 +45,15 @@ export type DefineKernelFunctionOptions = Partial<{
    *
    * @return Examples of how to use the function, or an empty array if no examples are provided.
    */
-  samples?: SKSample[];
-}>;
+  samples?: SKSample[]
+}>
 
 export function DefineKernelFunction(opts: DefineKernelFunctionOptions) {
-  return (
-    target: Object,
-    propertyKey: string | symbol,
-    descriptor: PropertyDescriptor
-  ) => {
+  return (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     if (!propertyKey) {
-      throw new SKException(
-        "Anonymous functions are not allowed as Kernel Functions"
-      );
+      throw new SKException("Anonymous functions are not allowed as Kernel Functions")
     }
-    Reflect.defineMetadata(
-      KERNEL_FUNCTION_METADATA_KEY,
-      opts,
-      target,
-      propertyKey
-    );
+    Reflect.defineMetadata(KERNEL_FUNCTION_METADATA_KEY, opts, target, propertyKey)
 
     // const originalMethod = descriptor.value;
 
@@ -75,6 +64,6 @@ export function DefineKernelFunction(opts: DefineKernelFunctionOptions) {
     //   return result;
     // };
 
-    return descriptor;
-  };
+    return descriptor
+  }
 }

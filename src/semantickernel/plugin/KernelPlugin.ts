@@ -4,7 +4,7 @@ import KernelFunction from "../functions/KernelFunction"
 /**
  * A plugin contains a collection of functions that can be invoked by the Semantic Kernel.
  */
-export default class KernelPlugin implements Iterable<KernelFunction<any>, any, any> {
+export default class KernelPlugin implements Iterable<KernelFunction<any>> {
   private name: string
   private description: string
   private functions: CaseInsensitiveMap<KernelFunction<any>>

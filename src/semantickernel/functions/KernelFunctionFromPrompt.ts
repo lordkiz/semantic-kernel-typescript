@@ -5,7 +5,6 @@ import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEv
 import KernelHooks from "../hooks/KernelHooks"
 import { PromptRenderedEvent, PromptRenderingEvent } from "../hooks/PromptEvents"
 import Kernel from "../Kernel"
-import { Logger } from "../log/Logger"
 import FunctionResult from "../orchestration/FunctionResult"
 import InvocationContext from "../orchestration/InvocationContext"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
@@ -25,8 +24,6 @@ import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
 import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 
 export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
-  private LOGGER = Logger
-
   private template: PromptTemplate
 
   /**
@@ -92,14 +89,14 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
           throw new SKException("no prompt returned after executing PromptRenderedHook")
         }
 
-        let args = promptHookResult.getArguments()
+        let args = promptHookResult.getArguments() ?? KernelArguments.Builder().build()
 
         const fnInvokingEvent = kernelHooks.executeHooks(new FunctionInvokingEvent(this, args))
 
         args = KernelArguments.Builder()
           .withVariables(fnInvokingEvent.getArguments()!)
           .withExecutionSettings(
-            this.getExecutionSettings() ?? PromptExecutionSettings.Builder().build()
+            this.getExecutionSettings() ?? PromptExecutionSettings.Builder<any>().build()
           )
           .build()
 
@@ -239,7 +236,8 @@ export class FromPromptBuilder<T> {
   }
 
   build(): KernelFunction<T> {
-    this.executionSettings = this.executionSettings ?? PromptExecutionSettings.Builder().build()
+    this.executionSettings =
+      this.executionSettings ?? PromptExecutionSettings.Builder<any>().build()
 
     this.templateFormat =
       this.templateFormat ?? HandlebarsPromptTemplateFactory.HANDLEBARS_TEMPLATE_FORMAT

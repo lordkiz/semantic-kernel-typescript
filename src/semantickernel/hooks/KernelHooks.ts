@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid"
 import {
   FunctionInvokedHook,
   FunctionInvokingHook,
@@ -8,30 +8,30 @@ import {
   PreToolCallHook,
   PromptRenderedHook,
   PromptRenderingHook,
-} from "./KernelHook";
-import { KernelHookEvent } from "./types/KernelHookEvent";
+} from "./KernelHook"
+import { KernelHookEvent } from "./types/KernelHookEvent"
 
 /**
  * Represents a collection of hooks that can be used to intercept and modify events in the kernel.
  */
 export default class KernelHooks {
-  private hooks: Map<string, KernelHook<any>>;
+  private hooks: Map<string, KernelHook<any>>
 
-  constructor();
-  constructor(kernelHooks: KernelHooks | Map<string, KernelHook<any>>);
+  constructor()
+  constructor(kernelHooks: KernelHooks | Map<string, KernelHook<any>>)
   constructor(kernelHooks?: KernelHooks | Map<string, KernelHook<any>>) {
-    this.hooks = new Map<string, KernelHook<any>>();
+    this.hooks = new Map<string, KernelHook<any>>()
 
-    let _hooks = new Map<string, KernelHook<any>>();
+    let _hooks = new Map<string, KernelHook<any>>()
 
     if (kernelHooks && kernelHooks instanceof KernelHooks) {
-      _hooks = kernelHooks.getHooks();
+      _hooks = kernelHooks.getHooks()
     }
     if (kernelHooks && kernelHooks instanceof Map) {
-      _hooks = kernelHooks;
+      _hooks = kernelHooks
     }
     for (const [k, v] of _hooks) {
-      this.hooks.set(k, v);
+      this.hooks.set(k, v)
     }
   }
 
@@ -41,7 +41,7 @@ export default class KernelHooks {
    * @return an unmodifiable copy of this {@link KernelHooks}
    */
   unmodifiableClone(): UnmodifiableKernelHooks {
-    return UnmodifiableKernelHooks.construct(this);
+    return UnmodifiableKernelHooks.construct(this)
   }
 
   /**
@@ -50,7 +50,7 @@ export default class KernelHooks {
    * @return an unmodifiable map of the hooks
    */
   protected getHooks() {
-    return Object.seal(this.hooks);
+    return Object.seal(this.hooks)
   }
 
   /**
@@ -60,7 +60,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addFunctionInvokingHook<T>(fnInvokingHook: FunctionInvokingHook<T>) {
-    return this.addHook(fnInvokingHook);
+    return this.addHook(fnInvokingHook)
   }
 
   /**
@@ -70,7 +70,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addFunctionInvokedHook<T>(fnInvokedHook: FunctionInvokedHook<T>) {
-    return this.addHook(fnInvokedHook);
+    return this.addHook(fnInvokedHook)
   }
 
   /**
@@ -80,7 +80,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addPreChatCompletionHook(preChatCompletionHook: PreChatCompletionHook) {
-    return this.addHook(preChatCompletionHook);
+    return this.addHook(preChatCompletionHook)
   }
 
   /**
@@ -90,7 +90,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addPreToolCallHook(PreToolCallHook: PreToolCallHook) {
-    return this.addHook(PreToolCallHook);
+    return this.addHook(PreToolCallHook)
   }
 
   /**
@@ -100,7 +100,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addPostChatCompletionHook(postChatCompletionHook: PostChatCompletionHook) {
-    return this.addHook(postChatCompletionHook);
+    return this.addHook(postChatCompletionHook)
   }
 
   /**
@@ -110,7 +110,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addPromptRenderedHook(promptRenderedHook: PromptRenderedHook) {
-    return this.addHook(promptRenderedHook);
+    return this.addHook(promptRenderedHook)
   }
 
   /**
@@ -120,7 +120,7 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addPromptRenderingHook(promptRenderingHook: PromptRenderingHook) {
-    return this.addHook(promptRenderingHook);
+    return this.addHook(promptRenderingHook)
   }
 
   /**
@@ -130,13 +130,13 @@ export default class KernelHooks {
    * @param <T>   the type of the event
    * @return the event after the hooks have been executed
    */
-  executeHooks<T extends KernelHookEvent>(event: T): T {
+  executeHooks<T extends KernelHookEvent<any>>(event: T): T {
     return Array.from(this.hooks.values())
       .filter((it) => it.test(event))
       .sort((a, b) => b.getPriority() - a.getPriority())
       .reduce((newEvent, hook) => {
-        return hook.execute(newEvent);
-      }, event);
+        return hook.execute(newEvent)
+      }, event)
   }
 
   /**
@@ -145,7 +145,7 @@ export default class KernelHooks {
    * @param kernelHooks the hooks to append
    * @return this instance of the {@link KernelHooks} class
    */
-  addHook(hook: KernelHook<any>): string;
+  addHook(hook: KernelHook<any>): string
   /**
    * Add a {@link KernelHook} to the collection of hooks.
    *
@@ -154,9 +154,9 @@ export default class KernelHooks {
    * @return the key of the hook in the collection
    */
   addHook(hook: KernelHook<any>, hookName?: string): string {
-    const key = hookName ?? uuidv4();
-    this.hooks.set(key, hook);
-    return key;
+    const key = hookName ?? uuidv4()
+    this.hooks.set(key, hook)
+    return key
   }
 
   /**
@@ -168,14 +168,14 @@ export default class KernelHooks {
   addHooks(kernelHooks?: KernelHooks) {
     if (kernelHooks) {
       for (const [k, v] of kernelHooks.getHooks()) {
-        this.hooks.set(k, v);
+        this.hooks.set(k, v)
       }
     }
-    return this;
+    return this
   }
 
   removeHook(hookName: string) {
-    return this.hooks.delete(hookName);
+    return this.hooks.delete(hookName)
   }
 
   /**
@@ -184,7 +184,7 @@ export default class KernelHooks {
    * @return {@code true} if the collection is empty, otherwise {@code false}
    */
   isEmpty(): boolean {
-    return this.hooks.size === 0;
+    return this.hooks.size === 0
   }
 
   /**
@@ -196,21 +196,21 @@ export default class KernelHooks {
    * @return the list of hooks to be invoked
    */
   static merge(a?: KernelHooks, b?: KernelHooks): KernelHooks {
-    let hooks = a;
+    let hooks = a
     if (!hooks) {
-      hooks = new KernelHooks();
+      hooks = new KernelHooks()
     }
 
     if (!b) {
-      return hooks;
+      return hooks
     } else if (hooks.isEmpty()) {
-      return b;
+      return b
     } else {
-      const merged = new Map(hooks.getHooks());
+      const merged = new Map(hooks.getHooks())
       for (const [k, v] of b.getHooks()) {
-        merged.set(k, v);
+        merged.set(k, v)
       }
-      return new KernelHooks(merged);
+      return new KernelHooks(merged)
     }
   }
 }
@@ -220,56 +220,44 @@ export default class KernelHooks {
  */
 export class UnmodifiableKernelHooks extends KernelHooks {
   private constructor(kernelHooks: KernelHooks) {
-    super(kernelHooks);
+    super(kernelHooks)
   }
 
   static construct(kernelHooks?: KernelHooks) {
-    return new UnmodifiableKernelHooks(kernelHooks || new KernelHooks());
+    return new UnmodifiableKernelHooks(kernelHooks || new KernelHooks())
   }
 
-  override addFunctionInvokingHook<T>(
-    fnInvokingHook: FunctionInvokingHook<T>
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addFunctionInvokingHook<T>(_fnInvokingHook: FunctionInvokingHook<T>): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addFunctionInvokedHook<T>(
-    fnInvokedHook: FunctionInvokedHook<T>
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addFunctionInvokedHook<T>(_fnInvokedHook: FunctionInvokedHook<T>): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addPreChatCompletionHook(
-    preChatCompletionHook: PreChatCompletionHook
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addPreChatCompletionHook(_preChatCompletionHook: PreChatCompletionHook): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addPreToolCallHook(PreToolCallHook: PreToolCallHook): string {
-    throw new TypeError("Unsupported operation");
+  override addPreToolCallHook(_PreToolCallHook: PreToolCallHook): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addPostChatCompletionHook(
-    postChatCompletionHook: PostChatCompletionHook
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addPostChatCompletionHook(_postChatCompletionHook: PostChatCompletionHook): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addPromptRenderedHook(
-    promptRenderedHook: PromptRenderedHook
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addPromptRenderedHook(_promptRenderedHook: PromptRenderedHook): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addPromptRenderingHook(
-    promptRenderingHook: PromptRenderingHook
-  ): string {
-    throw new TypeError("Unsupported operation");
+  override addPromptRenderingHook(_promptRenderingHook: PromptRenderingHook): string {
+    throw new TypeError("Unsupported operation")
   }
 
-  override addHook(hook: KernelHook<any>): string;
+  override addHook(hook: KernelHook<any>): string
 
-  override addHook(hook: KernelHook<any>, hookName?: string): string {
-    throw new TypeError("Unsupported operation");
+  override addHook(_hook: KernelHook<any>, _hookName?: string): string {
+    throw new TypeError("Unsupported operation")
   }
 }

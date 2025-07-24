@@ -1,16 +1,19 @@
+import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
 import { JsonProperty } from "../decorators/JsonProperty"
+import SKException from "../exceptions/SKException"
 import { JsonCreator } from "../implementations/JsonCreator"
+import { KernelFunctionParameterMetadata } from "./decorators/KernelFunctionParameter"
 
 /**
  * Metadata for an input variable of a {@link KernelFunction}.
  */
 class InputVariable extends JsonCreator {
-  @JsonProperty("name") private name: string
-  @JsonProperty("type") private type: string
-  @JsonProperty("description") private description: string | undefined
-  @JsonProperty("default") private defaultValue: string | undefined
+  @JsonProperty("name") private _name: string
+  @JsonProperty("type") private _type: string
+  @JsonProperty("description") private _description: string | undefined
+  @JsonProperty("default") private _defaultValue: string | undefined
   @JsonProperty("is_required") private required: boolean
-  @JsonProperty("enum") private enumValues: any[] | undefined
+  @JsonProperty("enum") private _enumValues: any[] | undefined
   private inputVariables: InputVariable[] | undefined
 
   /**
@@ -34,42 +37,40 @@ class InputVariable extends JsonCreator {
     inputVariables?: InputVariable[]
   ) {
     super()
-    this.name = name
-    this.description = description
-    this.defaultValue = defaultValue
+    this._name = name
+    this._description = description
+    this._defaultValue = defaultValue
     this.required = !!required
 
     if (!type) {
       type = "string"
     }
 
-    this.type = type
+    this._type = type
 
-    this.enumValues = enumValues ? Object.seal(enumValues) : enumValues
+    this._enumValues = enumValues ? Object.seal(enumValues) : enumValues
 
     this.inputVariables = inputVariables
   }
 
-  /**
-   * Creates a new instance of {@link InputVariable}.
-   *
-   * @param name         the name of the input variable
-   * @param type         the type of the input variable
-   * @param description  the description of the input variable
-   * @param defaultValue the default value of the input variable
-   * @param required     whether the input variable is required
-   * @param enumValues the enum values of the input variable
-   * @return a new instance of {@link InputVariable}
-   */
-  public static build(
-    name: string,
-    type?: string,
-    description?: string,
-    defaultValue?: string,
-    required?: boolean,
-    enumValues?: any[]
+  static Builder() {
+    return new InputVariableBuilder()
+  }
+
+  static fromKernelFunctionParameterMetadata(
+    kernelFunctionParameterMetadata: KernelFunctionParameterMetadata
   ): InputVariable {
-    return new InputVariable(name, type, description, defaultValue, required, enumValues)
+    const { name, defaultValue, description, enumValues, required, type } =
+      kernelFunctionParameterMetadata
+
+    return InputVariable.Builder()
+      .withName(name)
+      .withDefaultValue(defaultValue)
+      .withDescription(description ?? "")
+      .withEnumValues(enumValues)
+      .isRequired(!!required)
+      .withType(type ?? "string")
+      .build()
   }
 
   /**
@@ -77,8 +78,8 @@ class InputVariable extends JsonCreator {
    *
    * @return the name of the input variable
    */
-  public getName() {
-    return this.name
+  get name() {
+    return this._name
   }
 
   /**
@@ -86,8 +87,8 @@ class InputVariable extends JsonCreator {
    *
    * @return the description of the input variable
    */
-  public getDescription() {
-    return this.description
+  get description() {
+    return this._description
   }
 
   /**
@@ -95,8 +96,8 @@ class InputVariable extends JsonCreator {
    *
    * @return the default value of the input variable
    */
-  public getDefaultValue() {
-    return this.defaultValue
+  get defaultValue() {
+    return this._defaultValue
   }
 
   /**
@@ -104,7 +105,7 @@ class InputVariable extends JsonCreator {
    *
    * @return whether the input variable is required
    */
-  public isRequired() {
+  get isRequired() {
     return this.required
   }
 
@@ -113,8 +114,8 @@ class InputVariable extends JsonCreator {
    *
    * @return the type of the input variable
    */
-  public getType() {
-    return this.type
+  get type() {
+    return this._type
   }
 
   /**
@@ -131,8 +132,8 @@ class InputVariable extends JsonCreator {
    *
    * @return the possible enum values of the input variable
    */
-  public getEnumValues() {
-    return this.enumValues
+  get enumValues() {
+    return this._enumValues
   }
 
   addInputVariable(inputVariable: InputVariable) {
@@ -149,11 +150,11 @@ class InputVariable extends JsonCreator {
   private _toJsonSchema(initial: Record<string, any>): Record<string, any> {
     const res: Record<string, any> = {
       ...initial,
-      type: this.getType(),
-      name: this.getName(),
-      description: this.getDescription(),
+      type: this.type,
+      name: this.name,
+      description: this.description,
       properties: {},
-      enum: this.getEnumValues(),
+      enum: this.enumValues,
     }
 
     const required = []
@@ -165,8 +166,8 @@ class InputVariable extends JsonCreator {
     while (i < l) {
       const variable = ivs[i]
 
-      if (variable.isRequired()) {
-        required.push(variable.getName())
+      if (variable.isRequired) {
+        required.push(variable.name)
       }
 
       const schema = variable._toJsonSchema(res)
@@ -191,3 +192,75 @@ class InputVariable extends JsonCreator {
 }
 
 export default InputVariable
+
+class InputVariableBuilder implements SemanticKernelBuilder<InputVariable> {
+  private _name: string | undefined
+  private _type: string | undefined
+  private _description: string | undefined
+  private _defaultValue: any | undefined
+  private _isRequired: boolean | undefined
+  private _enumValues: any[] | undefined
+  private _inputVariables: InputVariable[] | undefined
+
+  withName(name: string) {
+    this._name = name
+    return this
+  }
+
+  withType(typeName: string) {
+    this._type = typeName
+    return this
+  }
+
+  withDescription(description: string) {
+    this._description = description
+    return this
+  }
+
+  withDefaultValue(value: any) {
+    this._defaultValue = value
+    return this
+  }
+
+  isRequired(bool: boolean) {
+    this._isRequired = bool
+    return this
+  }
+
+  withEnumValues(values: any[] | undefined) {
+    this._enumValues = values
+    return this
+  }
+
+  addInputVariable(variable: InputVariable) {
+    if (!this._inputVariables) {
+      this._inputVariables = []
+    }
+
+    this._inputVariables.push(variable)
+
+    return this
+  }
+
+  withInputVariables(variables: InputVariable[]) {
+    this._inputVariables = [...(this._inputVariables ?? []), ...variables]
+
+    return this
+  }
+
+  build(): InputVariable {
+    if (!this._name) {
+      throw new SKException("InputVariable must have a name")
+    }
+
+    return new InputVariable(
+      this._name,
+      this._type ?? "string",
+      this._description,
+      this._defaultValue,
+      this._isRequired,
+      this._enumValues,
+      this._inputVariables
+    )
+  }
+}

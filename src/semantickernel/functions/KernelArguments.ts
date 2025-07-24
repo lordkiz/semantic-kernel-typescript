@@ -2,23 +2,26 @@ import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import ContextVariable from "../variables/ContextVariable"
 
-export default class KernelArguments implements Map<string, ContextVariable<any>> {
+export default class KernelArguments<
+  ExecutionSettingsType extends Record<string, any> = Record<string, any>,
+> implements Map<string, ContextVariable<any>>
+{
   /**
    * Default key for the main input.
    */
   static MAIN_KEY = "input"
 
   variables: CaseInsensitiveMap<ContextVariable<any>>
-  executionSettings: PromptExecutionSettings
+  executionSettings: PromptExecutionSettings<ExecutionSettingsType>
 
   constructor()
   constructor(
     variables: Map<string, ContextVariable<any>>,
-    executionSettings: PromptExecutionSettings
+    executionSettings: PromptExecutionSettings<ExecutionSettingsType>
   )
   constructor(
     variables?: Map<string, ContextVariable<any>>,
-    executionSettings?: PromptExecutionSettings
+    executionSettings?: PromptExecutionSettings<ExecutionSettingsType>
   ) {
     if (variables) {
       this.variables = new CaseInsensitiveMap<any>(variables)
@@ -26,7 +29,8 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
       this.variables = new CaseInsensitiveMap<any>()
     }
 
-    this.executionSettings = executionSettings ?? PromptExecutionSettings.Builder().build()
+    this.executionSettings =
+      executionSettings ?? PromptExecutionSettings.Builder<ExecutionSettingsType>().build()
   }
 
   /**
@@ -81,19 +85,19 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
 
   size: number = 0
 
-  entries(): MapIterator<[string, any]> {
+  entries() {
     return this.variables.entries()
   }
 
-  keys(): MapIterator<string> {
+  keys() {
     return this.variables.keys()
   }
 
-  values(): MapIterator<any> {
+  values() {
     return this.variables.values()
   }
 
-  [Symbol.iterator](): MapIterator<[string, any]> {
+  [Symbol.iterator]() {
     return this.variables[Symbol.iterator]()
   }
 
@@ -103,7 +107,7 @@ export default class KernelArguments implements Map<string, ContextVariable<any>
 
   private static _Builder = {
     variablez: new Map<string, any>(),
-    executionSettingz: PromptExecutionSettings.Builder().build(),
+    executionSettingz: PromptExecutionSettings.Builder<any>().build(),
 
     withInput<T>(content: T) {
       this.variablez.set(KernelArguments.MAIN_KEY, content)

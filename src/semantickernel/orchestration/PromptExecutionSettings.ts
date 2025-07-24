@@ -8,7 +8,7 @@ export default class PromptExecutionSettings<
 > extends Map<keyof SettingsType, any> {
   private settings: SettingsType
   constructor(settings: SettingsType, serviceId?: string, resultsPerPrompt?: number) {
-    super(Object.assign(settings))
+    super()
 
     this.settings = settings
 
@@ -25,6 +25,10 @@ export default class PromptExecutionSettings<
           Number.MAX_VALUE
         )
     )
+
+    for (const key of Object.keys(settings ?? {})) {
+      this.set(key, settings[key])
+    }
   }
 
   static DEFAULT_RESULTS_PER_PROMPT = 1

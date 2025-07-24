@@ -7,10 +7,7 @@ import InvocationContext from "../orchestration/InvocationContext"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import ContextVariable from "../variables/ContextVariable"
 import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants"
-import {
-  KernelFunctionParameterMetadata,
-  NO_DEFAULT_VALUE,
-} from "./decorators/KernelFunctionParameter"
+import { KernelFunctionParameterMetadata } from "./decorators/KernelFunctionParameter"
 import KernelArguments from "./KernelArguments"
 import KernelFunctionMetadata from "./KernelFunctionMetadata"
 
@@ -115,13 +112,11 @@ export default abstract class KernelFunction<T> {
     return methodParams
       .sort((a, b) => a.index - b.index)
       .map((p) => {
-        const value =
-          kernelArguments?.get(p.name) ??
-          (p.defaultValue !== NO_DEFAULT_VALUE
-            ? ContextVariable.of<typeof p.type>(p.defaultValue)
-            : undefined)
+        const value = ContextVariable.of<typeof p.type>(
+          kernelArguments?.get(p.name) ?? p.defaultValue
+        )
 
-        const v = value ? value.getValue() : value
+        const v = value.getValue()
         if (p.required && v === undefined) {
           throw new SKException(`no value provided for required parameter ${p.name}`)
         }
