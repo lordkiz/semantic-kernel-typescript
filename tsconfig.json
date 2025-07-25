@@ -20,8 +20,8 @@
       "es2022.string",
       "es2022.error"
     ],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
     "target": "esnext",

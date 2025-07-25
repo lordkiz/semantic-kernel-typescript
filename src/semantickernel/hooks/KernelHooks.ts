@@ -15,23 +15,23 @@ import { KernelHookEvent } from "./types/KernelHookEvent"
  * Represents a collection of hooks that can be used to intercept and modify events in the kernel.
  */
 export default class KernelHooks {
-  private hooks: Map<string, KernelHook<any>>
+  private _hooks: Map<string, KernelHook<any>>
 
   constructor()
   constructor(kernelHooks: KernelHooks | Map<string, KernelHook<any>>)
   constructor(kernelHooks?: KernelHooks | Map<string, KernelHook<any>>) {
-    this.hooks = new Map<string, KernelHook<any>>()
+    this._hooks = new Map<string, KernelHook<any>>()
 
-    let _hooks = new Map<string, KernelHook<any>>()
+    let __hooks = new Map<string, KernelHook<any>>()
 
     if (kernelHooks && kernelHooks instanceof KernelHooks) {
-      _hooks = kernelHooks.getHooks()
+      __hooks = kernelHooks.hooks
     }
     if (kernelHooks && kernelHooks instanceof Map) {
-      _hooks = kernelHooks
+      __hooks = kernelHooks
     }
-    for (const [k, v] of _hooks) {
-      this.hooks.set(k, v)
+    for (const [k, v] of __hooks) {
+      this._hooks.set(k, v)
     }
   }
 
@@ -49,8 +49,8 @@ export default class KernelHooks {
    *
    * @return an unmodifiable map of the hooks
    */
-  protected getHooks() {
-    return Object.seal(this.hooks)
+  get hooks() {
+    return Object.seal(this._hooks)
   }
 
   /**
@@ -131,9 +131,9 @@ export default class KernelHooks {
    * @return the event after the hooks have been executed
    */
   executeHooks<T extends KernelHookEvent<any>>(event: T): T {
-    return Array.from(this.hooks.values())
+    return Array.from(this._hooks.values())
       .filter((it) => it.test(event))
-      .sort((a, b) => b.getPriority() - a.getPriority())
+      .sort((a, b) => b.priority - a.priority)
       .reduce((newEvent, hook) => {
         return hook.execute(newEvent)
       }, event)
@@ -167,15 +167,15 @@ export default class KernelHooks {
    */
   addHooks(kernelHooks?: KernelHooks) {
     if (kernelHooks) {
-      for (const [k, v] of kernelHooks.getHooks()) {
-        this.hooks.set(k, v)
+      for (const [k, v] of kernelHooks.hooks) {
+        this._hooks.set(k, v)
       }
     }
     return this
   }
 
   removeHook(hookName: string) {
-    return this.hooks.delete(hookName)
+    return this._hooks.delete(hookName)
   }
 
   /**
@@ -184,7 +184,7 @@ export default class KernelHooks {
    * @return {@code true} if the collection is empty, otherwise {@code false}
    */
   isEmpty(): boolean {
-    return this.hooks.size === 0
+    return this._hooks.size === 0
   }
 
   /**
@@ -206,8 +206,8 @@ export default class KernelHooks {
     } else if (hooks.isEmpty()) {
       return b
     } else {
-      const merged = new Map(hooks.getHooks())
-      for (const [k, v] of b.getHooks()) {
+      const merged = new Map(hooks.hooks)
+      for (const [k, v] of b.hooks) {
         merged.set(k, v)
       }
       return new KernelHooks(merged)

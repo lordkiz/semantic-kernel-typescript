@@ -1,44 +1,17 @@
-import SKException from "./exceptions/SKException"
-import { DefineKernelFunction } from "./functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "./functions/decorators/KernelFunctionParameter"
-import KernelPluginCollection from "./KernelPluginCollection"
-import KernelPluginFactory from "./plugin/KernelPluginFactory"
-
-class ExamplePlugin {
-  @DefineKernelFunction({ name: "sqrt", description: "Take the square root of a number" })
-  sqrt(
-    @KernelFunctionParameter({
-      name: "num",
-      description: "The number to take a square root of",
-      type: "number",
-    })
-    num: number
-  ): number {
-    return Math.sqrt(num)
-  }
-}
-
-class ExamplePlugin2 {
-  @DefineKernelFunction({ name: "square", description: "Square a number" })
-  square(
-    @KernelFunctionParameter({
-      name: "num",
-      description: "The number to square",
-      type: "number",
-    })
-    num: number
-  ): number {
-    return num * num
-  }
-
-  nonKernelFunction() {
-    return "I am not a kernel function"
-  }
-}
+import SKException from "../exceptions/SKException"
+import KernelPluginCollection from "../KernelPluginCollection"
+import KernelPluginFactory from "../plugin/KernelPluginFactory"
+import { PluginWithNameAndDescription, PluginWithNonKernelMethod } from "./mocks/pluginMocks"
 
 describe("KernelPluginCollection", () => {
-  const plugin1 = KernelPluginFactory.createFromObject(new ExamplePlugin(), "ExamplePlugin")
-  const plugin2 = KernelPluginFactory.createFromObject(new ExamplePlugin2(), "ExamplePlugin2")
+  const plugin1 = KernelPluginFactory.createFromObject(
+    new PluginWithNameAndDescription(),
+    "ExamplePlugin"
+  )
+  const plugin2 = KernelPluginFactory.createFromObject(
+    new PluginWithNonKernelMethod(),
+    "ExamplePlugin2"
+  )
 
   it("is able to find all functions", () => {
     const kernelPluginCollection = new KernelPluginCollection([plugin1, plugin2])
