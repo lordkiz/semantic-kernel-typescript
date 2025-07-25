@@ -308,11 +308,11 @@ export default class OpenAIChatCompletion
     return options
   }
 
-  private static getChatCopleteionMessageParams(messages: ChatMessageContent<any>[]) {
-    return messages.map((c) => OpenAIChatCompletion.getChatCopleteionMessageParam(c))
+  private static getChatCompleteionMessageParams(messages: ChatMessageContent<any>[]) {
+    return messages.map((c) => OpenAIChatCompletion.getChatCompleteionMessageParam(c))
   }
 
-  private static getChatCopleteionMessageParam(
+  private static getChatCompleteionMessageParam(
     message: ChatMessageContent<any>
   ): ChatCompletionMessageParam {
     const authorRole = message.getAuthorRole()
@@ -571,7 +571,7 @@ export default class OpenAIChatCompletion
     kernel: Kernel,
     invocationContext: InvocationContext<ChatCompletionCreateParams>
   ): Observable<ChatMessageContent<string>[]> {
-    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCopleteionMessageParams(
+    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompleteionMessageParams(
       chatHistory.getMessages()
     )
     const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
@@ -639,7 +639,7 @@ export default class OpenAIChatCompletion
       )
     }
 
-    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCopleteionMessageParams(
+    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompleteionMessageParams(
       chatHistory.getMessages()
     )
 
