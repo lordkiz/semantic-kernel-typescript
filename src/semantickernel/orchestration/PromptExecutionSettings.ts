@@ -66,8 +66,8 @@ export default class PromptExecutionSettings<
 
 class BaseBuilder<R extends Record<string, unknown>> {
   private settings: R = {} as R
-  set<K extends keyof R>(k: K, param: R[K]) {
-    ;(this.settings as Record<string, unknown>)[k as string] = param
+  __set<K extends keyof R>(k: K, param: R[K]) {
+    this.settings = { ...this.settings, [k]: param }
     return this
   }
 
@@ -85,7 +85,10 @@ const PromptExecutionSettingsBuilder = class PromptExecutionSettingsBuilder {
     return new Proxy(new BaseBuilder(), {
       get(t, k, r) {
         return typeof k === "string" && !(k in t)
-          ? (param: any) => t.set(k, param)
+          ? (param: any) => {
+              t.__set(k, param)
+              return r
+            }
           : Reflect.get(t, k, r)
       },
     })
