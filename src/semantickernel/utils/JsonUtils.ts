@@ -46,7 +46,11 @@ export class JsonUtils {
             json[jsonName] = value
           }
         } else {
-          json[jsonName] = value
+          if (meta.defaultValue !== undefined) {
+            json[jsonName] = meta.defaultValue // TDOD: Serialize deeply (recursive)
+          } else {
+            json[jsonName] = value
+          }
         }
       }
     }

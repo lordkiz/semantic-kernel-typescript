@@ -1,26 +1,14 @@
+import { PluginWithNameAndDescription } from "../../__tests__/mocks/pluginMocks"
 import Kernel from "../../Kernel"
 import KernelPluginFactory from "../../plugin/KernelPluginFactory"
-import { DefineKernelFunction } from "../decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "../decorators/KernelFunctionParameter"
 import KernelArguments from "../KernelArguments"
-
-class ExamplePlugin {
-  @DefineKernelFunction({ name: "sqrt", description: "Take the square root of a number" })
-  sqrt(
-    @KernelFunctionParameter({
-      name: "num",
-      description: "The number to take a square root of",
-      type: "number",
-    })
-    num: number
-  ): number {
-    return Math.sqrt(num)
-  }
-}
 
 describe("KernelFunctionFromMethod", () => {
   it("executes kernel function", async () => {
-    const plugin = KernelPluginFactory.createFromObject(new ExamplePlugin(), "ExamplePlugin")
+    const plugin = KernelPluginFactory.createFromObject(
+      new PluginWithNameAndDescription(),
+      "ExamplePlugin"
+    )
     const kernel = Kernel.Builder().build()
 
     const functionResult = await plugin
