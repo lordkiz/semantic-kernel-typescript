@@ -2,7 +2,7 @@ import "reflect-metadata"
 
 export type JsonPropertyOptions = {
   name?: string
-  type?: () => any
+  type?: () => InstanceType<any>
   required?: boolean
   defaultValue?: any
 }
