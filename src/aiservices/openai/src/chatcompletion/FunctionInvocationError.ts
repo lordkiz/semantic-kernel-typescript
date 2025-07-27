@@ -1,5 +1,5 @@
 import { ChatCompletionMessageParam } from "openai/resources"
-import SKException from "../../../semantickernel/exceptions/SKException"
+import SKException from "../../../../core/src/exceptions/SKException"
 
 /**
  * Exception to be thrown when a function invocation fails.

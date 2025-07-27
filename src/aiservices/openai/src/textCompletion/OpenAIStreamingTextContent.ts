@@ -1,5 +1,5 @@
-import StreamingTextContent from "../../../semantickernel/services/StreamingTextContent"
-import TextContent from "../../../semantickernel/services/textcompletion/TextContent"
+import StreamingTextContent from "../../../../core/src/services/StreamingTextContent"
+import TextContent from "../../../../core/src/services/textcompletion/TextContent"
 
 /**
  * StreamingTextContent is a wrapper for TextContent that allows for streaming.

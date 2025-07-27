@@ -23,43 +23,43 @@ import {
   reduce,
   throwError,
 } from "rxjs"
-import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import AIException from "../../../semantickernel/exceptions/AIException"
-import SKException from "../../../semantickernel/exceptions/SKException"
-import AutoFunctionChoiceBehavior from "../../../semantickernel/functionchoice/AutoFunctionChoiceBehavior"
-import FunctionChoiceBehavior from "../../../semantickernel/functionchoice/FunctionChoiceBehavior"
-import NoneFunctionChoiceBehavior from "../../../semantickernel/functionchoice/NoneFunctionChoiceBehavior"
-import RequiredFunctionChoiceBehavior from "../../../semantickernel/functionchoice/RequiredFunctionChoiceBehavior"
-import KernelArguments from "../../../semantickernel/functions/KernelArguments"
-import {
+import FunctionCallContent from "../../../../core/src/contents/FunctionCallContent"
+import AutoFunctionChoiceBehavior from "../../../../core/functionchoice/AutoFunctionChoiceBehavior"
+import FunctionChoiceBehavior from "../../../../core/functionchoice/FunctionChoiceBehavior"
+import NoneFunctionChoiceBehavior from "../../../../core/src/functionchoice/AutoFunctionChoiceBehavior"
+import RequiredFunctionChoiceBehavio../../../../core/src/functionchoice/FunctionChoiceBehavioronChoiceBehavior"
+import KernelArguments from "../../../..../../../../core/src/functionchoice/NoneFunctionChoiceBehavior
+import {../../../../core/src/functionchoice/RequiredFunctionChoiceBehavior
   PostChatCompletionEvent,
   PreChatCompletionEvent,
-} from "../../../semantickernel/hooks/ChatCompletionEvents"
-import KernelHooks from "../../../semantickernel/hooks/KernelHooks"
-import { PreToolCallEvent } from "../../../semantickernel/hooks/PreToolCallEvent"
-import { KernelHookEvent } from "../../../semantickernel/hooks/types/KernelHookEvent"
-import Kernel from "../../../semantickernel/Kernel"
-import { Logger } from "../../../semantickernel/log/Logger"
-import FunctionResult from "../../../semantickernel/orchestration/FunctionResult"
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import InvocationContext from "../../../semantickernel/orchestration/InvocationContext"
-import { InvocationReturnMode } from "../../../semantickernel/orchestration/InvocationReturnMode"
-import ToolCallBehavior, {
-  AllowedKernelFunctions,
+} from "../../../../core/hooks/ChatCompletionEvents"
+import KernelHooks from "../../../../core/hooks/KernelHooks"
+import {../../../../core/src/hooks/ChatCompletionEventshooks/PreToolCallEvent"
+import { KernelHookEvent ../../../../core/src/hooks/KernelHookses/KernelHookEvent"
+import Kernel from "../../../../co../../../../core/src/hooks/PreToolCallEvent
+import { Logger } from "../../../../../../../core/src/hooks/types/KernelHookEvent
+import FunctionResul../../../../core/src/Kernele/orchestration/FunctionResult"
+import FunctionResultMet../../../../core/src/log/Loggere/orchestration/FunctionResultMetadata"
+import InvocationContext fro../../../../core/src/orchestration/FunctionResultontext"
+import { InvocationReturnMode } from../../../../core/src/orchestration/FunctionResultMetadata"
+import ToolCallBehavior, {../../../../core/src/orchestration/InvocationContext
+  AllowedKernelFunctions,../../../../core/src/orchestration/InvocationReturnMode
   RequiredKernelFunction,
-} from "../../../semantickernel/orchestration/ToolCallBehavior"
+} from "../../../../core/orchestration/ToolCallBehavior"
 import {
-  AuthorRole,
+  Author../../../../core/src/orchestration/ToolCallBehavior
   authorRoleFromString,
-} from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import { ChatCompletionService } from "../../../semantickernel/services/chatcompletion/ChatCompletionService"
-import ChatHistory from "../../../semantickernel/services/chatcompletion/ChatHistory"
-import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
-import { ChatMessageContentType } from "../../../semantickernel/services/chatcompletion/message/ChatMessageContentType"
-import ChatMessageImageContent from "../../../semantickernel/services/chatcompletion/message/ChatMessageImageContent"
-import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
-import { OpenAiServiceBuilder } from "../../../semantickernel/services/openai/OpenAiServiceBuilder"
-import { TextAIService } from "../../../semantickernel/services/types/TextAIService"
+} from "../../../../core/services/chatcompletion/AuthorRole"
+import { ChatCompletionService } from "../../../../core/services/chatcompletion/ChatCompletionService"
+import C../../../../core/src/services/chatcompletion/AuthorRoleletion/ChatHistory"
+import ChatMessageContent from "../../.../../../../core/src/services/chatcompletion/ChatCompletionService
+import { ChatMessageConte../../../../core/src/services/chatcompletion/ChatHistoryion/message/ChatMessageContentType"
+import ChatMessageImageContent f../../../../core/src/services/chatcompletion/ChatMessageContentessageImageContent"
+import { StreamingChatContent } from "..../../../../core/src/services/chatcompletion/message/ChatMessageContentType
+import { OpenAiServiceBuilder } from ../../../../core/src/services/chatcompletion/message/ChatMessageImageContent
+import { TextAIService } from "../../.../../../../core/src/services/chatcompletion/StreamingChatContent
+import AIException from "../../../../c../../../../core/src/services/openai/OpenAiServiceBuilder
+import SKException from "../../../../../../core/src/services/types/TextAIService
 import { OpenAIService } from "../OpenAIService"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"

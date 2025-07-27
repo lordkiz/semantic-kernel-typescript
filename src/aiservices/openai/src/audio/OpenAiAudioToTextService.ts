@@ -1,11 +1,11 @@
 import OpenAI from "openai"
 import { AudioResponseFormat } from "openai/resources.mjs"
 import { from, map, Observable } from "rxjs"
-import SKException from "../../../semantickernel/exceptions/SKException"
-import { Logger } from "../../../semantickernel/log/Logger"
-import AudioContent from "../../../semantickernel/services/audio/AudioContent"
-import AudioToTextExecutionSettings from "../../../semantickernel/services/audio/AudioToTextExecutionSettings"
-import { AudioToTextService } from "../../../semantickernel/services/audio/types/AudioToTextService"
+import { Logger } from "../../../../core/log/Logger"
+import AudioContent from../../../../core/src/log/Logger/audio/AudioContent"
+import AudioToTextExecutio../../../../core/src/services/audio/AudioContentdio/AudioToTextExecutionSettings"
+import { AudioToTextService } from "../../../../../../core/src/services/audio/AudioToTextExecutionSettings
+import SKException from "../../../..../../../../core/src/services/audio/types/AudioToTextService
 import { OpenAIService } from "../OpenAIService"
 
 export default class OpenAiAudioToTextService

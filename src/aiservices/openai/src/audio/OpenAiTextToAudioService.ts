@@ -1,11 +1,11 @@
 import OpenAI from "openai"
 import { SpeechCreateParams } from "openai/resources/audio.js"
 import { from, map, mergeMap, Observable } from "rxjs"
-import SKException from "../../../semantickernel/exceptions/SKException"
-import { Logger } from "../../../semantickernel/log/Logger"
-import AudioContent from "../../../semantickernel/services/audio/AudioContent"
-import TextToAudioExecutionSettings from "../../../semantickernel/services/audio/TextToAudioExecutionSettings"
-import { TextToAudioService } from "../../../semantickernel/services/audio/types/TextToAudioService"
+import { Logger } from "../../../../core/log/Logger"
+import AudioContent from../../../../core/src/log/Logger/audio/AudioContent"
+import TextToAudioExecutio../../../../core/src/services/audio/AudioContentdio/TextToAudioExecutionSettings"
+import { TextToAudioService } from "../../../../../../core/src/services/audio/TextToAudioExecutionSettings
+import SKException from "../../../..../../../../core/src/services/audio/types/TextToAudioService
 import { OpenAIService } from "../OpenAIService"
 
 export default class OpenAiTextToAudioService

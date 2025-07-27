@@ -1,5 +1,5 @@
 import { ChatCompletionNamedToolChoice } from "openai/resources"
-import ToolCallBehavior from "../../../semantickernel/orchestration/ToolCallBehavior"
+import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
 
 enum OpenAIToolChoiceEnum {
   AUTO = "auto",

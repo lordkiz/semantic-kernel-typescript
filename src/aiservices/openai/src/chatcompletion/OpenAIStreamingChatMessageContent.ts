@@ -1,7 +1,7 @@
-import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
+import FunctionResultMetadata from "../../../../core/orchestration/FunctionResultMetadata"
+import { AuthorRole } from "../../..../../../../core/src/orchestration/FunctionResultMetadata
+import { StreamingChatConten../../../../core/src/services/chatcompletion/AuthorRoleStreamingChatContent"
+import FunctionCallContent from "../..../../../../core/src/services/chatcompletion/StreamingChatContent
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 
 /**

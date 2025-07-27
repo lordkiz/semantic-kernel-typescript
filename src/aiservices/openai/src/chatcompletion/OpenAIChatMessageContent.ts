@@ -1,8 +1,8 @@
-import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
-import { ChatMessageContentType } from "../../../semantickernel/services/chatcompletion/message/ChatMessageContentType"
+import FunctionResultMetadata from "../../../../core/orchestration/FunctionResultMetadata"
+import { AuthorRole } from "../../..../../../../core/src/orchestration/FunctionResultMetadata
+import ChatMessageContent fr../../../../core/src/services/chatcompletion/AuthorRolessageContent"
+import { ChatMessageContentType ../../../../core/src/services/chatcompletion/ChatMessageContentatMessageContentType"
+import FunctionCallContent from "../../.../../../../core/src/services/chatcompletion/message/ChatMessageContentType
 
 export default class OpenAIChatMessageContent<T> extends ChatMessageContent<T> {
   constructor(

@@ -1,5 +1,5 @@
 import { ChatCompletionTool, ChatCompletionToolChoiceOption } from "openai/resources"
-import FunctionChoiceBehaviorOptions from "../../../semantickernel/functionchoice/FunctionChoiceBehaviorOptions"
+import FunctionChoiceBehaviorOptions from "../../../../core/src/functionchoice/FunctionChoiceBehaviorOptions"
 
 export interface OpenAIToolCallConfig {
   tools: ChatCompletionTool[]

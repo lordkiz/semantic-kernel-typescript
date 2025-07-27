@@ -1,7 +1,7 @@
 import { FunctionDefinition } from "openai/resources"
-import InputVariable from "../../../semantickernel/functions/InputVariable"
-import KernelFunctionMetadata from "../../../semantickernel/functions/KernelFunctionMetadata"
-import ToolCallBehavior from "../../../semantickernel/orchestration/ToolCallBehavior"
+import InputVariable from "../../../../core/functions/InputVariable"
+import KernelFunctionMetadata from "../../../../core/functions/KernelFunctionMetadata"
+import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
 
 export default class OpenAIFunction {
   private pluginName: string

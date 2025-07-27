@@ -1,4 +1,4 @@
-import { AIService } from "../../semantickernel/services/types/AIService"
+import { AIService } from "../../../core/src/services/types/AIService"
 
 export abstract class OpenAIService<Client> implements AIService {
   private readonly client: Client

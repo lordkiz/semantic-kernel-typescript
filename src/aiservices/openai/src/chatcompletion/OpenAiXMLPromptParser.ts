@@ -1,8 +1,8 @@
 import he from "he"
 import { ChatCompletionMessageParam, FunctionDefinition } from "openai/resources"
 import { v4 as uuidv4 } from "uuid"
-import { ChatPromptParseVisitor } from "../../../semantickernel/implementations/chatCompletion/ChatPromptParseVisitor"
-import { ChatXMLPromptParser } from "../../../semantickernel/implementations/chatCompletion/ChatXMLPromptParser"
+import { ChatPromptParseVisitor } from "../../../../core/src/implementations/chatCompletion/ChatPromptParseVisitor"
+import { ChatXMLPromptParser } from "../../../../core/src/implementations/chatCompletion/ChatXMLPromptParser"
 
 interface ParsedPrompt {
   messages: ChatCompletionMessageParam[]

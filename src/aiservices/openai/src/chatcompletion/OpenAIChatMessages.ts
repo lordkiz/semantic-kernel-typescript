@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { ChatCompletionMessageParam } from "openai/resources"
-import { Logger } from "../../../semantickernel/log/Logger"
-import ChatMessages from "../../../semantickernel/orchestration/ChatMessages"
+import { Logger } from "../../../../core/src/log/Logger"
+import ChatMessages from "../../../../core/src/orchestration/ChatMessages"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 
 export default class OpenAIChatMessages extends ChatMessages<
