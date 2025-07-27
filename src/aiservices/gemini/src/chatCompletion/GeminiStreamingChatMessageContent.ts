@@ -1,6 +1,6 @@
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
+import FunctionResultMetadata from "../../../../core/src/orchestration/FunctionResultMetadata"
+import { AuthorRole } from "../../../../core/src/services/chatcompletion/AuthorRole"
+import { StreamingChatContent } from "../../../../core/src/services/chatcompletion/StreamingChatContent"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
 

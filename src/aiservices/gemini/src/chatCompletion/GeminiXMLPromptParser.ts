@@ -1,9 +1,9 @@
 import { FunctionDeclaration } from "@google/genai"
-import { ChatPromptParseVisitor } from "../../../semantickernel/implementations/chatCompletion/ChatPromptParseVisitor"
-import { ChatXMLPromptParser } from "../../../semantickernel/implementations/chatCompletion/ChatXMLPromptParser"
-import { authorRoleFromString } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import ChatHistory from "../../../semantickernel/services/chatcompletion/ChatHistory"
-import ChatMessageTextContent from "../../../semantickernel/services/chatcompletion/message/ChatMessageTextContent"
+import { authorRoleFromString } from "../../../core/services/chatcompletion/AuthorRole"
+import ChatHistory from "../../../core/services/chatcompletion/ChatHistory"
+import ChatMessageTextContent from "..../../../core/src/services/chatcompletion/AuthorRoleMessageTextContent"
+import { ChatPromptParseV../../../core/src/services/chatcompletion/ChatHistorychatCompletion/ChatPromptParseVisitor"
+import { ChatXMLPromptParser } from ../../../core/src/services/chatcompletion/message/ChatMessageTextContentr"
 
 interface ParsedPrompt {
   chatHistory: ChatHistory

@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai"
-import { AIService } from "../../semantickernel/services/types/AIService"
+import { AIService } from "../../../core/src/services/types/AIService"
 
 export abstract class GeminiService implements AIService {
   private client: GoogleGenAI

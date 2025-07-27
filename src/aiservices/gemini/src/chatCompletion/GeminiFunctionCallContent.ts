@@ -1,8 +1,8 @@
 import { FunctionCall } from "@google/genai"
-import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import KernelArguments from "../../../semantickernel/functions/KernelArguments"
-import FunctionResult from "../../../semantickernel/orchestration/FunctionResult"
-import ToolCallBehavior from "../../../semantickernel/orchestration/ToolCallBehavior"
+import KernelArguments from "../../../core/functions/KernelArguments"
+import FunctionResult from "../../../core/orchestration/FunctionResult"
+import ToolCallBehavior from../../../core/src/orchestration/FunctionResultvior"
+import FunctionCallContent fro../../../core/src/orchestration/ToolCallBehaviorntent"
 
 /**
  * Represents a function call in Gemini.

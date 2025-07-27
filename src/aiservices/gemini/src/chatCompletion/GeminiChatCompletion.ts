@@ -11,27 +11,27 @@ import {
 } from "@google/genai"
 import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
-import FunctionCallContent from "../../../semantickernel/contents/FunctionCallContent"
-import AIException from "../../../semantickernel/exceptions/AIException"
-import SKException from "../../../semantickernel/exceptions/SKException"
-import KernelArguments from "../../../semantickernel/functions/KernelArguments"
-import KernelFunction from "../../../semantickernel/functions/KernelFunction"
-import Kernel from "../../../semantickernel/Kernel"
-import { Logger } from "../../../semantickernel/log/Logger"
-import FunctionResult from "../../../semantickernel/orchestration/FunctionResult"
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import InvocationContext from "../../../semantickernel/orchestration/InvocationContext"
-import { InvocationReturnMode } from "../../../semantickernel/orchestration/InvocationReturnMode"
-import ToolCallBehavior, {
-  AllowedKernelFunctions,
-  RequiredKernelFunction,
-} from "../../../semantickernel/orchestration/ToolCallBehavior"
-import { AuthorRole } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import { ChatCompletionService } from "../../../semantickernel/services/chatcompletion/ChatCompletionService"
-import ChatHistory from "../../../semantickernel/services/chatcompletion/ChatHistory"
-import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
-import { StreamingChatContent } from "../../../semantickernel/services/chatcompletion/StreamingChatContent"
-import { TextAIService } from "../../../semantickernel/services/types/TextAIService"
+import KernelArguments from "../../../core/functions/KernelArguments"
+import KernelFunction from "../../../core/functions/KernelFunction"
+import Kernel from "../../../core/Kernel"
+import { Logger } from "../../../core/log/Logger"
+import FunctionResult from "../../../core/orchestration/FunctionResult"
+import FunctionResul../../../core/src/Kernel./../core/orchestration/FunctionResultMetadata"
+import InvocationContext../../../core/src/log/Loggerhestration/InvocationContext"
+import { InvocationReturnMod../../../core/src/orchestration/FunctionResultcationReturnMode"
+import ToolCallBehavior, {../../../core/src/orchestration/FunctionResultMetadata
+  AllowedKernelFunctions,../../../core/src/orchestration/InvocationContext
+  RequiredKernelFunction,../../../core/src/orchestration/InvocationReturnMode
+} from "../../../core/orchestration/ToolCallBehavior"
+import { AuthorRole } from "../../../core/services/chatcompletion/AuthorRole"
+import { ChatCompletionService } from "../../../core/services/chatcompletion/ChatCompletionService"
+import C../../../core/src/orchestration/ToolCallBehaviorcompletion/ChatHistory"
+import ChatMessageContent fr../../../core/src/services/chatcompletion/AuthorRolessageContent"
+import { StreamingChatContent } from ".../../../core/src/services/chatcompletion/ChatCompletionService
+import { TextAIService } ../../../core/src/services/chatcompletion/ChatHistory
+import FunctionCallContent from ../../../core/src/services/chatcompletion/ChatMessageContent
+import AIException from "../../../core../../../core/src/services/chatcompletion/StreamingChatContent
+import SKException from "../../../../../core/src/services/types/TextAIService
 import { GeminiService } from "../GeminiService"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 import GeminiFunction from "./GeminiFunction"

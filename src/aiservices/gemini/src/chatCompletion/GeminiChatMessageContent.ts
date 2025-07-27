@@ -1,7 +1,7 @@
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../../semantickernel/services/chatcompletion/AuthorRole"
-import ChatMessageContent from "../../../semantickernel/services/chatcompletion/ChatMessageContent"
-import { ChatMessageContentType } from "../../../semantickernel/services/chatcompletion/message/ChatMessageContentType"
+import FunctionResultMetadata from "../../../../core/src/orchestration/FunctionResultMetadata"
+import { AuthorRole } from "../../../../core/src/services/chatcompletion/AuthorRole"
+import ChatMessageContent from "../../../../core/src/services/chatcompletion/ChatMessageContent"
+import { ChatMessageContentType } from "../../../../core/src/services/chatcompletion/message/ChatMessageContentType"
 import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
 
 /**

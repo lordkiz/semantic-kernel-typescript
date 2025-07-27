@@ -1,8 +1,8 @@
 import { FunctionDeclaration } from "@google/genai"
-import InputVariable from "../../../semantickernel/functions/InputVariable"
-import KernelFunctionMetadata from "../../../semantickernel/functions/KernelFunctionMetadata"
-import { Logger } from "../../../semantickernel/log/Logger"
-import ToolCallBehavior from "../../../semantickernel/orchestration/ToolCallBehavior"
+import { Logger } from "../../../../core/src/log/Logger"
+import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
+import InputVariable from "../../../core/functions/InputVariable"
+import KernelFunctionMetadata from "../../../core/functions/KernelFunctionMetadata"
 
 export default class GeminiFunction {
   private pluginName: string

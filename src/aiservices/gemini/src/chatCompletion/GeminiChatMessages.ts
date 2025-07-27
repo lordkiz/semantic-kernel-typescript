@@ -1,6 +1,6 @@
 import { GenerateContentResponse } from "@google/genai"
-import { Logger } from "../../../semantickernel/log/Logger"
-import ChatMessages from "../../../semantickernel/orchestration/ChatMessages"
+import { Logger } from "../../../../core/src/log/Logger"
+import ChatMessages from "../../../../core/src/orchestration/ChatMessages"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 
 export default class GeminiChatMessages extends ChatMessages<

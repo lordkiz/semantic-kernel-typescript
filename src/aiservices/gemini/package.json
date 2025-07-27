@@ -1,0 +1,22 @@
+{
+  "name": "@semantic-kernel-typescript/gemini",
+  "version": "0.0.1",
+  "description": "Semantic Kernel Typescript - Gemini",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "semantic-kernel-typescript",
+    "semantic-kernel",
+    "gemini"
+  ],
+  "author": "Kizito Egeonu",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.9.0",
+    "@semantic-kernel-typescript/core": "../../*",
+    "he": "1.2.0",
+    "openai": "^5.3.0"
+  }
+}
