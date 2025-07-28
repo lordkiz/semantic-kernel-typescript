@@ -1,30 +1,30 @@
 import { AIService } from "@semantic-kernel-typescript/core/services/types/AIService"
 
 export abstract class OpenAIService<Client> implements AIService {
-  private readonly client: Client
-  private readonly serviceId: string | undefined
-  private readonly modelId: string
-  private readonly deploymentName: string
+  private readonly _client: Client
+  private readonly _serviceId: string | undefined
+  private readonly _modelId: string
+  private readonly _deploymentName: string
 
   constructor(client: Client, modelId: string, deploymentName: string, serviceId?: string) {
-    this.client = client
-    this.serviceId = serviceId
-    this.modelId = modelId
-    this.deploymentName = deploymentName
+    this._client = client
+    this._serviceId = serviceId
+    this._modelId = modelId
+    this._deploymentName = deploymentName
   }
 
-  getClient(): Client {
-    return this.client
+  get client(): Client {
+    return this._client
   }
 
-  getModelId(): string {
-    return this.modelId
+  get modelId(): string {
+    return this._modelId
   }
-  getServiceId(): string | undefined {
-    return this.serviceId
+  get serviceId(): string | undefined {
+    return this._serviceId
   }
 
-  getDeploymentName(): string {
-    return this.deploymentName
+  get deploymentName(): string {
+    return this._deploymentName
   }
 }

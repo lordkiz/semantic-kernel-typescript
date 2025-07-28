@@ -27,13 +27,13 @@ export default class OpenAITextToAudioService
     executionSettings: TextToAudioExecutionSettings
   ): Observable<AudioContent> {
     const options = this.convertOptions(text, executionSettings)
-    return from(this.getClient().audio.speech.create(options)).pipe(
+    return from(this.client.audio.speech.create(options)).pipe(
       mergeMap((it) => it.arrayBuffer()),
       map(
         (bytes) =>
           new AudioContent(
             new File([new Blob([bytes])], executionSettings.getFileName()),
-            this.getModelId()
+            this.modelId
           )
       )
     )
@@ -44,7 +44,7 @@ export default class OpenAITextToAudioService
     executionSettings: TextToAudioExecutionSettings
   ): SpeechCreateParams {
     return {
-      model: this.getModelId(),
+      model: this.modelId,
       input: text,
       response_format: (executionSettings?.getResponseFormat() ??
         "mp3") as SpeechCreateParams["response_format"],

@@ -2,26 +2,26 @@ import { GoogleGenAI } from "@google/genai"
 import { AIService } from "@semantic-kernel-typescript/core/services"
 
 export abstract class GeminiService implements AIService {
-  private client: GoogleGenAI
-  private modelId: string
-  private readonly serviceId: string | undefined
-  private readonly deploymentName: string | undefined
+  private _client: GoogleGenAI
+  private _modelId: string
+  private readonly _serviceId: string | undefined
+  private readonly _deploymentName: string | undefined
 
   constructor(client: GoogleGenAI, modelId: string, deploymentName?: string, serviceId?: string) {
-    this.client = client
-    this.modelId = modelId
-    this.deploymentName = deploymentName
-    this.serviceId = serviceId
+    this._client = client
+    this._modelId = modelId
+    this._deploymentName = deploymentName
+    this._serviceId = serviceId
   }
 
-  getModelId(): string {
-    return this.modelId
+  get modelId(): string {
+    return this._modelId
   }
-  getServiceId(): string | undefined {
-    return this.serviceId
+  get serviceId(): string | undefined {
+    return this._serviceId
   }
 
-  getClient(): GoogleGenAI {
-    return this.client
+  get client(): GoogleGenAI {
+    return this._client
   }
 }

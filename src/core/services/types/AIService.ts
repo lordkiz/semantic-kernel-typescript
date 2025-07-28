@@ -5,12 +5,12 @@ export abstract class AIService {
    * @return The model identifier if it was specified in the service's attributes; otherwise,
    * {@code null}.
    */
-  abstract getModelId(): string
+  abstract get modelId(): string
 
   /**
    * Gets the service identifier.
    *
    * @return The service identifier.
    */
-  abstract getServiceId(): string | undefined
+  abstract get serviceId(): string | undefined
 }

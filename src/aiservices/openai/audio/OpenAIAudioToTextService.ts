@@ -27,12 +27,12 @@ export default class OpenAIAudioToTextService
     executionSettings: AudioToTextExecutionSettings
   ): Observable<string> {
     const options = this.convertOptions(content, executionSettings)
-    return from(this.getClient().audio.transcriptions.create(options)).pipe(map((it) => it.text))
+    return from(this.client.audio.transcriptions.create(options)).pipe(map((it) => it.text))
   }
 
   private convertOptions(content: AudioContent, executionSettings: AudioToTextExecutionSettings) {
     return {
-      model: this.getModelId(),
+      model: this.modelId,
       response_format: (executionSettings?.getResponseFormat() ?? "json") as AudioResponseFormat,
       file: content.getData(),
       language: executionSettings?.getLanguage(),

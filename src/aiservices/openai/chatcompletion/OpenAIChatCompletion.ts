@@ -273,7 +273,7 @@ export default class OpenAIChatCompletion
     )
 
     let options: OpenAI.ChatCompletionCreateParams = {
-      model: chatCompletionService.getModelId(),
+      model: chatCompletionService.modelId,
       messages: openAIChatRequestMessages,
     }
 
@@ -660,7 +660,7 @@ export default class OpenAIChatCompletion
 
     const { options } = this.executePrechatHooks(chatMessages, kernel, fns, invocationContext, 0)
 
-    return from(this.getClient().chat.completions.stream({ ...options, stream: true })).pipe(
+    return from(this.client.chat.completions.stream({ ...options, stream: true })).pipe(
       mergeMap((chunk) => {
         return chunk.choices.map((message) => {
           const role = message.delta.role ?? AuthorRole.ASSISTANT
@@ -668,7 +668,7 @@ export default class OpenAIChatCompletion
             chunk.id,
             role as AuthorRole,
             message.delta.content ?? "",
-            this.getModelId()
+            this.modelId
           ) as StreamingChatContent<any>
         })
       })
@@ -716,7 +716,7 @@ export default class OpenAIChatCompletion
       requestIndex
     )
 
-    return from(this.getClient().chat.completions.create({ ...options, stream: false })).pipe(
+    return from(this.client.chat.completions.create({ ...options, stream: false })).pipe(
       mergeMap((chatCompletions) => {
         const responseMessages = chatCompletions.choices.map((m) => m.message).filter(Boolean)
 

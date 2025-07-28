@@ -90,7 +90,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
               uuidv4(),
               content.getAuthorRole(),
               content.getContent(),
-              this.getModelId(),
+              this.modelId,
               content.getInnerContent(),
               content.getEncoding(),
               content.getMetadata()
@@ -152,8 +152,8 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
     const contents = this.getContents(fullHistory)
     const config = this.getConfig(kernel, invocationContext)
-    const generateContentResponse = await this.getClient().models.generateContent({
-      model: this.getModelId(),
+    const generateContentResponse = await this.client.models.generateContent({
+      model: this.modelId,
       config,
       contents,
     })
@@ -280,7 +280,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
     return {
       contents: [contents],
-      model: this.getModelId(),
+      model: this.modelId,
       config: Object.assign(invocationContext.getPromptExecutionSettings() ?? {}),
     }
   }
