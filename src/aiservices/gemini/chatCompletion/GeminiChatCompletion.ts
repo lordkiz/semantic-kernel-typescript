@@ -10,6 +10,7 @@ import {
   Tool,
 } from "@google/genai"
 import { Kernel } from "@semantic-kernel-typescript/core"
+import { AIServiceBuilder } from "@semantic-kernel-typescript/core/builders"
 import { AIException, SKException } from "@semantic-kernel-typescript/core/exceptions"
 import { KernelArguments, KernelFunction } from "@semantic-kernel-typescript/core/functions"
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
@@ -446,4 +447,24 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   }
 }
 
-class GeminiChatCompletionBuilder {}
+/**
+ * Builder for creating a new instance of {@link GeminiChatCompletion}.
+ */
+class GeminiChatCompletionBuilder extends AIServiceBuilder<
+  GoogleGenAI,
+  GeminiChatCompletion,
+  GeminiChatCompletionBuilder
+> {
+  public build(): GeminiChatCompletion {
+    if (!this.client || !this.modelId) {
+      throw new AIException(AIException.ErrorCodes.INVALID_REQUEST)
+    }
+
+    if (!this.deploymentName) {
+      Logger.debug("Deployment name is not provided, using model id as deployment name")
+      this.deploymentName = this.modelId
+    }
+
+    return new GeminiChatCompletion(this.client, this.deploymentName, this.modelId, this.serviceId)
+  }
+}
