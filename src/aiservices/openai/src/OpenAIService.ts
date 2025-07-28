@@ -1,4 +1,4 @@
-import { AIService } from "../../../core/src/services/types/AIService"
+import { AIService } from "@semantic-kernel-typescript/core/services/types/AIService"
 
 export abstract class OpenAIService<Client> implements AIService {
   private readonly client: Client

@@ -27,10 +27,10 @@ import { AuthorRole } from "../../../core/services/chatcompletion/AuthorRole"
 import { ChatCompletionService } from "../../../core/services/chatcompletion/ChatCompletionService"
 import C../../../core/src/orchestration/ToolCallBehaviorcompletion/ChatHistory"
 import ChatMessageContent fr../../../core/src/services/chatcompletion/AuthorRolessageContent"
-import { StreamingChatContent } from ".../../../core/src/services/chatcompletion/ChatCompletionService
+import { StreamingChatContent } from "@semantic-kernel-typescript/core/services/chatcompletion/ChatCompletionServicee
 import { TextAIService } ../../../core/src/services/chatcompletion/ChatHistory
 import FunctionCallContent from ../../../core/src/services/chatcompletion/ChatMessageContent
-import AIException from "../../../core../../../core/src/services/chatcompletion/StreamingChatContent
+import AIException from "@semantic-kernel-typescript/core/services/chatcompletion/StreamingChatContentt
 import SKException from "../../../../../core/src/services/types/TextAIService
 import { GeminiService } from "../GeminiService"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"

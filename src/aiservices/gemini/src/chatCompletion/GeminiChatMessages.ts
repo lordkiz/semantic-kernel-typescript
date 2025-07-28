@@ -1,6 +1,6 @@
 import { GenerateContentResponse } from "@google/genai"
-import { Logger } from "../../../../core/src/log/Logger"
-import ChatMessages from "../../../../core/src/orchestration/ChatMessages"
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import ChatMessages from "@semantic-kernel-typescript/core/orchestration/ChatMessages"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 
 export default class GeminiChatMessages extends ChatMessages<

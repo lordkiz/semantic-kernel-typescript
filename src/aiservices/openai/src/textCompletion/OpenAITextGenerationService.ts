@@ -1,13 +1,17 @@
+import { Kernel } from "@semantic-kernel-typescript/core"
+import { AIException } from "@semantic-kernel-typescript/core/exceptions"
+import {
+  FunctionResultMetadata,
+  PromptExecutionSettings,
+} from "@semantic-kernel-typescript/core/orchestration"
+import {
+  StreamingTextContent,
+  TextContent,
+  TextGenerationService,
+} from "@semantic-kernel-typescript/core/services"
 import OpenAI from "openai"
 import { CompletionCreateParams } from "openai/resources"
 import { from, map, mergeMap, Observable } from "rxjs"
-import AIException from "../../../semantickernel/exceptions/AIException"
-import Kernel from "../../../semantickernel/Kernel"
-import FunctionResultMetadata from "../../../semantickernel/orchestration/FunctionResultMetadata"
-import PromptExecutionSettings from "../../../semantickernel/orchestration/PromptExecutionSettings"
-import StreamingTextContent from "../../../semantickernel/services/StreamingTextContent"
-import TextContent from "../../../semantickernel/services/textcompletion/TextContent"
-import { TextGenerationService } from "../../../semantickernel/services/textcompletion/TextGenerationService"
 import OpenAIRequestSettings from "../implementation/OpenAIRequestSettings"
 import { OpenAIService } from "../OpenAIService"
 import OpenAIStreamingTextContent from "./OpenAIStreamingTextContent"
@@ -73,13 +77,18 @@ export default class OpenAITextGenerationService
     text: string,
     requestSettings?: PromptExecutionSettings
   ): CompletionCreateParams {
-    if (requestSettings?.getMaxTokens() ?? 0 < 1) {
+    if (
+      // @ts-expect-error Record constraint
+      (requestSettings as unknown as PromptExecutionSettings<CompletionCreateParams>)?.toObject()
+        .max_tokens ??
+      0 < 1
+    ) {
       throw new AIException(AIException.ErrorCodes.INVALID_REQUEST, "Max tokens must be > 0")
     }
 
     if (
-      (requestSettings?.getResultsPerPrompt() ?? 0) < 1 ||
-      (requestSettings?.getResultsPerPrompt() ?? Number.MAX_SAFE_INTEGER) >
+      (requestSettings?.resultsPerPrompt ?? 0) < 1 ||
+      (requestSettings?.resultsPerPrompt ?? Number.MAX_SAFE_INTEGER) >
         TextGenerationService.MAX_RESULTS_PER_PROMPT
     ) {
       throw new AIException(
@@ -89,7 +98,7 @@ export default class OpenAITextGenerationService
     }
 
     return {
-      ...requestSettings?.json(),
+      ...requestSettings?.toObject(),
       prompt: text,
       model: this.getModelId(),
     }

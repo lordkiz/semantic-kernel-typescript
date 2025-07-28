@@ -1,3 +1,44 @@
+import { Kernel } from "@semantic-kernel-typescript/core"
+import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
+import { AIException, SKException } from "@semantic-kernel-typescript/core/exceptions"
+import {
+  AutoFunctionChoiceBehavior,
+  FunctionChoiceBehavior,
+  NoneFunctionChoiceBehavior,
+  RequiredFunctionChoiceBehavior,
+} from "@semantic-kernel-typescript/core/functionchoice"
+import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
+import { KernelHooks } from "@semantic-kernel-typescript/core/hooks"
+import {
+  PostChatCompletionEvent,
+  PreChatCompletionEvent,
+} from "@semantic-kernel-typescript/core/hooks/ChatCompletionEvents"
+import { PreToolCallEvent } from "@semantic-kernel-typescript/core/hooks/PreToolCallEvent"
+import { KernelHookEvent } from "@semantic-kernel-typescript/core/hooks/types/KernelHookEvent"
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import {
+  FunctionResult,
+  FunctionResultMetadata,
+  InvocationContext,
+  InvocationReturnMode,
+  ToolCallBehavior,
+} from "@semantic-kernel-typescript/core/orchestration"
+import {
+  AllowedKernelFunctions,
+  RequiredKernelFunction,
+} from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
+import {
+  AuthorRole,
+  ChatCompletionService,
+  ChatHistory,
+  ChatMessageContent,
+  ChatMessageContentType,
+  ChatMessageImageContent,
+  OpenAiServiceBuilder,
+  StreamingChatContent,
+  TextAIService,
+} from "@semantic-kernel-typescript/core/services"
+import { authorRoleFromString } from "@semantic-kernel-typescript/core/services/chatcompletion/AuthorRole"
 import OpenAI from "openai"
 import {
   ChatCompletion,
@@ -23,43 +64,6 @@ import {
   reduce,
   throwError,
 } from "rxjs"
-import FunctionCallContent from "../../../../core/src/contents/FunctionCallContent"
-import AutoFunctionChoiceBehavior from "../../../../core/functionchoice/AutoFunctionChoiceBehavior"
-import FunctionChoiceBehavior from "../../../../core/functionchoice/FunctionChoiceBehavior"
-import NoneFunctionChoiceBehavior from "../../../../core/src/functionchoice/AutoFunctionChoiceBehavior"
-import RequiredFunctionChoiceBehavio../../../../core/src/functionchoice/FunctionChoiceBehavioronChoiceBehavior"
-import KernelArguments from "../../../..../../../../core/src/functionchoice/NoneFunctionChoiceBehavior
-import {../../../../core/src/functionchoice/RequiredFunctionChoiceBehavior
-  PostChatCompletionEvent,
-  PreChatCompletionEvent,
-} from "../../../../core/hooks/ChatCompletionEvents"
-import KernelHooks from "../../../../core/hooks/KernelHooks"
-import {../../../../core/src/hooks/ChatCompletionEventshooks/PreToolCallEvent"
-import { KernelHookEvent ../../../../core/src/hooks/KernelHookses/KernelHookEvent"
-import Kernel from "../../../../co../../../../core/src/hooks/PreToolCallEvent
-import { Logger } from "../../../../../../../core/src/hooks/types/KernelHookEvent
-import FunctionResul../../../../core/src/Kernele/orchestration/FunctionResult"
-import FunctionResultMet../../../../core/src/log/Loggere/orchestration/FunctionResultMetadata"
-import InvocationContext fro../../../../core/src/orchestration/FunctionResultontext"
-import { InvocationReturnMode } from../../../../core/src/orchestration/FunctionResultMetadata"
-import ToolCallBehavior, {../../../../core/src/orchestration/InvocationContext
-  AllowedKernelFunctions,../../../../core/src/orchestration/InvocationReturnMode
-  RequiredKernelFunction,
-} from "../../../../core/orchestration/ToolCallBehavior"
-import {
-  Author../../../../core/src/orchestration/ToolCallBehavior
-  authorRoleFromString,
-} from "../../../../core/services/chatcompletion/AuthorRole"
-import { ChatCompletionService } from "../../../../core/services/chatcompletion/ChatCompletionService"
-import C../../../../core/src/services/chatcompletion/AuthorRoleletion/ChatHistory"
-import ChatMessageContent from "../../.../../../../core/src/services/chatcompletion/ChatCompletionService
-import { ChatMessageConte../../../../core/src/services/chatcompletion/ChatHistoryion/message/ChatMessageContentType"
-import ChatMessageImageContent f../../../../core/src/services/chatcompletion/ChatMessageContentessageImageContent"
-import { StreamingChatContent } from "..../../../../core/src/services/chatcompletion/message/ChatMessageContentType
-import { OpenAiServiceBuilder } from ../../../../core/src/services/chatcompletion/message/ChatMessageImageContent
-import { TextAIService } from "../../.../../../../core/src/services/chatcompletion/StreamingChatContent
-import AIException from "../../../../c../../../../core/src/services/openai/OpenAiServiceBuilder
-import SKException from "../../../../../../core/src/services/types/TextAIService
 import { OpenAIService } from "../OpenAIService"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
@@ -74,8 +78,6 @@ export default class OpenAIChatCompletion
   extends OpenAIService<OpenAI>
   implements ChatCompletionService
 {
-  private LOGGER = Logger
-
   constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }
@@ -926,14 +928,13 @@ class OpenAIChatCompletionBuilder extends OpenAiServiceBuilder<
   OpenAIChatCompletion,
   OpenAIChatCompletionBuilder
 > {
-  LOGGER = Logger
   public build(): OpenAIChatCompletion {
     if (!this.client || !this.modelId) {
       throw new AIException(AIException.ErrorCodes.INVALID_REQUEST)
     }
 
     if (!this.deploymentName) {
-      this.LOGGER.debug("Deployment name is not provided, using model id as deployment name")
+      Logger.debug("Deployment name is not provided, using model id as deployment name")
       this.deploymentName = this.modelId
     }
 

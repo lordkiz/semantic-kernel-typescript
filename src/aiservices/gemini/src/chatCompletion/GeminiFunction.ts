@@ -1,6 +1,6 @@
 import { FunctionDeclaration } from "@google/genai"
-import { Logger } from "../../../../core/src/log/Logger"
-import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import ToolCallBehavior from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
 import InputVariable from "../../../core/functions/InputVariable"
 import KernelFunctionMetadata from "../../../core/functions/KernelFunctionMetadata"
 

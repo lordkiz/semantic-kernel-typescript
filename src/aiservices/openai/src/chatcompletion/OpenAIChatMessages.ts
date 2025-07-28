@@ -1,15 +1,13 @@
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import { ChatMessages } from "@semantic-kernel-typescript/core/orchestration"
 import _ from "lodash"
 import { ChatCompletionMessageParam } from "openai/resources"
-import { Logger } from "../../../../core/src/log/Logger"
-import ChatMessages from "../../../../core/src/orchestration/ChatMessages"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 
 export default class OpenAIChatMessages extends ChatMessages<
   ChatCompletionMessageParam,
   OpenAIChatMessageContent<any>
 > {
-  private LOGGER = Logger
-
   /**
    * Checks that the two messages have a similar history
    *
@@ -28,7 +26,7 @@ export default class OpenAIChatMessages extends ChatMessages<
         matches = _.isEqual(a.content, b.content)
       }
       if (!matches) {
-        this.LOGGER.warn(
+        Logger.warn(
           "Messages do not match at index: " +
             index +
             " you might be merging unrelated message histories"

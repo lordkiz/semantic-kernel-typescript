@@ -1,7 +1,6 @@
-import FunctionResultMetadata from "../../../../core/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../..../../../../core/src/orchestration/FunctionResultMetadata
-import { StreamingChatConten../../../../core/src/services/chatcompletion/AuthorRoleStreamingChatContent"
-import FunctionCallContent from "../..../../../../core/src/services/chatcompletion/StreamingChatContent
+import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
+import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
+import { AuthorRole, StreamingChatContent } from "@semantic-kernel-typescript/core/services"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 
 /**

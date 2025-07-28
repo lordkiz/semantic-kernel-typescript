@@ -1,7 +1,6 @@
+import { InputVariable, KernelFunctionMetadata } from "@semantic-kernel-typescript/core/functions"
+import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration"
 import { FunctionDefinition } from "openai/resources"
-import InputVariable from "../../../../core/functions/InputVariable"
-import KernelFunctionMetadata from "../../../../core/functions/KernelFunctionMetadata"
-import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
 
 export default class OpenAIFunction {
   private pluginName: string
@@ -38,8 +37,8 @@ export default class OpenAIFunction {
         const { name, ...restMeta } = OpenAIFunction.getSchemaForFunctionParameter(parameter)
         parameters.properties[name] = restMeta
 
-        if (parameter.isRequired()) {
-          required.push(parameter.getName())
+        if (parameter.isRequired) {
+          required.push(parameter.name)
         }
       }
 

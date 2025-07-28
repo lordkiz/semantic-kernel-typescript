@@ -1,8 +1,10 @@
-import FunctionResultMetadata from "../../../../core/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "../../..../../../../core/src/orchestration/FunctionResultMetadata
-import ChatMessageContent fr../../../../core/src/services/chatcompletion/AuthorRolessageContent"
-import { ChatMessageContentType ../../../../core/src/services/chatcompletion/ChatMessageContentatMessageContentType"
-import FunctionCallContent from "../../.../../../../core/src/services/chatcompletion/message/ChatMessageContentType
+import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
+import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
+import {
+  AuthorRole,
+  ChatMessageContent,
+  ChatMessageContentType,
+} from "@semantic-kernel-typescript/core/services"
 
 export default class OpenAIChatMessageContent<T> extends ChatMessageContent<T> {
   constructor(

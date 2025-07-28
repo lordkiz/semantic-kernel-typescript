@@ -1,11 +1,13 @@
+import { SKException } from "@semantic-kernel-typescript/core/exceptions"
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import {
+  AudioContent,
+  AudioToTextExecutionSettings,
+} from "@semantic-kernel-typescript/core/services/audio"
+import { AudioToTextService } from "@semantic-kernel-typescript/core/services/audio/types/AudioToTextService"
 import OpenAI from "openai"
 import { AudioResponseFormat } from "openai/resources.mjs"
 import { from, map, Observable } from "rxjs"
-import { Logger } from "../../../../core/log/Logger"
-import AudioContent from../../../../core/src/log/Logger/audio/AudioContent"
-import AudioToTextExecutio../../../../core/src/services/audio/AudioContentdio/AudioToTextExecutionSettings"
-import { AudioToTextService } from "../../../../../../core/src/services/audio/AudioToTextExecutionSettings
-import SKException from "../../../..../../../../core/src/services/audio/types/AudioToTextService
 import { OpenAIService } from "../OpenAIService"
 
 export default class OpenAiAudioToTextService
@@ -40,7 +42,6 @@ export default class OpenAiAudioToTextService
 }
 
 export class OpenAiAudioToTextServiceBuilder {
-  private LOGGER = Logger
   private client: OpenAI | undefined
   private modelId: string | undefined
   private deploymentName: string | undefined
@@ -70,7 +71,7 @@ export class OpenAiAudioToTextServiceBuilder {
     }
 
     if (this.deploymentName == null) {
-      this.LOGGER.debug("Deployment name is not provided, using model id as deployment name")
+      Logger.debug("Deployment name is not provided, using model id as deployment name")
       this.deploymentName = this.modelId
     }
 

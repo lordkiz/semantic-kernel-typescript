@@ -1,5 +1,5 @@
+import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration"
 import { ChatCompletionNamedToolChoice } from "openai/resources"
-import ToolCallBehavior from "../../../../core/src/orchestration/ToolCallBehavior"
 
 enum OpenAIToolChoiceEnum {
   AUTO = "auto",
