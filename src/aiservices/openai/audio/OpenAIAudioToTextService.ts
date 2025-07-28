@@ -10,7 +10,7 @@ import { AudioResponseFormat } from "openai/resources.mjs"
 import { from, map, Observable } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 
-export default class OpenAiAudioToTextService
+export default class OpenAIAudioToTextService
   extends OpenAIService<OpenAI>
   implements AudioToTextService
 {
@@ -61,7 +61,7 @@ export class OpenAiAudioToTextServiceBuilder {
     return this
   }
 
-  build(): OpenAiAudioToTextService {
+  build(): OpenAIAudioToTextService {
     if (this.client == null) {
       throw new SKException("OpenAI client is required")
     }
@@ -75,6 +75,6 @@ export class OpenAiAudioToTextServiceBuilder {
       this.deploymentName = this.modelId
     }
 
-    return new OpenAiAudioToTextService(this.client, this.modelId, this.deploymentName)
+    return new OpenAIAudioToTextService(this.client, this.modelId, this.deploymentName)
   }
 }

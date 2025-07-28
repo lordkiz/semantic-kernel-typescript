@@ -10,7 +10,7 @@ import { SpeechCreateParams } from "openai/resources/audio.js"
 import { from, map, mergeMap, Observable } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 
-export default class OpenAiTextToAudioService
+export default class OpenAITextToAudioService
   extends OpenAIService<OpenAI>
   implements TextToAudioService
 {
@@ -74,7 +74,7 @@ export class OpenAiAudioToTextServiceBuilder {
     return this
   }
 
-  build(): OpenAiTextToAudioService {
+  build(): OpenAITextToAudioService {
     if (this.client == null) {
       throw new SKException("OpenAI client is required")
     }
@@ -88,6 +88,6 @@ export class OpenAiAudioToTextServiceBuilder {
       this.deploymentName = this.modelId
     }
 
-    return new OpenAiTextToAudioService(this.client, this.modelId, this.deploymentName)
+    return new OpenAITextToAudioService(this.client, this.modelId, this.deploymentName)
   }
 }

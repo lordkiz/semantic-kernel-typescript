@@ -72,7 +72,7 @@ import OpenAIFunction from "./OpenAIFunction"
 import OpenAIStreamingChatMessageContent from "./OpenAIStreamingChatMessageContent"
 import { OpenAIToolCallConfig } from "./OpenAIToolCallConfig"
 import { OpenAIToolChoice } from "./OpenAIToolChoice"
-import { OpenAiXMLPromptParser } from "./OpenAiXMLPromptParser"
+import { OpenAIXMLPromptParser } from "./OpenAIXMLPromptParser"
 
 export default class OpenAIChatCompletion
   extends OpenAIService<OpenAI>
@@ -269,7 +269,7 @@ export default class OpenAIChatCompletion
     toolCallConfig?: OpenAIToolCallConfig
   ): OpenAI.ChatCompletionCreateParams {
     const openAIChatRequestMessages = chatRequestMessages.map((it) =>
-      OpenAiXMLPromptParser.unescapeRequest(it)
+      OpenAIXMLPromptParser.unescapeRequest(it)
     )
 
     let options: OpenAI.ChatCompletionCreateParams = {
@@ -544,7 +544,7 @@ export default class OpenAIChatCompletion
     kernel: Kernel,
     invocationContext?: InvocationContext<ChatCompletionCreateParams>
   ): Observable<ChatMessageContent<string>[]> {
-    const parsedPromt = OpenAiXMLPromptParser.parse(prompt)
+    const parsedPromt = OpenAIXMLPromptParser.parse(prompt)
     const messages = new OpenAIChatMessages(parsedPromt.messages)
 
     return this.doChatMessageContentsAsync(

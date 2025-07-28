@@ -1,5 +1,5 @@
 import { GoogleGenAI } from "@google/genai"
-import { AIService } from "@semantic-kernel-typescript/core/services/types/AIService"
+import { AIService } from "@semantic-kernel-typescript/core/services"
 
 export abstract class GeminiService implements AIService {
   private client: GoogleGenAI

@@ -1,8 +1,8 @@
 import { FunctionCall } from "@google/genai"
-import KernelArguments from "../../../core/functions/KernelArguments"
-import FunctionResult from "../../../core/orchestration/FunctionResult"
-import ToolCallBehavior from../../../core/src/orchestration/FunctionResultvior"
-import FunctionCallContent fro../../../core/src/orchestration/ToolCallBehaviorntent"
+import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
+import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
+import { FunctionResult, ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration"
+import { ChatMessageContent } from "@semantic-kernel-typescript/core/services"
 
 /**
  * Represents a function call in Gemini.
@@ -33,6 +33,12 @@ export default class GeminiFunctionCallContent extends FunctionCallContent<any> 
     super(functionName, pluginName, functionCall.id, kernelArguments)
     this._functionCall = functionCall
     this._functionResult = functionResult
+  }
+
+  static getFunctionTools(messageContent: ChatMessageContent<any>) {
+    return (messageContent.getItems() ?? []).filter(
+      (item) => item instanceof GeminiFunctionCallContent
+    )
   }
 
   /**

@@ -5,14 +5,14 @@ import InputVariable from "../../../core/functions/InputVariable"
 import KernelFunctionMetadata from "../../../core/functions/KernelFunctionMetadata"
 
 export default class GeminiFunction {
-  private pluginName: string
-  private name: string
-  private functionDeclaration: FunctionDeclaration
+  private _pluginName: string
+  private _name: string
+  private _functionDeclaration: FunctionDeclaration
 
   constructor(name: string, pluginName: string, functionDeclaration: FunctionDeclaration) {
-    this.name = name
-    this.pluginName = pluginName
-    this.functionDeclaration = functionDeclaration
+    this._name = name
+    this._pluginName = pluginName
+    this._functionDeclaration = functionDeclaration
   }
 
   static build(metadata: KernelFunctionMetadata<any>, pluginName: string): GeminiFunction {
@@ -44,8 +44,8 @@ export default class GeminiFunction {
 
         parameters.properties[name] = restMeta
 
-        if (parameter.isRequired()) {
-          required.push(parameter.getName())
+        if (parameter.isRequired) {
+          required.push(parameter.name)
         }
       }
 
@@ -65,15 +65,15 @@ export default class GeminiFunction {
     return parameter.toJsonSchema() as FunctionDeclaration
   }
 
-  getName() {
-    return this.name
+  get name() {
+    return this._name
   }
 
-  getPluginName() {
-    return this.pluginName
+  get pluginName() {
+    return this._pluginName
   }
 
-  getFunctionDeclaration() {
-    return this.functionDeclaration
+  get functionDeclaration() {
+    return this._functionDeclaration
   }
 }

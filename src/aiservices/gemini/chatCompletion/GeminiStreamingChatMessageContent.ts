@@ -1,6 +1,5 @@
-import FunctionResultMetadata from "@semantic-kernel-typescript/core/orchestration/FunctionResultMetadata"
-import { AuthorRole } from "@semantic-kernel-typescript/core/services/chatcompletion/AuthorRole"
-import { StreamingChatContent } from "@semantic-kernel-typescript/core/services/chatcompletion/StreamingChatContent"
+import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
+import { AuthorRole, StreamingChatContent } from "@semantic-kernel-typescript/core/services"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
 

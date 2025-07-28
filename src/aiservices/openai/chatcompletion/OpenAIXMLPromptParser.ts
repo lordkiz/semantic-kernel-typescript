@@ -9,7 +9,7 @@ interface ParsedPrompt {
   functionDefinitions: FunctionDefinition[] | null
 }
 
-class OpenAiChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPrompt> {
+class OpenAIChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPrompt> {
   private parsedRaw: ParsedPrompt | null = null
   private readonly functionDefinitions: FunctionDefinition[] = []
   private readonly messages: ChatCompletionMessageParam[] = []
@@ -77,13 +77,13 @@ class OpenAiChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPromp
   }
 
   public reset(): ChatPromptParseVisitor<ParsedPrompt> {
-    return new OpenAiChatPromptParseVisitor()
+    return new OpenAIChatPromptParseVisitor()
   }
 }
 
-export class OpenAiXMLPromptParser {
+export class OpenAIXMLPromptParser {
   public static parse(rawPrompt: string): ParsedPrompt {
-    const visitor = ChatXMLPromptParser.parse(rawPrompt, new OpenAiChatPromptParseVisitor())
+    const visitor = ChatXMLPromptParser.parse(rawPrompt, new OpenAIChatPromptParseVisitor())
     return visitor.get()
   }
 

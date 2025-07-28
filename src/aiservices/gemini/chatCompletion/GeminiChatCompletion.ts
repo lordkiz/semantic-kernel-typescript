@@ -9,29 +9,31 @@ import {
   GoogleGenAI,
   Tool,
 } from "@google/genai"
+import { Kernel } from "@semantic-kernel-typescript/core"
+import { AIException, SKException } from "@semantic-kernel-typescript/core/exceptions"
+import { KernelArguments, KernelFunction } from "@semantic-kernel-typescript/core/functions"
+import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
+import {
+  FunctionResult,
+  FunctionResultMetadata,
+  InvocationContext,
+  InvocationReturnMode,
+  ToolCallBehavior,
+} from "@semantic-kernel-typescript/core/orchestration"
+import {
+  AllowedKernelFunctions,
+  RequiredKernelFunction,
+} from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
+import {
+  AuthorRole,
+  ChatCompletionService,
+  ChatHistory,
+  ChatMessageContent,
+  StreamingChatContent,
+  TextAIService,
+} from "@semantic-kernel-typescript/core/services"
 import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
-import KernelArguments from "../../../core/functions/KernelArguments"
-import KernelFunction from "../../../core/functions/KernelFunction"
-import Kernel from "../../../core/Kernel"
-import { Logger } from "../../../core/log/Logger"
-import FunctionResult from "../../../core/orchestration/FunctionResult"
-import FunctionResul../../../core/src/Kernel./../core/orchestration/FunctionResultMetadata"
-import InvocationContext../../../core/src/log/Loggerhestration/InvocationContext"
-import { InvocationReturnMod../../../core/src/orchestration/FunctionResultcationReturnMode"
-import ToolCallBehavior, {../../../core/src/orchestration/FunctionResultMetadata
-  AllowedKernelFunctions,../../../core/src/orchestration/InvocationContext
-  RequiredKernelFunction,../../../core/src/orchestration/InvocationReturnMode
-} from "../../../core/orchestration/ToolCallBehavior"
-import { AuthorRole } from "../../../core/services/chatcompletion/AuthorRole"
-import { ChatCompletionService } from "../../../core/services/chatcompletion/ChatCompletionService"
-import C../../../core/src/orchestration/ToolCallBehaviorcompletion/ChatHistory"
-import ChatMessageContent fr../../../core/src/services/chatcompletion/AuthorRolessageContent"
-import { StreamingChatContent } from "@semantic-kernel-typescript/core/services/chatcompletion/ChatCompletionServicee
-import { TextAIService } ../../../core/src/services/chatcompletion/ChatHistory
-import FunctionCallContent from ../../../core/src/services/chatcompletion/ChatMessageContent
-import AIException from "@semantic-kernel-typescript/core/services/chatcompletion/StreamingChatContentt
-import SKException from "../../../../../core/src/services/types/TextAIService
 import { GeminiService } from "../GeminiService"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 import GeminiFunction from "./GeminiFunction"
@@ -40,8 +42,6 @@ import GeminiStreamingChatMessageContent from "./GeminiStreamingChatMessageConte
 import { GeminiXMLPromptParser } from "./GeminiXMLPromptParser"
 
 export default class GeminiChatCompletion extends GeminiService implements ChatCompletionService {
-  private LOGGER = Logger
-
   constructor(client: GoogleGenAI, modelId: string, deploymentName?: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }
@@ -77,7 +77,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     kernel: Kernel,
     invocationContext?: InvocationContext<GenerateContentConfig>
   ): Observable<StreamingChatContent<any>> {
-    this.LOGGER.warn(
+    Logger.warn(
       "Streaming has been called on GeminiChatCompletion service. " +
         "This is currently not supported in Gemini. " +
         "The results will be returned in a non streaming fashion."
@@ -295,24 +295,22 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
         content.role = AuthorRole.USER
 
         if (chatMessageContent instanceof GeminiChatMessageContent) {
-          const fns = FunctionCallContent.getFunctionTools(
-            chatMessageContent
-          ) as GeminiFunctionCallContent[]
+          const fns = GeminiFunctionCallContent.getFunctionTools(chatMessageContent)
 
-          fns.forEach((geminiFunction) => {
-            const functionResult = geminiFunction.functionResult
+          fns.forEach((geminiFunctionCall) => {
+            const functionResult = geminiFunctionCall.functionResult
 
             if (!functionResult || !functionResult?.getResult()) {
               throw new SKException("Gemini failed to return a result")
             }
 
-            if (!geminiFunction.id) {
-              throw new SKException(`No id found on gemini function ${geminiFunction.fullName}`)
+            if (!geminiFunctionCall.id) {
+              throw new SKException(`No id found on gemini function ${geminiFunctionCall.fullName}`)
             }
 
             const part = createPartFromFunctionResponse(
-              geminiFunction.id,
-              geminiFunction.fullName,
+              geminiFunctionCall.id,
+              geminiFunctionCall.fullName,
               { result: functionResult.getResult() }
             )
 

@@ -1,10 +1,10 @@
 import { FunctionDeclaration } from "@google/genai"
-import { authorRoleFromString } from "../../../core/services/chatcompletion/AuthorRole"
-import ChatHistory from "../../../core/services/chatcompletion/ChatHistory"
-import ChatMessageTextContent from "..../../../core/src/services/chatcompletion/AuthorRoleMessageTextContent"
-import { ChatPromptParseV../../../core/src/services/chatcompletion/ChatHistorychatCompletion/ChatPromptParseVisitor"
-import { ChatXMLPromptParser } from ../../../core/src/services/chatcompletion/message/ChatMessageTextContentr"
-
+import {
+  ChatPromptParseVisitor,
+  ChatXMLPromptParser,
+} from "@semantic-kernel-typescript/core/implementations"
+import { ChatHistory, ChatMessageTextContent } from "@semantic-kernel-typescript/core/services"
+import { authorRoleFromString } from "@semantic-kernel-typescript/core/services/chatcompletion/AuthorRole"
 interface ParsedPrompt {
   chatHistory: ChatHistory
   functionDefinitions?: FunctionDeclaration[]
