@@ -1,4 +1,5 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
+import { AIServiceBuilder } from "@semantic-kernel-typescript/core/builders"
 import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
 import { AIException, SKException } from "@semantic-kernel-typescript/core/exceptions"
 import {
@@ -34,7 +35,6 @@ import {
   ChatMessageContent,
   ChatMessageContentType,
   ChatMessageImageContent,
-  OpenAiServiceBuilder,
   StreamingChatContent,
   TextAIService,
 } from "@semantic-kernel-typescript/core/services"
@@ -923,7 +923,7 @@ export default class OpenAIChatCompletion
 /**
  * Builder for creating a new instance of {@link OpenAIChatCompletion}.
  */
-class OpenAIChatCompletionBuilder extends OpenAiServiceBuilder<
+class OpenAIChatCompletionBuilder extends AIServiceBuilder<
   OpenAI,
   OpenAIChatCompletion,
   OpenAIChatCompletionBuilder

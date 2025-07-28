@@ -2,7 +2,7 @@
   "name": "@semantic-kernel-typescript/huggingface",
   "version": "0.0.1",
   "description": "Semantic Kernel Typescript - HuggingFace",
-  "main": "index.js",
+  "main": "./index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -1,5 +1,5 @@
-import SemanticKernelBuilder from "../../builders/SemanticKernelBuilder";
-import { AIService } from "../types/AIService";
+import { AIService } from "../services"
+import SemanticKernelBuilder from "./SemanticKernelBuilder"
 
 /**
  * Builder for an OpenAI service.
@@ -7,19 +7,16 @@ import { AIService } from "../types/AIService";
  * @param <T> The service type
  * @param <U> The builder type
  */
-export abstract class OpenAiServiceBuilder<
-  C,
-  T extends AIService,
-  U extends OpenAiServiceBuilder<C, T, U>
-> implements SemanticKernelBuilder<T>
+export abstract class AIServiceBuilder<C, T extends AIService, U extends AIServiceBuilder<C, T, U>>
+  implements SemanticKernelBuilder<T>
 {
-  protected modelId: string | undefined;
+  protected modelId: string | undefined
 
-  protected client: C | undefined;
+  protected client: C | undefined
 
-  protected serviceId: string | undefined;
+  protected serviceId: string | undefined
 
-  protected deploymentName: string | undefined;
+  protected deploymentName: string | undefined
 
   /**
    * Sets the model ID for the service.
@@ -31,8 +28,8 @@ export abstract class OpenAiServiceBuilder<
    * @return The builder
    */
   public withModelId(modelId: string) {
-    this.modelId = modelId;
-    return this;
+    this.modelId = modelId
+    return this
   }
 
   /**
@@ -42,8 +39,8 @@ export abstract class OpenAiServiceBuilder<
    * @return The builder
    */
   withDeploymentName(deploymentName: string) {
-    this.deploymentName = deploymentName;
-    return this;
+    this.deploymentName = deploymentName
+    return this
   }
 
   /**
@@ -52,9 +49,9 @@ export abstract class OpenAiServiceBuilder<
    * @param client The OpenAI client
    * @return The builder
    */
-  withOpenAIAsyncClient(client: C) {
-    this.client = client;
-    return this;
+  withClient(client: C) {
+    this.client = client
+    return this
   }
 
   /**
@@ -64,13 +61,13 @@ export abstract class OpenAiServiceBuilder<
    * @return The builder
    */
   withServiceId(serviceId: string) {
-    this.serviceId = serviceId;
-    return this;
+    this.serviceId = serviceId
+    return this
   }
 
   /**
    * Builds the service.
    * @return The service
    */
-  public abstract build(): T;
+  public abstract build(): T
 }

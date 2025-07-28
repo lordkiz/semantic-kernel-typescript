@@ -18,7 +18,6 @@ import { ChatMessageContentType } from "./chatcompletion/message/ChatMessageCont
 import ChatMessageImageContent from "./chatcompletion/message/ChatMessageImageContent"
 import ChatMessageTextContent from "./chatcompletion/message/ChatMessageTextContent"
 import { StreamingChatContent } from "./chatcompletion/StreamingChatContent"
-import { OpenAiServiceBuilder } from "./openai/OpenAiServiceBuilder"
 import TextContent from "./textcompletion/TextContent"
 import { TextGenerationService } from "./textcompletion/TextGenerationService"
 
@@ -35,7 +34,6 @@ export {
   ChatMessageImageContent,
   ChatMessageTextContent,
   KernelContentImpl,
-  OpenAiServiceBuilder,
   OrderedAIServiceSelector,
   StreamingChatContent,
   StreamingTextContent,

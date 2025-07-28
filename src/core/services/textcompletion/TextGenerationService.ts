@@ -1,16 +1,19 @@
-import { OpenAI as OpenAIClient } from "openai"
 import { Observable } from "rxjs"
+import { AIServiceBuilder } from "../../builders"
 import Kernel from "../../Kernel"
 import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings"
 import StreamingTextContent from "../StreamingTextContent"
-import { OpenAiServiceBuilder } from "../openai/OpenAiServiceBuilder"
 import { TextAIService } from "../types/TextAIService"
 import TextContent from "./TextContent"
 
 /**
  * Builder for a TextGenerationService
  */
-abstract class Builder extends OpenAiServiceBuilder<OpenAIClient, TextGenerationService, Builder> {}
+abstract class Builder<Client = unknown> extends AIServiceBuilder<
+  Client,
+  TextGenerationService,
+  AIServiceBuilder<Client, TextGenerationService, any>
+> {}
 
 /**
  * Interface for text completion services
