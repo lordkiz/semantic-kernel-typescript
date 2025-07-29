@@ -91,7 +91,11 @@ export class ChatXMLPromptParser {
       for (let i = 0; i < messages.length; i++) {
         const message = messages[i]
         const { role, content, name } = message
-        chatPromptParseVisitor = chatPromptParseVisitor.addMessage(role, content, name)
+        chatPromptParseVisitor = chatPromptParseVisitor.addMessage(
+          role,
+          content ?? message["#text"],
+          name
+        )
       }
     } catch (e) {
       throw new SKException(`Failed to parse messages: ${e}`)

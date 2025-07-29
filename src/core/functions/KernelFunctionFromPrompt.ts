@@ -1,4 +1,4 @@
-import { concatMap, map, Observable } from "rxjs"
+import { concatMap, map, mergeMap, Observable } from "rxjs"
 import { v4 as uuid4 } from "uuid"
 import SKException from "../exceptions/SKException"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
@@ -8,9 +8,8 @@ import Kernel from "../Kernel"
 import FunctionResult from "../orchestration/FunctionResult"
 import InvocationContext from "../orchestration/InvocationContext"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
-import { ChatCompletionService } from "../services/chatcompletion/ChatCompletionService"
+import { ChatCompletionService } from "../services"
 import { TextGenerationService } from "../services/textcompletion/TextGenerationService"
-import { TextAIServiceKeyStub } from "../services/types/TextAIService"
 import DefaultOriginalInstance from "./DefaultOriginalInstance"
 import HandlebarsPromptTemplateFactory from "./HandlebarsPromptTemplateFactory"
 import InputVariable from "./InputVariable"
@@ -64,6 +63,10 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   ): Observable<FunctionResult<T>> {
     const context = invocationContext || new InvocationContext()
 
+    if (!context.serviceClass) {
+      throw new SKException("Invoking function from prompts require specifying the service class")
+    }
+
     const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.kernelHooks)
 
     const preRenderingHookState = kernelHooks.executeHooks(
@@ -101,7 +104,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
 
         const aiServiceSelection = kernel
           .getServiceSelector()
-          .trySelectAIService(TextAIServiceKeyStub, this, args)
+          .trySelectAIService(context.serviceClass!, this, args)
 
         if (!aiServiceSelection) {
           throw new SKException(
@@ -109,7 +112,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
           )
         }
 
-        const client = aiServiceSelection.getService()
+        const service = aiServiceSelection.getService()
 
         let result
 
@@ -122,28 +125,32 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
             .build()
         }
 
-        if (client instanceof ChatCompletionService) {
-          result = client
+        if ("getChatMessageContentsAsync" in service) {
+          result = (service as ChatCompletionService)
             .getChatMessageContentsAsync(prompt, kernel, contextWithExecutionSettings)
             .pipe(
+              mergeMap((it) => it),
               map((chatMessageContent) => {
-                const fnRes = new FunctionResult(chatMessageContent) as FunctionResult<T>
+                const fnRes = new FunctionResult(
+                  chatMessageContent.getContent()
+                ) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
                   new FunctionInvokedEvent(this, args, fnRes)
                 )
                 return updatedResult.getResult()
               })
             )
-        } else if (client instanceof TextGenerationService) {
-          result = client
+        } else if ("getTextContentsAsync" in service) {
+          result = (service as TextGenerationService)
             .getTextContentsAsync(
               prompt,
               kernel,
               contextWithExecutionSettings.promptExecutionSettings
             )
             .pipe(
+              mergeMap((it) => it),
               map((textContent) => {
-                const fnRes = new FunctionResult(textContent) as FunctionResult<T>
+                const fnRes = new FunctionResult(textContent.getContent()) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
                   new FunctionInvokedEvent(this, args, fnRes)
                 )

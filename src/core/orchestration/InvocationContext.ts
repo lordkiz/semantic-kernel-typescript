@@ -3,6 +3,8 @@ import SKException from "../exceptions/SKException"
 import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior"
 import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks"
 import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry"
+import { AIService } from "../services"
+import { ServiceClass } from "../services/types/AIServiceSelector"
 import { InvocationReturnMode } from "./InvocationReturnMode"
 import PromptExecutionSettings from "./PromptExecutionSettings"
 import ToolCallBehavior from "./ToolCallBehavior"
@@ -22,13 +24,16 @@ export default class InvocationContext<
 
   private _invocationReturnMode: InvocationReturnMode
 
+  private _serviceClassType: ServiceClass<AIService> | undefined
+
   constructor(
     hooks?: KernelHooks,
     promptExecutionSettings?: PromptExecutionSettings<ExecutionConfig>,
     toolCallBehavior?: ToolCallBehavior,
     functionChoiceBehavior?: FunctionChoiceBehavior,
     invocationReturnMode?: InvocationReturnMode,
-    telemetry?: SemanticKernelTelemetry
+    telemetry?: SemanticKernelTelemetry,
+    serviceClassType?: ServiceClass<AIService>
   ) {
     this._hooks = hooks
     this._promptExecutionSettings = promptExecutionSettings
@@ -36,6 +41,7 @@ export default class InvocationContext<
     this._functionChoiceBehavior = functionChoiceBehavior
     this._invocationReturnMode = invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY
     this._telemetry = telemetry
+    this._serviceClassType = serviceClassType
   }
 
   static clone(invocationContext: InvocationContext<any>): InvocationContext<any> {
@@ -45,7 +51,8 @@ export default class InvocationContext<
       invocationContext.toolCallBehavior,
       invocationContext.functionChoiceBehavior,
       invocationContext.returnMode,
-      invocationContext.telemetry
+      invocationContext.telemetry,
+      invocationContext.serviceClass
     )
   }
 
@@ -61,6 +68,7 @@ export default class InvocationContext<
       .withPromptExecutionSettings(context.promptExecutionSettings)
       .withToolCallBehavior(context.toolCallBehavior)
       .withTelemetry(context.telemetry)
+      .withServiceClass(context.serviceClass)
   }
 
   clone(): InvocationContext<ExecutionConfig> {
@@ -89,6 +97,10 @@ export default class InvocationContext<
 
   get telemetry() {
     return this._telemetry
+  }
+
+  get serviceClass() {
+    return this._serviceClassType
   }
 
   static unmodifiableClone(kernelHooks?: KernelHooks): UnmodifiableKernelHooks | undefined {
@@ -120,6 +132,8 @@ class InvocationContextBuilder<ExecutionConfig extends Record<string, any> = Rec
   private telemetry: SemanticKernelTelemetry | undefined
 
   private invocationReturnMode: InvocationReturnMode = InvocationReturnMode.NEW_MESSAGES_ONLY
+
+  private serviceClass: ServiceClass<AIService> | undefined
 
   /**
    * Add kernel hooks to the builder.
@@ -198,6 +212,17 @@ class InvocationContextBuilder<ExecutionConfig extends Record<string, any> = Rec
     return this
   }
 
+  /**
+   * Specify the type of Service to use during invocation
+   *
+   * @param serviceClass
+   * @returns
+   */
+  withServiceClass(serviceClass?: ServiceClass<AIService>) {
+    this.serviceClass = serviceClass
+    return this
+  }
+
   build(): InvocationContext<ExecutionConfig> {
     if (!this.telemetry) {
       this.telemetry = new SemanticKernelTelemetry()
@@ -208,7 +233,8 @@ class InvocationContextBuilder<ExecutionConfig extends Record<string, any> = Rec
       this.toolCallBehavior,
       this.functionChoiceBehavior,
       this.invocationReturnMode,
-      this.telemetry
+      this.telemetry,
+      this.serviceClass
     )
   }
 }

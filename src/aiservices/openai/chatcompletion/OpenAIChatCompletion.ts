@@ -716,6 +716,7 @@ export default class OpenAIChatCompletion
     return from(this.client.chat.completions.create({ ...options, stream: false })).pipe(
       mergeMap((chatCompletions) => {
         const responseMessages = chatCompletions.choices.map((m) => m.message).filter(Boolean)
+        messages.addAll(responseMessages)
 
         // execute PostChatCompletionHook
         OpenAIChatCompletion.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
