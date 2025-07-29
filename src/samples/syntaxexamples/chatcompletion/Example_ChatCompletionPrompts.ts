@@ -9,8 +9,7 @@ import OpenAI from "openai"
 
 const main = async () => {
   const client = new OpenAI({
-    apiKey:
-      "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",
+    apiKey: "sk-XXX",
   })
 
   const chatCompletionService = OpenAIChatCompletion.Builder()
