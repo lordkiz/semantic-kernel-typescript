@@ -1,4 +1,4 @@
-import { StreamingKernelContent } from "../types/StreamingKernelContent";
+import { StreamingKernelContent } from "../types/StreamingKernelContent"
 
 /**
  * Base class which represents the content returned by a chat completion service.
@@ -9,5 +9,5 @@ export interface StreamingChatContent<T> extends StreamingKernelContent<T> {
    * Gets the ID of the content.
    * @return The ID.
    */
-  getId(): string;
+  get id(): string
 }

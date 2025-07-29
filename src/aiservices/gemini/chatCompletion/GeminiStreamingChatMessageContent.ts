@@ -40,7 +40,7 @@ export default class GeminiStreamingChatMessageContent<T>
     this._id = id
   }
 
-  getId(): string {
+  get id(): string {
     return this._id
   }
 }

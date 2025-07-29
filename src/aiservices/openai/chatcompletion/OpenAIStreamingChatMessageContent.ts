@@ -40,7 +40,7 @@ export default class OpenAIStreamingChatMessageContent<T>
     this._id = id
   }
 
-  getId(): string {
+  get id(): string {
     return this._id
   }
 }

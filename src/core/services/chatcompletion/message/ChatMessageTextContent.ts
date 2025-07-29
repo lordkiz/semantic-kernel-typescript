@@ -1,10 +1,10 @@
-import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder";
-import SKException from "../../../exceptions/SKException";
-import FunctionResultMetadata from "../../../orchestration/FunctionResultMetadata";
-import { KernelContent } from "../../types/KernelContent";
-import { AuthorRole } from "../AuthorRole";
-import ChatMessageContent from "../ChatMessageContent";
-import { ChatMessageContentType } from "./ChatMessageContentType";
+import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder"
+import SKException from "../../../exceptions/SKException"
+import FunctionResultMetadata from "../../../orchestration/FunctionResultMetadata"
+import { KernelContent } from "../../types/KernelContent"
+import { AuthorRole } from "../AuthorRole"
+import ChatMessageContent from "../ChatMessageContent"
+import { ChatMessageContentType } from "./ChatMessageContentType"
 
 /**
  * Represents the content of a chat message which contains text
@@ -33,7 +33,7 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
       encoding,
       metadata,
       contentType: ChatMessageContentType.TEXT,
-    });
+    })
   }
 
   /**
@@ -42,14 +42,11 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
    * @return a new builder
    */
   public static Builder(): Builder {
-    return new Builder();
+    return new Builder()
   }
 
-  private static buildContent(
-    role: AuthorRole,
-    content: string
-  ): ChatMessageTextContent {
-    return new Builder().withAuthorRole(role).withContent(content).build();
+  private static buildContent(role: AuthorRole, content: string): ChatMessageTextContent {
+    return new Builder().withAuthorRole(role).withContent(content).build()
   }
 
   /**
@@ -59,7 +56,7 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
    * @return The message
    */
   static userMessage(content: string): ChatMessageTextContent {
-    return ChatMessageTextContent.buildContent(AuthorRole.USER, content);
+    return ChatMessageTextContent.buildContent(AuthorRole.USER, content)
   }
 
   /**
@@ -69,7 +66,7 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
    * @return The message
    */
   public static assistantMessage(content: string): ChatMessageTextContent {
-    return ChatMessageTextContent.buildContent(AuthorRole.ASSISTANT, content);
+    return ChatMessageTextContent.buildContent(AuthorRole.ASSISTANT, content)
   }
 
   /**
@@ -79,7 +76,7 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
    * @return The message
    */
   public static systemMessage(content: string) {
-    return ChatMessageTextContent.buildContent(AuthorRole.SYSTEM, content);
+    return ChatMessageTextContent.buildContent(AuthorRole.SYSTEM, content)
   }
 }
 
@@ -87,12 +84,12 @@ export default class ChatMessageTextContent extends ChatMessageContent<string> {
  * Builder for the {@link ChatMessageTextContent} class.
  */
 class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
-  private modelId: string | undefined;
-  private metadata: FunctionResultMetadata<string> | undefined;
-  private authorRole: AuthorRole | undefined;
-  private content: string | undefined;
-  private items: KernelContent<string>[] | undefined;
-  private encoding: BufferEncoding | undefined;
+  private modelId: string | undefined
+  private metadata: FunctionResultMetadata<string> | undefined
+  private authorRole: AuthorRole | undefined
+  private content: string | undefined
+  private items: KernelContent<string>[] | undefined
+  private encoding: BufferEncoding | undefined
 
   /**
    * Set the content of the message
@@ -101,8 +98,8 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
    * @return The builder
    */
   withContent(content: string) {
-    this.content = content;
-    return this;
+    this.content = content
+    return this
   }
 
   /**
@@ -112,8 +109,8 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
    * @return The builder
    */
   withModelId(modelId: string) {
-    this.modelId = modelId;
-    return this;
+    this.modelId = modelId
+    return this
   }
 
   /**
@@ -123,8 +120,8 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
    * @return The builder
    */
   withMetadata(metadata: FunctionResultMetadata<string>) {
-    this.metadata = metadata;
-    return this;
+    this.metadata = metadata
+    return this
   }
 
   /**
@@ -134,8 +131,8 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
    * @return The builder
    */
   withAuthorRole(authorRole: AuthorRole) {
-    this.authorRole = authorRole;
-    return this;
+    this.authorRole = authorRole
+    return this
   }
 
   /**
@@ -145,16 +142,16 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
    * @return The builder
    */
   withEncoding(encoding: BufferEncoding) {
-    this.encoding = encoding;
-    return this;
+    this.encoding = encoding
+    return this
   }
 
   build(): ChatMessageTextContent {
     if (!this.authorRole) {
-      throw new SKException("Author role must be set");
+      throw new SKException("Author role must be set")
     }
-    if (!this.content) {
-      throw new SKException("Content must be set");
+    if (this.content === undefined) {
+      throw new SKException("Content must be set")
     }
     return new ChatMessageTextContent(
       this.authorRole,
@@ -162,6 +159,6 @@ class Builder implements SemanticKernelBuilder<ChatMessageTextContent> {
       this.modelId,
       this.encoding,
       this.metadata
-    );
+    )
   }
 }

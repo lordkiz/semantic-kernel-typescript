@@ -421,7 +421,7 @@ export default class OpenAIChatCompletion
     const assistantMessage: ChatCompletionAssistantMessageParam = { role: "assistant", content }
     const toolCalls = FunctionCallContent.getFunctionTools(message)
 
-    if (toolCalls) {
+    if (toolCalls?.length) {
       assistantMessage.tool_calls = toolCalls.map((toolCall) => {
         const kernelArguments = toolCall.kernelArguments
         const args =
