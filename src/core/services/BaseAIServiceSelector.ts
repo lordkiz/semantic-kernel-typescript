@@ -1,9 +1,9 @@
-import KernelArguments from "../functions/KernelArguments";
-import KernelFunction from "../functions/KernelFunction";
-import AIServiceCollection from "./AIServiceCollection";
-import AIServiceSelection from "./AIServiceSelection";
-import { AIService } from "./types/AIService";
-import { AIServiceSelector, ServiceType } from "./types/AIServiceSelector";
+import KernelArguments from "../functions/KernelArguments"
+import KernelFunction from "../functions/KernelFunction"
+import AIServiceCollection from "./AIServiceCollection"
+import AIServiceSelection from "./AIServiceSelection"
+import { AIService } from "./types/AIService"
+import { AIServiceSelector, ServiceClass } from "./types/AIServiceSelector"
 
 /**
  * Base class for {@link AIServiceSelector} implementations which provides a {@code Map} based
@@ -12,10 +12,8 @@ import { AIServiceSelector, ServiceType } from "./types/AIServiceSelector";
  * implemented. Child classes must implement the method
  * {@link #trySelectAIService(Class, KernelFunction, KernelArguments, Map)}.
  */
-export default abstract class BaseAIServiceSelector
-  implements AIServiceSelector
-{
-  protected services: AIServiceCollection;
+export default abstract class BaseAIServiceSelector implements AIServiceSelector {
+  protected services: AIServiceCollection
 
   /**
    * Initializes a new instance of the {@link BaseAIServiceSelector} class.
@@ -23,14 +21,14 @@ export default abstract class BaseAIServiceSelector
    * @param services The services to select from.
    */
   constructor(services: AIServiceCollection) {
-    this.services = services;
+    this.services = services
   }
 
   /**
    * Resolves an {@link AIService} from the {@code services} argument using the specified
    * {@code function} and {@code arguments} for selection.
    *
-   * @param serviceType The type of service to select.  This must be the same type with which the
+   * @param serviceClass The type of service to select.  This must be the same type with which the
    *                    service was registered in the {@link AIServiceSelection}
    * @param fn    The KernelFunction to use to select the service, or {@code null}.
    * @param kernelArguments   The KernelFunctionArguments to use to select the service, or
@@ -41,9 +39,9 @@ export default abstract class BaseAIServiceSelector
    *
    */
   abstract trySelectAIService<T extends AIService>(
-    serviceType: ServiceType<T>,
+    serviceClass: ServiceClass<T>,
     fn?: KernelFunction<any>,
     kernelArguments?: KernelArguments,
-    services?: Map<ServiceType<T>, AIService>
-  ): AIServiceSelection<T> | undefined;
+    services?: Map<ServiceClass<T>, AIService>
+  ): AIServiceSelection<T> | undefined
 }

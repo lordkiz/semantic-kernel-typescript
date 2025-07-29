@@ -116,21 +116,21 @@ export default class Kernel {
     return this.serviceSelector
   }
 
-  public getService<T extends AIService>(serviceType: new (...args: any[]) => T): T {
-    const selection = this.serviceSelector.trySelectAIService(serviceType)
+  public getService<T extends AIService>(serviceClass: new (...args: any[]) => T): T {
+    const selection = this.serviceSelector.trySelectAIService(serviceClass)
     if (!selection) {
-      throw new Error(`Unable to find service of type ${serviceType.name}`)
+      throw new Error(`Unable to find service of type ${serviceClass.name}`)
     }
     return selection.getService()
   }
 
   public getServiceWithArgs<T extends AIService>(
-    serviceType: new (...args: any[]) => T,
+    serviceClass: new (...args: any[]) => T,
     args: KernelArguments
   ): T {
-    const selection = this.serviceSelector.trySelectAIService(serviceType, undefined, args)
+    const selection = this.serviceSelector.trySelectAIService(serviceClass, undefined, args)
     if (!selection) {
-      throw new Error(`Unable to find service of type ${serviceType.name}`)
+      throw new Error(`Unable to find service of type ${serviceClass.name}`)
     }
     return selection.getService()
   }
@@ -152,10 +152,10 @@ export class KernelBuilder {
   }
 
   public withAIService<T extends AIService>(
-    serviceType: new (...args: any[]) => T,
+    serviceClass: new (...args: any[]) => T,
     aiService: T
   ): KernelBuilder {
-    this.services.set(serviceType, aiService)
+    this.services.set(Symbol(serviceClass.name), aiService)
     return this
   }
 
