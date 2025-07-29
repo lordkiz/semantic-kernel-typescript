@@ -1,10 +1,10 @@
-import { AIService } from "./AIService";
+import { AIService } from "./AIService"
 
 export abstract class TextAIService extends AIService {
   /**
    * The maximum number of results per prompt
    */
-  static MAX_RESULTS_PER_PROMPT: number; // 128
+  static MAX_RESULTS_PER_PROMPT: number // 128
 
   /**
    * The maximum number of auto-invokes that can be in-flight at any given time as part of the
@@ -24,18 +24,5 @@ export abstract class TextAIService extends AIService {
    * future and/or made configurable should need arise.
    * </p>
    */
-  static MAXIMUM_INFLIGHT_AUTO_INVOKES: number; // 128
-}
-
-/**
- * A stub key that can be used to search for TextAIService in
- * services collection by an AIServiceSelector
- */
-export class TextAIServiceKeyStub extends TextAIService {
-  getModelId(): string {
-    throw new Error("Method not implemented.");
-  }
-  getServiceId(): string {
-    throw new Error("Method not implemented.");
-  }
+  static MAXIMUM_INFLIGHT_AUTO_INVOKES: number // 128
 }
