@@ -10,17 +10,17 @@ import ToolCallBehavior from "./ToolCallBehavior"
 export default class InvocationContext<
   ExecutionConfig extends Record<string, any> = Record<string, any>,
 > {
-  private hooks: UnmodifiableKernelHooks | undefined
+  private _hooks: UnmodifiableKernelHooks | undefined
 
-  private promptExecutionSettings: PromptExecutionSettings<ExecutionConfig> | undefined
+  private _promptExecutionSettings: PromptExecutionSettings<ExecutionConfig> | undefined
 
-  private toolCallBehavior: ToolCallBehavior | undefined
+  private _toolCallBehavior: ToolCallBehavior | undefined
 
-  private functionChoiceBehavior: FunctionChoiceBehavior | undefined
+  private _functionChoiceBehavior: FunctionChoiceBehavior | undefined
 
-  private telemetry: SemanticKernelTelemetry | undefined
+  private _telemetry: SemanticKernelTelemetry | undefined
 
-  private invocationReturnMode: InvocationReturnMode
+  private _invocationReturnMode: InvocationReturnMode
 
   constructor(
     hooks?: KernelHooks,
@@ -30,22 +30,22 @@ export default class InvocationContext<
     invocationReturnMode?: InvocationReturnMode,
     telemetry?: SemanticKernelTelemetry
   ) {
-    this.hooks = hooks
-    this.promptExecutionSettings = promptExecutionSettings
-    this.toolCallBehavior = toolCallBehavior
-    this.functionChoiceBehavior = functionChoiceBehavior
-    this.invocationReturnMode = invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY
-    this.telemetry = telemetry
+    this._hooks = hooks
+    this._promptExecutionSettings = promptExecutionSettings
+    this._toolCallBehavior = toolCallBehavior
+    this._functionChoiceBehavior = functionChoiceBehavior
+    this._invocationReturnMode = invocationReturnMode || InvocationReturnMode.NEW_MESSAGES_ONLY
+    this._telemetry = telemetry
   }
 
   static clone(invocationContext: InvocationContext<any>): InvocationContext<any> {
     return new InvocationContext(
-      UnmodifiableKernelHooks.construct(invocationContext.getKernelHooks()),
-      invocationContext.getPromptExecutionSettings(),
-      invocationContext.getToolCallBehavior(),
-      invocationContext.getFunctionChoiceBehavior(),
-      invocationContext.invocationReturnMode,
-      invocationContext.getTelemetry()
+      UnmodifiableKernelHooks.construct(invocationContext.kernelHooks),
+      invocationContext.promptExecutionSettings,
+      invocationContext.toolCallBehavior,
+      invocationContext.functionChoiceBehavior,
+      invocationContext.returnMode,
+      invocationContext.telemetry
     )
   }
 
@@ -57,38 +57,38 @@ export default class InvocationContext<
    */
   static copy(context: InvocationContext<any>): InvocationContextBuilder<any> {
     return new InvocationContextBuilder()
-      .withKernelHooks(context.getKernelHooks())
-      .withPromptExecutionSettings(context.getPromptExecutionSettings())
-      .withToolCallBehavior(context.getToolCallBehavior())
-      .withTelemetry(context.getTelemetry())
+      .withKernelHooks(context.kernelHooks)
+      .withPromptExecutionSettings(context.promptExecutionSettings)
+      .withToolCallBehavior(context.toolCallBehavior)
+      .withTelemetry(context.telemetry)
   }
 
   clone(): InvocationContext<ExecutionConfig> {
     return InvocationContext.clone(this)
   }
 
-  getKernelHooks() {
-    return this.hooks
+  get kernelHooks() {
+    return this._hooks
   }
 
-  getPromptExecutionSettings() {
-    return this.promptExecutionSettings
+  get promptExecutionSettings() {
+    return this._promptExecutionSettings
   }
 
-  getToolCallBehavior() {
-    return this.toolCallBehavior
+  get toolCallBehavior() {
+    return this._toolCallBehavior
   }
 
-  getFunctionChoiceBehavior() {
-    return this.functionChoiceBehavior
+  get functionChoiceBehavior() {
+    return this._functionChoiceBehavior
   }
 
-  returnMode() {
-    return this.invocationReturnMode
+  get returnMode() {
+    return this._invocationReturnMode
   }
 
-  getTelemetry() {
-    return this.telemetry
+  get telemetry() {
+    return this._telemetry
   }
 
   static unmodifiableClone(kernelHooks?: KernelHooks): UnmodifiableKernelHooks | undefined {

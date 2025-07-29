@@ -1,27 +1,25 @@
-import { SpanContext, trace, Tracer } from "@opentelemetry/api";
-import InvocationContext from "../../orchestration/InvocationContext";
+import { SpanContext, trace, Tracer } from "@opentelemetry/api"
+import InvocationContext from "../../orchestration/InvocationContext"
 
 export default class SemanticKernelTelemetry {
-  static OPEN_AI_PROVIDER = "openai";
+  static OPEN_AI_PROVIDER = "openai"
 
-  private tracer: Tracer;
+  private tracer: Tracer
 
-  private spanContext: SpanContext | undefined;
+  private spanContext: SpanContext | undefined
 
-  constructor();
-  constructor(tracer: Tracer);
+  constructor()
+  constructor(tracer: Tracer)
   constructor(tracer?: Tracer, spanContext?: SpanContext) {
-    this.tracer = tracer || trace.getTracer("SemanticKernel");
-    this.spanContext = spanContext;
+    this.tracer = tracer || trace.getTracer("SemanticKernel")
+    this.spanContext = spanContext
   }
 
-  static getTelemetry(
-    invocationContext: InvocationContext
-  ): SemanticKernelTelemetry {
-    return invocationContext.getTelemetry() ?? new SemanticKernelTelemetry();
+  static getTelemetry(invocationContext: InvocationContext): SemanticKernelTelemetry {
+    return invocationContext.telemetry ?? new SemanticKernelTelemetry()
   }
 
   private getTracer() {
-    return this.tracer;
+    return this.tracer
   }
 }

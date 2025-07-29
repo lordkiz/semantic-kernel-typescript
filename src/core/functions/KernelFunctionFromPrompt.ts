@@ -64,7 +64,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   ): Observable<FunctionResult<T>> {
     const context = invocationContext || new InvocationContext()
 
-    const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.getKernelHooks())
+    const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.kernelHooks)
 
     const preRenderingHookState = kernelHooks.executeHooks(
       new PromptRenderingEvent(this, kernelArguments)
@@ -116,7 +116,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
         const executionSettings = aiServiceSelection.getSettings()
 
         let contextWithExecutionSettings = context
-        if (!context.getPromptExecutionSettings()) {
+        if (!context.promptExecutionSettings) {
           contextWithExecutionSettings = InvocationContext.copy(context)
             .withPromptExecutionSettings(executionSettings)
             .build()
@@ -139,7 +139,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
             .getTextContentsAsync(
               prompt,
               kernel,
-              contextWithExecutionSettings.getPromptExecutionSettings()
+              contextWithExecutionSettings.promptExecutionSettings
             )
             .pipe(
               map((textContent) => {

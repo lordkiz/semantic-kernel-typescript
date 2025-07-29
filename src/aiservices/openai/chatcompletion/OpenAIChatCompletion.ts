@@ -96,22 +96,19 @@ export default class OpenAIChatCompletion
       return
     }
 
-    if (
-      !invocationContext.getFunctionChoiceBehavior() ||
-      !invocationContext.getToolCallBehavior()
-    ) {
+    if (!invocationContext.functionChoiceBehavior || !invocationContext.toolCallBehavior) {
       return
     }
 
-    if (invocationContext.getFunctionChoiceBehavior()) {
+    if (invocationContext.functionChoiceBehavior) {
       return OpenAIChatCompletion.getFunctionChoiceBehaviorConfig(
-        invocationContext.getFunctionChoiceBehavior()!,
+        invocationContext.functionChoiceBehavior,
         fns,
         requestIndex
       )
     }
     return OpenAIChatCompletion.getToolCallBehaviorConfig(
-      invocationContext.getToolCallBehavior() ?? new ToolCallBehavior(),
+      invocationContext.toolCallBehavior ?? new ToolCallBehavior(),
       fns,
       chatRequestMessages,
       requestIndex
@@ -254,7 +251,7 @@ export default class OpenAIChatCompletion
   ): T {
     const kernelHooks = KernelHooks.merge(
       kernel?.getGlobalKernelHooks(),
-      invocationContext?.getKernelHooks()
+      invocationContext?.kernelHooks
     )
     if (!kernelHooks) {
       return event
@@ -286,7 +283,7 @@ export default class OpenAIChatCompletion
       }
     }
 
-    const promptExecutionSettings = invocationContext?.getPromptExecutionSettings()
+    const promptExecutionSettings = invocationContext?.promptExecutionSettings
 
     if (!promptExecutionSettings) {
       return options
@@ -557,7 +554,7 @@ export default class OpenAIChatCompletion
           OpenAIChatCompletion.toOpenAIChatMessageContent(m.getAllMessages())
         )
 
-        if (invocationContext?.returnMode() === InvocationReturnMode.LAST_MESSAGE_ONLY) {
+        if (invocationContext?.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY) {
           const lastMessage = result.getLastMessage()
           const msgContents = lastMessage ? [lastMessage] : []
           result = new ChatHistory(msgContents)
@@ -583,7 +580,7 @@ export default class OpenAIChatCompletion
     >(
       map((chatMessagesHistory) => {
         let chatHistoryResult: ChatHistory
-        if (invocationContext.returnMode() === InvocationReturnMode.FULL_HISTORY) {
+        if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {
           chatHistoryResult = new ChatHistory(chatHistory.getMessages())
         } else {
           chatHistoryResult = new ChatHistory()
@@ -598,7 +595,7 @@ export default class OpenAIChatCompletion
         chatHistoryResult.addAll(new ChatHistory(chatMessagesHistory.getNewChatMessageContent()))
 
         if (
-          invocationContext?.returnMode() === InvocationReturnMode.LAST_MESSAGE_ONLY &&
+          invocationContext?.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY &&
           chatHistoryResult.getLastMessage() !== undefined
         ) {
           chatHistoryResult = new ChatHistory([chatHistoryResult.getLastMessage()!])
@@ -617,8 +614,8 @@ export default class OpenAIChatCompletion
       | undefined = InvocationContext.Builder<ChatCompletionCreateParams>().build()
   ): Observable<StreamingChatContent<any>> {
     if (
-      invocationContext.getToolCallBehavior() &&
-      invocationContext.getToolCallBehavior()?.isAutoInvokeAllowed()
+      invocationContext.toolCallBehavior &&
+      invocationContext.toolCallBehavior.isAutoInvokeAllowed()
     ) {
       throw new SKException(
         "ToolCallBehavior auto-invoke is not supported for streaming chat message contents"
@@ -626,16 +623,16 @@ export default class OpenAIChatCompletion
     }
 
     if (
-      invocationContext.getFunctionChoiceBehavior() &&
-      invocationContext.getFunctionChoiceBehavior() instanceof AutoFunctionChoiceBehavior &&
-      (invocationContext.getFunctionChoiceBehavior() as AutoFunctionChoiceBehavior).isAutoInvoke()
+      invocationContext.functionChoiceBehavior &&
+      invocationContext.functionChoiceBehavior instanceof AutoFunctionChoiceBehavior &&
+      (invocationContext.functionChoiceBehavior as AutoFunctionChoiceBehavior).isAutoInvoke()
     ) {
       throw new SKException(
         "FunctionChoiceBehavior auto-invoke is not supported for streaming chat message contents"
       )
     }
 
-    if (invocationContext.returnMode() != InvocationReturnMode.NEW_MESSAGES_ONLY) {
+    if (invocationContext.returnMode != InvocationReturnMode.NEW_MESSAGES_ONLY) {
       throw new SKException(
         "Streaming chat message contents only supports NEW_MESSAGES_ONLY return mode"
       )

@@ -68,7 +68,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
       invocationContext ?? InvocationContext.Builder().build(),
       Math.min(
         TextAIService.MAXIMUM_INFLIGHT_AUTO_INVOKES,
-        invocationContext?.getToolCallBehavior()?.getMaximumAutoInvokeAttempts() ?? 0
+        invocationContext?.toolCallBehavior?.getMaximumAutoInvokeAttempts() ?? 0
       )
     )
   }
@@ -166,11 +166,11 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     newHistory.addChatMessageContent(geminiChatMessageContent)
 
     if (invocationAttempts <= 0 || !generateContentResponse.functionCalls?.length) {
-      if (invocationContext.returnMode() === InvocationReturnMode.FULL_HISTORY) {
+      if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {
         return fullHistory.getMessages()
       }
 
-      if (invocationContext.returnMode() === InvocationReturnMode.LAST_MESSAGE_ONLY) {
+      if (invocationContext.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY) {
         const lastMessage = new ChatHistory()
         lastMessage.addChatMessageContent(geminiChatMessageContent)
         return lastMessage.getMessages()
@@ -267,7 +267,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
       parts: [],
     }
 
-    const settings = invocationContext.getPromptExecutionSettings()
+    const settings = invocationContext.promptExecutionSettings
     if (
       settings &&
       (settings.resultsPerPrompt < 1 ||
@@ -282,7 +282,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     return {
       contents: [contents],
       model: this.modelId,
-      config: Object.assign(invocationContext.getPromptExecutionSettings() ?? {}),
+      config: Object.assign(invocationContext.promptExecutionSettings ?? {}),
     }
   }
 
@@ -345,11 +345,11 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
   private getConfig(kernel: Kernel, invocationContext: InvocationContext<GenerateContentConfig>) {
     const config: GenerateContentConfig = Object.assign(
-      invocationContext.getPromptExecutionSettings() ?? {}
+      invocationContext.promptExecutionSettings ?? {}
     )
 
-    if (invocationContext.getToolCallBehavior()) {
-      const tool = this.getTool(kernel, invocationContext.getToolCallBehavior()!)
+    if (invocationContext.toolCallBehavior) {
+      const tool = this.getTool(kernel, invocationContext.toolCallBehavior)
 
       if (tool) {
         config.tools = [...(config.tools ?? []), tool]
