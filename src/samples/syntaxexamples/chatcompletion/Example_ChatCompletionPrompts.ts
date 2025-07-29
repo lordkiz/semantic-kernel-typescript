@@ -1,11 +1,16 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
-import { KernelFunctionFromPrompt } from "@semantic-kernel-typescript/core/functions"
+import {
+  KernelArguments,
+  KernelFunctionFromPrompt,
+} from "@semantic-kernel-typescript/core/functions"
+import { InvocationContext } from "@semantic-kernel-typescript/core/orchestration"
 import { OpenAIChatCompletion } from "@semantic-kernel-typescript/openai/chatcompletion"
 import OpenAI from "openai"
 
 const main = async () => {
   const client = new OpenAI({
-    apiKey: "sk-XXXX",
+    apiKey:
+      "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",
   })
 
   const chatCompletionService = OpenAIChatCompletion.Builder()
@@ -23,10 +28,21 @@ const main = async () => {
     .withTemplate(chatPrompt)
     .build()
 
-  const chatPromptResult = await kernel.invoke(chatSemanticFunction)
+  const kernelArguments = KernelArguments.Builder().build()
+
+  const invocationContext = InvocationContext.Builder()
+    .withServiceClass(OpenAIChatCompletion)
+    .build()
+
+  const chatPromptResult = await kernel.invoke(
+    chatSemanticFunction,
+    kernelArguments,
+    invocationContext
+  )
 
   console.log("Chat Prompt:")
   console.log(chatPrompt)
+
   console.log("Chat Prompt Result:")
   console.log(chatPromptResult.getResult())
 
