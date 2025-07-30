@@ -82,7 +82,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
   ): Observable<FunctionResult<T>> {
     const context = invocationContext || InvocationContext.Builder().build()
 
-    const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.getKernelHooks())
+    const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.kernelHooks)
 
     const updatedState = kernelHooks.executeHooks(new FunctionInvokingEvent(this, kernelArguments))
 
