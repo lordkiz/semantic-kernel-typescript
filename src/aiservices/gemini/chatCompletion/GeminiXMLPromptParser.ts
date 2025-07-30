@@ -16,7 +16,7 @@ class GeminiChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPromp
   private readonly chatHistory: ChatHistory = new ChatHistory()
 
   public addMessage(role: string, content: string): ChatPromptParseVisitor<ParsedPrompt> {
-    this.chatHistory.addMessage(authorRoleFromString(role), content)
+    this.chatHistory.addMessage(content, authorRoleFromString(role))
 
     return this
   }

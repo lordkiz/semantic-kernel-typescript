@@ -1,18 +1,18 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata";
-import KernelContentImpl from "../KernelContentImpl";
-import { KernelContent } from "../types/KernelContent";
-import { AuthorRole } from "./AuthorRole";
-import { ChatMessageContentType } from "./message/ChatMessageContentType";
+import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
+import KernelContentImpl from "../KernelContentImpl"
+import { KernelContent } from "../types/KernelContent"
+import { AuthorRole } from "./AuthorRole"
+import { ChatMessageContentType } from "./message/ChatMessageContentType"
 
 interface ChatMessageContentParams<T> {
-  authorRole: AuthorRole;
-  content: string;
-  items?: KernelContent<T>[];
-  encoding?: BufferEncoding;
-  contentType: ChatMessageContentType;
-  modelId?: string;
-  innerContent?: T;
-  metadata?: FunctionResultMetadata<T>;
+  authorRole: AuthorRole
+  content: string
+  items?: KernelContent<T>[]
+  encoding?: BufferEncoding
+  contentType: ChatMessageContentType
+  modelId?: string
+  innerContent?: T
+  metadata?: FunctionResultMetadata<T>
 }
 
 /**
@@ -24,11 +24,11 @@ interface ChatMessageContentParams<T> {
  * @typeparam T - The type of the inner content within the messages
  */
 export default class ChatMessageContent<T> extends KernelContentImpl<T> {
-  private readonly authorRole: AuthorRole;
-  private readonly content: string;
-  private readonly items: KernelContent<T>[] | undefined;
-  private readonly encoding: BufferEncoding | undefined;
-  private readonly contentType: ChatMessageContentType;
+  private readonly authorRole: AuthorRole
+  private readonly content: string
+  private readonly items: KernelContent<T>[] | undefined
+  private readonly encoding: BufferEncoding | undefined
+  private readonly contentType: ChatMessageContentType
 
   constructor({
     authorRole,
@@ -40,12 +40,12 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
     innerContent,
     metadata,
   }: ChatMessageContentParams<T>) {
-    super(innerContent, modelId, metadata);
-    this.authorRole = authorRole;
-    this.items = items;
-    this.content = content;
-    this.encoding = encoding;
-    this.contentType = contentType;
+    super(innerContent, modelId, metadata)
+    this.authorRole = authorRole
+    this.items = items
+    this.content = content
+    this.encoding = encoding
+    this.contentType = contentType
   }
 
   static clone<T>(chatMessageContent: ChatMessageContent<T>) {
@@ -58,7 +58,7 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
       modelId: chatMessageContent.getModelId(),
       innerContent: chatMessageContent.getInnerContent(),
       metadata: chatMessageContent.getMetadata(),
-    });
+    })
   }
 
   /**
@@ -67,7 +67,7 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    * @return The author role that generated the content
    */
   public getAuthorRole(): AuthorRole {
-    return this.authorRole;
+    return this.authorRole
   }
 
   /**
@@ -76,7 +76,7 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    * @return The content, which may be null
    */
   public getContent(): string {
-    return this.content;
+    return this.content
   }
 
   /**
@@ -85,7 +85,7 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    * @return The items, which may be null
    */
   public getItems(): KernelContent<T>[] | undefined {
-    return this.items ? [...this.items] : undefined;
+    return this.items ? [...this.items] : undefined
   }
 
   /**
@@ -94,7 +94,7 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    * @return The encoding, which may be null
    */
   public getEncoding(): BufferEncoding | undefined {
-    return this.encoding;
+    return this.encoding
   }
 
   /**
@@ -103,10 +103,10 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    * @return The content type
    */
   public getContentType(): ChatMessageContentType {
-    return this.contentType;
+    return this.contentType
   }
 
   public toString(): string {
-    return this.content ?? "";
+    return this.content ?? ""
   }
 }

@@ -1,8 +1,8 @@
-import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder";
-import SKException from "../../../exceptions/SKException";
-import { AuthorRole } from "../AuthorRole";
-import ChatMessageContent from "../ChatMessageContent";
-import { ChatMessageContentType } from "./ChatMessageContentType";
+import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder"
+import SKException from "../../../exceptions/SKException"
+import { AuthorRole } from "../AuthorRole"
+import ChatMessageContent from "../ChatMessageContent"
+import { ChatMessageContentType } from "./ChatMessageContentType"
 
 enum ImageDetail {
   /**
@@ -25,9 +25,9 @@ enum ImageDetail {
  * @param <T> the type of the inner content within the message
  */
 export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
-  static ImageDetail = ImageDetail;
+  static ImageDetail = ImageDetail
 
-  private readonly detail: ImageDetail;
+  private readonly detail: ImageDetail
 
   /**
    * Create a new instance of the {@link ChatMessageImageContent} class.
@@ -41,9 +41,9 @@ export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
       content,
       modelId,
       contentType: ChatMessageContentType.IMAGE_URL,
-    });
+    })
 
-    this.detail = detail ?? ImageDetail.AUTO;
+    this.detail = detail ?? ImageDetail.AUTO
   }
 
   /**
@@ -52,7 +52,7 @@ export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
    * @return the detail level of the image
    */
   getDetail() {
-    return this.detail;
+    return this.detail
   }
 
   /**
@@ -62,7 +62,7 @@ export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
    * @return a new builder
    */
   public static Builder<T>(): Builder<T> {
-    return new Builder<T>();
+    return new Builder<T>()
   }
 }
 
@@ -71,11 +71,11 @@ export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
  * @param <T> the type of the inner content within the message
  */
 class Builder<T> implements SemanticKernelBuilder<ChatMessageImageContent<T>> {
-  private modelId: string | undefined;
+  private modelId: string | undefined
 
-  private content: string | undefined;
+  private content: string | undefined
 
-  private detail: ImageDetail | undefined;
+  private detail: ImageDetail | undefined
 
   /**
    * Set the model ID to use for the chat message.
@@ -84,8 +84,8 @@ class Builder<T> implements SemanticKernelBuilder<ChatMessageImageContent<T>> {
    * @return {@code this} builder
    */
   withModelId(modelId: string): Builder<T> {
-    this.modelId = modelId;
-    return this;
+    this.modelId = modelId
+    return this
   }
 
   /**
@@ -95,10 +95,10 @@ class Builder<T> implements SemanticKernelBuilder<ChatMessageImageContent<T>> {
    * @param content   the image content
    * @return {@code this} builder
    */
-  withImage(imageType: string, content: number[]): Builder<T> {
-    const b64 = Buffer.from(new Uint8Array(content)).toString("base64");
-    this.content = `data:image/${imageType};base64,${b64}`;
-    return this;
+  withImage(imageType: string, content: Buffer<ArrayBuffer>): Builder<T> {
+    const b64 = Buffer.from(new Uint8Array(content)).toString("base64")
+    this.content = `data:image/${imageType};base64,${b64}`
+    return this
   }
 
   /**
@@ -108,8 +108,8 @@ class Builder<T> implements SemanticKernelBuilder<ChatMessageImageContent<T>> {
    * @return {@code this} builder
    */
   withImageUrl(url: string): Builder<T> {
-    this.content = url;
-    return this;
+    this.content = url
+    return this
   }
 
   /**
@@ -119,21 +119,17 @@ class Builder<T> implements SemanticKernelBuilder<ChatMessageImageContent<T>> {
    * @return {@code this} builder
    */
   withDetail(detail: ImageDetail): Builder<T> {
-    this.detail = detail;
-    return this;
+    this.detail = detail
+    return this
   }
 
   build(): ChatMessageImageContent<T> {
     if (!this.detail) {
-      this.detail = ImageDetail.AUTO;
+      this.detail = ImageDetail.AUTO
     }
     if (!this.content) {
-      throw new SKException("Image content is required");
+      throw new SKException("Image content is required")
     }
-    return new ChatMessageImageContent<T>(
-      this.content,
-      this.modelId,
-      this.detail
-    );
+    return new ChatMessageImageContent<T>(this.content, this.modelId, this.detail)
   }
 }

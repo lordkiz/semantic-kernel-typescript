@@ -90,12 +90,19 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   addMessage(
-    authorRole: AuthorRole,
-    content: string,
+    content: string | ChatMessageContent<string>,
+    authorRole?: AuthorRole,
     encoding?: BufferEncoding,
     metadata?: FunctionResultMetadata<any>
   ): ChatHistory {
-    let builder = ChatMessageTextContent.Builder().withAuthorRole(authorRole).withContent(content)
+    if (content instanceof ChatMessageContent) {
+      return this.addChatMessageContent(content)
+    }
+
+    let builder = ChatMessageTextContent.Builder()
+      .withAuthorRole(authorRole ?? AuthorRole.USER)
+      .withContent(content)
+
     if (encoding) {
       builder = builder.withEncoding(encoding)
     }
@@ -117,7 +124,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   addUserMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.USER, content)
+    return this.addMessage(content, AuthorRole.USER)
   }
 
   /**
@@ -127,7 +134,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   addAssistantMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.ASSISTANT, content)
+    return this.addMessage(content, AuthorRole.ASSISTANT)
   }
 
   /**
@@ -137,7 +144,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @return {@code this} ChatHistory
    */
   public addSystemMessage(content: string): ChatHistory {
-    return this.addMessage(AuthorRole.SYSTEM, content)
+    return this.addMessage(content, AuthorRole.SYSTEM)
   }
 
   /**
