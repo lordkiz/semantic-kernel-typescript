@@ -16,6 +16,6 @@ export interface TextToAudioService extends AIService {
    */
   getAudioContentAsync(
     sampleText: string,
-    executionSettings: TextToAudioExecutionSettings
+    executionSettings: TextToAudioExecutionSettings<any>
   ): Observable<AudioContent>
 }

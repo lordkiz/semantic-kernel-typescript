@@ -6,7 +6,7 @@ import {
 } from "@semantic-kernel-typescript/core/services/audio"
 import { AudioToTextService } from "@semantic-kernel-typescript/core/services/audio/types/AudioToTextService"
 import OpenAI from "openai"
-import { AudioResponseFormat } from "openai/resources.mjs"
+import { TranscriptionCreateParamsNonStreaming } from "openai/resources/audio"
 import { from, map, Observable } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 
@@ -24,19 +24,21 @@ export default class OpenAIAudioToTextService
 
   getTextContentsAsync(
     content: AudioContent,
-    executionSettings: AudioToTextExecutionSettings
+    executionSettings: AudioToTextExecutionSettings<TranscriptionCreateParamsNonStreaming>
   ): Observable<string> {
     const options = this.convertOptions(content, executionSettings)
     return from(this.client.audio.transcriptions.create(options)).pipe(map((it) => it.text))
   }
 
-  private convertOptions(content: AudioContent, executionSettings: AudioToTextExecutionSettings) {
+  private convertOptions(
+    content: AudioContent,
+    executionSettings: AudioToTextExecutionSettings<TranscriptionCreateParamsNonStreaming>
+  ): TranscriptionCreateParamsNonStreaming {
+    const { model, file, ...rest } = executionSettings.toObject()
     return {
-      model: this.modelId,
-      response_format: (executionSettings?.getResponseFormat() ?? "json") as AudioResponseFormat,
-      file: content.getData(),
-      language: executionSettings?.getLanguage(),
-      prompt: executionSettings?.getPrompt(),
+      model: model ?? this.modelId,
+      file: file ?? content.data,
+      ...rest,
     }
   }
 }

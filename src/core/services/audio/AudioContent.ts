@@ -2,40 +2,40 @@
  * Represents audio content.
  */
 export default class AudioContent {
-  private readonly data: File
-  private readonly modelId: string | undefined
+  private readonly _data: Buffer
+  private readonly _modelId: string | undefined
 
   /**
    * Creates an instance of audio content.
    * @param data The audio data.
    * @param modelId The model ID.
    */
-  constructor(data: File, modelId?: string) {
-    this.data = data
-    this.modelId = modelId
+  constructor(data: Buffer, modelId?: string) {
+    this._data = data
+    this._modelId = modelId
   }
 
   /**
    * Gets the audio data.
    * @returns The audio data.
    */
-  public getData(): File {
-    return this.data
+  public get data(): Buffer {
+    return this._data
   }
 
   /**
    * Gets the model ID.
    * @returns The model ID.
    */
-  public getModelId() {
-    return this.modelId
+  public get modelId() {
+    return this._modelId
   }
 
   /**
    * Gets the inner content.
    * @returns The inner content.
    */
-  public getInnerContent() {
+  public get innerContent() {
     return
   }
 
@@ -43,7 +43,7 @@ export default class AudioContent {
    * Gets the metadata.
    * @returns The metadata.
    */
-  public getMetadata(): Map<string, any> | undefined {
+  public get metadata(): Map<string, any> | undefined {
     return
   }
 
@@ -60,7 +60,7 @@ export default class AudioContent {
  * Represents a builder for audio content.
  */
 export class AudioContentBuilder {
-  private data: File | undefined
+  private data: Buffer | undefined
   private modelId: string | undefined
 
   /**
@@ -68,7 +68,7 @@ export class AudioContentBuilder {
    * @param data The audio data.
    * @returns The builder.
    */
-  public withData(data: File): AudioContentBuilder {
+  public withData(data: Buffer): AudioContentBuilder {
     this.data = data
     return this
   }
