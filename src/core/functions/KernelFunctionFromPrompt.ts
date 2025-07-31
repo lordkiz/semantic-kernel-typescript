@@ -64,7 +64,9 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
     const context = invocationContext || new InvocationContext()
 
     if (!context.serviceClass) {
-      throw new SKException("Invoking function from prompts require specifying the service class")
+      throw new SKException(
+        "Invoking function from prompts require specifying the service class in the invocation context"
+      )
     }
 
     const kernelHooks = KernelHooks.merge(kernel.getGlobalKernelHooks(), context.kernelHooks)

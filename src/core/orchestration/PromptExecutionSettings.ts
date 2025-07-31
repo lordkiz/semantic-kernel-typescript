@@ -4,8 +4,8 @@ export default class PromptExecutionSettings<
   /** Specifies the type of settings.
    * Example, OpenAI's Settings type would be ChatCompletionCreateParams.
    * Gemini's would be GenerateContentConfig */
-  SettingsType extends Record<string, unknown> = Record<string, any>,
-> extends Map<keyof SettingsType, any> {
+  SettingsType extends object = Record<string, any>,
+> extends Map<string, any> {
   private settings: SettingsType
   constructor(settings: SettingsType, serviceId?: string, resultsPerPrompt?: number) {
     super()
@@ -27,7 +27,7 @@ export default class PromptExecutionSettings<
     )
 
     for (const key of Object.keys(settings ?? {})) {
-      this.set(key, settings[key])
+      this.set(key, (settings as Record<string, any>)[key])
     }
   }
 

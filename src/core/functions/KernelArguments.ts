@@ -47,7 +47,7 @@ export default class KernelArguments<
   }
 
   getInput() {
-    return this.get(KernelArguments.MAIN_KEY)
+    return this.variables.get(KernelArguments.MAIN_KEY)
   }
 
   clear(): void {
@@ -106,21 +106,21 @@ export default class KernelArguments<
   }
 
   private static _Builder = {
-    variablez: new Map<string, any>(),
+    variablez: new Map<string, ContextVariable<any>>(),
     executionSettingz: PromptExecutionSettings.Builder<any>().build(),
 
     withInput<T>(content: T) {
-      this.variablez.set(KernelArguments.MAIN_KEY, content)
+      this.variablez.set(KernelArguments.MAIN_KEY, ContextVariable.of(content))
       return this
     },
 
     withVariable<T>(key: string, value: T) {
-      this.variablez.set(key, value)
+      this.variablez.set(key, ContextVariable.of(value))
       return this
     },
 
     withVariables(map: Map<string, any>) {
-      map.forEach((v, k) => this.variablez.set(k, v))
+      map.forEach((v, k) => this.variablez.set(k, ContextVariable.of(v)))
       return this
     },
 
