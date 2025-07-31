@@ -3,7 +3,6 @@ import SKException from "../exceptions/SKException"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
 import KernelHooks from "../hooks/KernelHooks"
 import Kernel from "../Kernel"
-import { Logger } from "../log/Logger"
 import FunctionResult from "../orchestration/FunctionResult"
 import InvocationContext from "../orchestration/InvocationContext"
 import InputVariable from "./InputVariable"
@@ -20,8 +19,6 @@ import OutputVariable from "./OutputVariable"
  * @param <T> the return type of the function
  */
 export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
-  private LOGGER = Logger
-
   private constructor(
     method: Function,
     instance: InstanceType<any>,
@@ -120,17 +117,17 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
  * @param <T> the return type of the function
  */
 class KernelFunctionFromMethodBuilder<T> {
-  private method: Function | undefined
+  method: Function | undefined
 
-  private target: InstanceType<any> | undefined
+  target: InstanceType<any> | undefined
 
-  private pluginName: string | undefined
+  pluginName: string | undefined
 
-  private description: string | undefined
+  description: string | undefined
 
-  private parameters: InputVariable[] | undefined
+  parameters: InputVariable[] | undefined
 
-  private returnParameter: OutputVariable<T> | undefined
+  returnParameter: OutputVariable<T> | undefined
 
   /**
    * Sets the method to use to build the function.

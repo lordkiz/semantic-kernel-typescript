@@ -83,6 +83,11 @@ class HandleBarsPromptTemplateHandler {
     const args: Record<string, any> = {}
     kernelArguments.forEach((v, k) => {
       args[k] = v.getValue()
+      // ensure key $key is included in the args.
+      // this enables us to also use {{$input}} syntax in prompt templates
+      if (args[`$${k}`] === undefined) {
+        args[`$${k}`] = v.getValue()
+      }
     })
 
     return this.handlebars.compile(this.template)(args)

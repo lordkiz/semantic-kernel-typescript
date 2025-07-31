@@ -24,7 +24,10 @@ export default class ContextVariable<T> {
 
   private resolveValue(): T {
     try {
-      if (typeof this.value === "string") {
+      if (
+        typeof this.value === "string" &&
+        (this.value.startsWith("[") || this.value.startsWith("{"))
+      ) {
         return JSON.parse(this.value) as T
       }
       return this.value
