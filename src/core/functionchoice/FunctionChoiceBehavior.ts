@@ -1,4 +1,5 @@
 import KernelFunction from "../functions/KernelFunction"
+import { KernelPlugin } from "../plugin"
 import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
 
 /**
@@ -10,8 +11,16 @@ export default abstract class FunctionChoiceBehavior {
   protected fns: KernelFunction<any>[]
   protected options: FunctionChoiceBehaviorOptions
 
-  constructor(fns?: KernelFunction<any>[], options?: FunctionChoiceBehaviorOptions) {
-    this.fns = fns || []
+  constructor(plugins?: KernelPlugin[], options?: FunctionChoiceBehaviorOptions) {
+    const kernelFunctions = (plugins ?? [])
+      .map((plugin) => {
+        const funcs = Array.from(plugin.getFunctions().values())
+        return funcs
+      })
+      .flatMap((it) => it)
+
+    this.fns = kernelFunctions
+
     this.fullFunctionNames = new Set<string>()
 
     this.fns.forEach((fn) => {

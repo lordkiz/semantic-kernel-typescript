@@ -1,4 +1,3 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
 import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
 import ContextVariable from "../variables/ContextVariable"
 
@@ -11,7 +10,7 @@ export default class KernelArguments<
    */
   static MAIN_KEY = "input"
 
-  variables: CaseInsensitiveMap<ContextVariable<any>>
+  variables: Map<string, ContextVariable<any>>
   executionSettings: PromptExecutionSettings<ExecutionSettingsType>
 
   constructor()
@@ -24,9 +23,9 @@ export default class KernelArguments<
     executionSettings?: PromptExecutionSettings<ExecutionSettingsType>
   ) {
     if (variables) {
-      this.variables = new CaseInsensitiveMap<any>(variables)
+      this.variables = new Map<string, ContextVariable<any>>(variables)
     } else {
-      this.variables = new CaseInsensitiveMap<any>()
+      this.variables = new Map<string, ContextVariable<any>>()
     }
 
     this.executionSettings =
@@ -73,7 +72,7 @@ export default class KernelArguments<
   }
 
   has(key: string): boolean {
-    return this.variables.contains(key)
+    return this.variables.has(key)
   }
 
   set(key: string, value: any): this {

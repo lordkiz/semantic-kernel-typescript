@@ -63,12 +63,17 @@ export default class InvocationContext<
    * @return The new instance of InvocationContext.
    */
   static copy(context: InvocationContext<any>): InvocationContextBuilder<any> {
-    return new InvocationContextBuilder()
+    let builder = new InvocationContextBuilder()
       .withKernelHooks(context.kernelHooks)
       .withPromptExecutionSettings(context.promptExecutionSettings)
       .withToolCallBehavior(context.toolCallBehavior)
       .withTelemetry(context.telemetry)
       .withServiceClass(context.serviceClass)
+
+    if (context.functionChoiceBehavior) {
+      builder = builder.withFunctionChoiceBehavior(context.functionChoiceBehavior)
+    }
+    return builder
   }
 
   clone(): InvocationContext<ExecutionConfig> {

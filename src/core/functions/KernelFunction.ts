@@ -112,9 +112,8 @@ export default abstract class KernelFunction<T> {
     return methodParams
       .sort((a, b) => a.index - b.index)
       .map((p) => {
-        const value = ContextVariable.of<typeof p.type>(
-          kernelArguments?.get(p.name) ?? p.defaultValue
-        )
+        const rawValue = kernelArguments?.get(p.name) ?? p.defaultValue
+        const value = rawValue instanceof ContextVariable ? rawValue : ContextVariable.of(rawValue)
 
         const v = value.getValue()
         if (p.required && v === undefined) {

@@ -80,9 +80,9 @@ export default class FunctionResultMetadata<UsageType> {
    *
    * @return The id of the result of the function invocation.
    */
-  getId() {
+  getId(): string | undefined {
     const id = this.metadata.getOrDefault(FunctionResultMetadata.ID, new KernelArguments())
-    return id.get(FunctionResultMetadata.ID) as string | undefined
+    return id.get(FunctionResultMetadata.ID)?.getValue()
   }
 
   /**

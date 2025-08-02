@@ -53,17 +53,7 @@ import {
   ChatCompletionToolMessageParam,
   ChatCompletionUserMessageParam,
 } from "openai/resources"
-import {
-  catchError,
-  defaultIfEmpty,
-  from,
-  map,
-  mergeMap,
-  Observable,
-  of,
-  reduce,
-  throwError,
-} from "rxjs"
+import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
@@ -96,7 +86,7 @@ export default class OpenAIChatCompletion
       return
     }
 
-    if (!invocationContext.functionChoiceBehavior || !invocationContext.toolCallBehavior) {
+    if (!invocationContext.functionChoiceBehavior && !invocationContext.toolCallBehavior) {
       return
     }
 
@@ -145,8 +135,16 @@ export default class OpenAIChatCompletion
       throw new SKException("Unsupported function choice behavior: " + functionChoiceBehavior)
     }
 
-    const toolDefinitions: ChatCompletionTool[] = fns
-      .filter((fn) => functionChoiceBehavior.isFunctionAllowed(fn.getPluginName(), fn.getName()))
+    let allowedPluginFunctions = fns
+
+    if (functionChoiceBehavior.getFunctions()?.length) {
+      // if you specified list of functions to allow, then only those will be allowed
+      allowedPluginFunctions = allowedPluginFunctions.filter((fn) =>
+        functionChoiceBehavior.isFunctionAllowed(fn.getPluginName(), fn.getName())
+      )
+    }
+
+    const toolDefinitions: ChatCompletionTool[] = allowedPluginFunctions
       .map((fn) => fn.getFunctionDefinition())
       .map((def) => ({ type: "function", function: def }))
 
@@ -448,7 +446,7 @@ export default class OpenAIChatCompletion
           arguments: args,
         }
         const functionToolCall: ChatCompletionMessageToolCall = {
-          id: name,
+          id: toolCall.id!,
           function: fn,
           type: "function",
         }
@@ -726,29 +724,15 @@ export default class OpenAIChatCompletion
         // If auto-invoking is not enabled
         // Or if we are auto-invoking, but we somehow end up with other than 1 choice even though only 1 was requested
         if (!toolCallConfig || !toolCallConfig.autoInvoke || responseMessages.length !== 1) {
-          const chatMessageContents = OpenAIChatCompletion.toOpenAIChatMessageContent(
-            this.extractChatCompletionMessages(chatCompletions)
-          )
-          return of(messages.addChatMessage(chatMessageContents))
+          return of(messages)
         }
 
         // Or if there are no tool calls to be done
         const response = responseMessages[0]
         const toolCalls = response.tool_calls
         if (!toolCalls?.length) {
-          const chatMessageContents = OpenAIChatCompletion.toOpenAIChatMessageContent(
-            this.extractChatCompletionMessages(chatCompletions)
-          )
-          return of(messages.addChatMessage(chatMessageContents))
+          return of(messages)
         }
-
-        const requestMessage: ChatCompletionAssistantMessageParam = {
-          role: "assistant",
-          tool_calls: toolCalls,
-          content: response.content,
-        }
-
-        const messagesWithToolCall = messages.add(requestMessage) as OpenAIChatMessages
 
         return from(toolCalls).pipe(
           reduce((requestMessagesMono, toolCall) => {
@@ -756,17 +740,17 @@ export default class OpenAIChatCompletion
               return this.performToolCall(kernel, invocationContext, requestMessagesMono, toolCall)
             }
             return requestMessagesMono
-          }, of(messagesWithToolCall)),
+          }, of(messages)),
           mergeMap((it) => it),
-          mergeMap((chatMessages) =>
-            this.doChatMessageContentsWithFunctionsAsync(
+          mergeMap((chatMessages) => {
+            return this.doChatMessageContentsWithFunctionsAsync(
               chatMessages,
               kernel,
               fns,
               invocationContext,
               requestIndex + 1
             )
-          ),
+          }),
           catchError((e: Error) => {
             console.warn("Tool invocation attempt failed: ", e)
 
@@ -855,14 +839,7 @@ export default class OpenAIChatCompletion
               content: functionResult.getResult(),
             }
             return messages.add(requestToolMessage)
-          }),
-          defaultIfEmpty(
-            messages.add({
-              role: "tool",
-              tool_call_id: functionToolCall.id,
-              content: "Completed successfully with no return value",
-            })
-          )
+          })
         )
       })
     ) as Observable<OpenAIChatMessages>
@@ -875,6 +852,7 @@ export default class OpenAIChatCompletion
   ): Observable<FunctionResult<string>> {
     const functionCallContent: FunctionCallContent<any> =
       OpenAIChatCompletion.extractFunctionCallContent(functionToolCall)
+
     const pluginName = functionCallContent.pluginName
 
     if (!pluginName) {

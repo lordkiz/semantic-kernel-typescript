@@ -1,6 +1,6 @@
-import KernelFunction from "../functions/KernelFunction";
-import FunctionChoiceBehavior from "./FunctionChoiceBehavior";
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions";
+import { KernelPlugin } from "../plugin"
+import FunctionChoiceBehavior from "./FunctionChoiceBehavior"
+import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
 
 /**
  * A set of allowed kernel functions. All kernel functions are allowed if allKernelFunctionsAllowed is true.
@@ -9,22 +9,22 @@ import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions";
  * If a function is allowed, it may be called. If it is not allowed, it will not be called.
  */
 export default class AutoFunctionChoiceBehavior extends FunctionChoiceBehavior {
-  private autoInvoke: boolean;
+  private autoInvoke: boolean
 
   /**
    * Create a new instance of AutoFunctionChoiceBehavior.
    *
    * @param autoInvoke Whether auto-invocation is enabled.
-   * @param fns  A set of functions to advertise to the model.
+   * @param plugins  A set of plugins containing functions to advertise to the model.
    * @param options    Options for the function choice behavior.
    */
   constructor(
     autoInvoke: boolean,
-    fns?: KernelFunction<any>[],
+    plugins?: KernelPlugin[],
     options?: FunctionChoiceBehaviorOptions
   ) {
-    super(fns, options);
-    this.autoInvoke = autoInvoke;
+    super(plugins, options)
+    this.autoInvoke = autoInvoke
   }
 
   /**
@@ -33,6 +33,6 @@ export default class AutoFunctionChoiceBehavior extends FunctionChoiceBehavior {
    * @return Whether the function is allowed.
    */
   isAutoInvoke() {
-    return this.autoInvoke;
+    return this.autoInvoke
   }
 }
