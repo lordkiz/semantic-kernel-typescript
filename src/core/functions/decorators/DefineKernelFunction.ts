@@ -48,11 +48,20 @@ export type DefineKernelFunctionOptions = Partial<{
   samples?: SKSample[]
 }>
 
-export function DefineKernelFunction(opts: DefineKernelFunctionOptions) {
+export function DefineKernelFunction(options?: DefineKernelFunctionOptions) {
   return (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const opts: DefineKernelFunctionOptions = options ?? { name: String(propertyKey).toString() }
+
     if (!propertyKey) {
       throw new SKException("Anonymous functions are not allowed as Kernel Functions")
     }
+
+    if (opts.name !== String(propertyKey).toString()) {
+      throw new SKException(
+        `Kernel function ${opts.name} does not match method name ${String(propertyKey).toString()}`
+      )
+    }
+
     Reflect.defineMetadata(KERNEL_FUNCTION_METADATA_KEY, opts, target, propertyKey)
 
     // const originalMethod = descriptor.value;

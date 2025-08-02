@@ -18,7 +18,7 @@ class MyCustomType {
 class FunctionsChainingPlugin {
   public static PluginName = "FunctionsChainingPlugin"
 
-  @DefineKernelFunction({ name: "function1" })
+  @DefineKernelFunction()
   function1(@KernelFunctionParameter({ name: "kernel" }) kernel: Kernel): Observable<MyCustomType> {
     // Execute another function
     return kernel
@@ -36,7 +36,7 @@ class FunctionsChainingPlugin {
       )
   }
 
-  @DefineKernelFunction({ name: "function2" })
+  @DefineKernelFunction()
   function2(): MyCustomType {
     return new MyCustomType(1, "From Function2")
   }
