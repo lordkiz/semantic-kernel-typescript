@@ -9,13 +9,11 @@ import {
   RequiredFunctionChoiceBehavior,
 } from "@semantic-kernel-typescript/core/functionchoice"
 import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
-import { KernelHooks } from "@semantic-kernel-typescript/core/hooks"
 import {
   PostChatCompletionEvent,
   PreChatCompletionEvent,
-} from "@semantic-kernel-typescript/core/hooks/ChatCompletionEvents"
+} from "@semantic-kernel-typescript/core/hooks"
 import { PreToolCallEvent } from "@semantic-kernel-typescript/core/hooks/PreToolCallEvent"
-import { KernelHookEvent } from "@semantic-kernel-typescript/core/hooks/types/KernelHookEvent"
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
 import {
   FunctionResult,
@@ -54,6 +52,7 @@ import {
   ChatCompletionUserMessageParam,
 } from "openai/resources"
 import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } from "rxjs"
+import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { OpenAIService } from "../OpenAIService"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
@@ -140,12 +139,12 @@ export default class OpenAIChatCompletion
     if (functionChoiceBehavior.getFunctions()?.length) {
       // if you specified list of functions to allow, then only those will be allowed
       allowedPluginFunctions = allowedPluginFunctions.filter((fn) =>
-        functionChoiceBehavior.isFunctionAllowed(fn.getPluginName(), fn.getName())
+        functionChoiceBehavior.isFunctionAllowed(fn.pluginName, fn.name)
       )
     }
 
     const toolDefinitions: ChatCompletionTool[] = allowedPluginFunctions
-      .map((fn) => fn.getFunctionDefinition())
+      .map((fn) => fn.functionDefinition)
       .map((def) => ({ type: "function", function: def }))
 
     return {
@@ -203,9 +202,9 @@ export default class OpenAIChatCompletion
         .filter(
           (fn) =>
             enabledKernelFunctions.isAllKernelFunctionsAllowed() ??
-            enabledKernelFunctions.isFunctionAllowed(fn.getPluginName(), fn.getName())
+            enabledKernelFunctions.isFunctionAllowed(fn.pluginName, fn.name)
         )
-        .map((fn) => fn.getFunctionDefinition())
+        .map((fn) => fn.functionDefinition)
         .map((def) => ({ type: "function", function: def }))
 
       if (!toolDefinitions.length) {
@@ -240,21 +239,6 @@ export default class OpenAIChatCompletion
           .filter((chatRequestMessage) => chatRequestMessage.role === "tool")
           .some((cRM) => cRM.tool_call_id === id)
       })
-  }
-
-  private static executeHook<T extends KernelHookEvent<any>>(
-    event: T,
-    invocationContext?: InvocationContext<ChatCompletionCreateParams>,
-    kernel?: Kernel
-  ): T {
-    const kernelHooks = KernelHooks.merge(
-      kernel?.getGlobalKernelHooks(),
-      invocationContext?.kernelHooks
-    )
-    if (!kernelHooks) {
-      return event
-    }
-    return kernelHooks.executeHooks(event)
   }
 
   private static getCompletionsOptions(
@@ -539,8 +523,8 @@ export default class OpenAIChatCompletion
     kernel: Kernel,
     invocationContext?: InvocationContext<ChatCompletionCreateParams>
   ): Observable<ChatMessageContent<string>[]> {
-    const parsedPromt = OpenAIXMLPromptParser.parse(prompt)
-    const messages = new OpenAIChatMessages(parsedPromt.messages)
+    const parsedPrompt = OpenAIXMLPromptParser.parse(prompt)
+    const messages = new OpenAIChatMessages(parsedPrompt.messages)
 
     return this.doChatMessageContentsAsync(
       messages,
@@ -718,7 +702,7 @@ export default class OpenAIChatCompletion
         messages.addAll(responseMessages)
 
         // execute PostChatCompletionHook
-        OpenAIChatCompletion.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
+        ChatCompletionUtils.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
 
         // Just return the result:
         // If auto-invoking is not enabled
@@ -793,7 +777,7 @@ export default class OpenAIChatCompletion
       requestIndex
     )
 
-    const options = OpenAIChatCompletion.executeHook(
+    const options = ChatCompletionUtils.executeHook(
       new PreChatCompletionEvent(
         OpenAIChatCompletion.getCompletionsOptions(
           this,
@@ -861,7 +845,7 @@ export default class OpenAIChatCompletion
 
     let fn = kernel.getFunction<string>(pluginName, functionCallContent.functionName)
 
-    const hookResult: PreToolCallEvent = OpenAIChatCompletion.executeHook(
+    const hookResult: PreToolCallEvent = ChatCompletionUtils.executeHook(
       new PreToolCallEvent(
         functionCallContent.functionName,
         functionCallContent.kernelArguments ?? KernelArguments.Builder().build(),

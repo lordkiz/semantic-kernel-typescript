@@ -6,6 +6,8 @@ import { ChatMessageContent } from "@semantic-kernel-typescript/core/services"
 
 /**
  * Represents a function call in Gemini.
+ * A GeminiFunctionCallContent which does not have a functionResult represents
+ *  a function call that has not been executed
  */
 export default class GeminiFunctionCallContent extends FunctionCallContent<any> {
   private _functionCall: FunctionCall

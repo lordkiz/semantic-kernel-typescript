@@ -2,16 +2,23 @@ import {
   Content,
   createPartFromFunctionResponse,
   FunctionCall,
+  FunctionCallingConfigMode,
   FunctionDeclaration,
   GenerateContentConfig,
   GenerateContentParameters,
   GenerateContentResponse,
   GoogleGenAI,
-  Tool,
+  ToolConfig,
 } from "@google/genai"
 import { Kernel } from "@semantic-kernel-typescript/core"
 import { AIServiceBuilder } from "@semantic-kernel-typescript/core/builders"
 import { AIException, SKException } from "@semantic-kernel-typescript/core/exceptions"
+import {
+  AutoFunctionChoiceBehavior,
+  FunctionChoiceBehavior,
+  NoneFunctionChoiceBehavior,
+  RequiredFunctionChoiceBehavior,
+} from "@semantic-kernel-typescript/core/functionchoice"
 import { KernelArguments, KernelFunction } from "@semantic-kernel-typescript/core/functions"
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
 import {
@@ -50,6 +57,15 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   static Builder() {
     return new GeminiChatCompletionBuilder()
   }
+
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///
 
   getChatMessageContentsAsync(
     promptOrChatHistory: string | ChatHistory,
@@ -108,17 +124,6 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     invocationContext: InvocationContext<GenerateContentConfig>,
     invocationAttempts: number | undefined = 0
   ): Observable<ChatMessageContent<any>[]> {
-    const fns: GeminiFunction[] = []
-    if (kernel) {
-      kernel.getPlugins().forEach((plugin) => {
-        plugin.getFunctions().forEach((kernelFunction) => {
-          fns.push(
-            GeminiFunction.build(kernelFunction.getMetadata(), kernelFunction.getPluginName())
-          )
-        })
-      })
-    }
-
     try {
       const chatMsgContentResponse = this._performChatMessageContentsAsyncCall(
         fullHistory,
@@ -140,19 +145,12 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     invocationContext: InvocationContext<GenerateContentConfig>,
     invocationAttempts: number | undefined = 0
   ): Promise<ChatMessageContent<any>[]> {
-    const fns: GeminiFunction[] = []
-    if (kernel) {
-      kernel.getPlugins().forEach((plugin) => {
-        plugin.getFunctions().forEach((kernelFunction) => {
-          fns.push(
-            GeminiFunction.build(kernelFunction.getMetadata(), kernelFunction.getPluginName())
-          )
-        })
-      })
-    }
+    const omitTools = fullHistory.getLastMessage()?.getAuthorRole() === AuthorRole.TOOL
 
     const contents = this.getContents(fullHistory)
-    const config = this.getConfig(kernel, invocationContext)
+
+    const config = this.getConfig(kernel, invocationContext, omitTools)
+
     const generateContentResponse = await this.client.models.generateContent({
       model: this.modelId,
       config,
@@ -165,7 +163,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     fullHistory.addChatMessageContent(geminiChatMessageContent)
     newHistory.addChatMessageContent(geminiChatMessageContent)
 
-    if (invocationAttempts <= 0 || !generateContentResponse.functionCalls?.length) {
+    if (!generateContentResponse.functionCalls?.length) {
       if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {
         return fullHistory.getMessages()
       }
@@ -193,8 +191,8 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
         functionResult
       )
       const functionResponsesMessage = new GeminiChatMessageContent<any>(
-        AuthorRole.USER,
-        "",
+        AuthorRole.TOOL,
+        functionCallContent.functionResult?.getResult(),
         undefined,
         undefined,
         undefined,
@@ -290,38 +288,12 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     const contents: Content[] = []
 
     chatHistory.getMessages().forEach((chatMessageContent) => {
-      const content: Content = {}
+      const content: Content = { role: AuthorRole.USER }
 
-      if (chatMessageContent.getAuthorRole() === AuthorRole.USER) {
-        content.role = AuthorRole.USER
-
-        if (chatMessageContent instanceof GeminiChatMessageContent) {
-          const fns = GeminiFunctionCallContent.getFunctionTools(chatMessageContent)
-
-          fns.forEach((geminiFunctionCall) => {
-            const functionResult = geminiFunctionCall.functionResult
-
-            if (!functionResult || !functionResult?.getResult()) {
-              throw new SKException("Gemini failed to return a result")
-            }
-
-            if (!geminiFunctionCall.id) {
-              throw new SKException(`No id found on gemini function ${geminiFunctionCall.fullName}`)
-            }
-
-            const part = createPartFromFunctionResponse(
-              geminiFunctionCall.id,
-              geminiFunctionCall.fullName,
-              { result: functionResult.getResult() }
-            )
-
-            content.parts = [...(content.parts ?? []), part]
-          })
-        }
-      } else if (chatMessageContent.getAuthorRole() === AuthorRole.ASSISTANT) {
+      if (chatMessageContent.getAuthorRole() === AuthorRole.ASSISTANT) {
         content.role = AuthorRole.MODEL
-
-        if (chatMessageContent instanceof GeminiChatMessageContent) {
+        const isAFunctionCall = Boolean(chatMessageContent.getItems()?.length)
+        if (isAFunctionCall) {
           ;((chatMessageContent.getItems() ?? []) as GeminiFunctionCallContent[]).forEach(
             (geminiFunctionCall) => {
               content.parts = [
@@ -330,10 +302,34 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
               ]
             }
           )
+        } else {
+          content.parts = [...(content.parts ?? []), { text: chatMessageContent.getContent() }]
         }
-      }
+      } else if (chatMessageContent.getAuthorRole() === AuthorRole.TOOL) {
+        content.role = AuthorRole.USER
 
-      if (chatMessageContent.getContent()) {
+        const fns = GeminiFunctionCallContent.getFunctionTools(chatMessageContent)
+
+        fns.forEach((geminiFunctionCall) => {
+          const functionResult = geminiFunctionCall.functionResult
+
+          if (!functionResult || !functionResult?.getResult()) {
+            throw new SKException("Gemini failed to return a result")
+          }
+
+          if (!geminiFunctionCall.id) {
+            throw new SKException(`No id found on gemini function ${geminiFunctionCall.fullName}`)
+          }
+
+          const part = createPartFromFunctionResponse(
+            geminiFunctionCall.id,
+            geminiFunctionCall.fullName,
+            { result: functionResult.getResult() }
+          )
+
+          content.parts = [...(content.parts ?? []), part]
+        })
+      } else {
         content.parts = [...(content.parts ?? []), { text: chatMessageContent.getContent() }]
       }
 
@@ -343,49 +339,156 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     return contents
   }
 
-  private getConfig(kernel: Kernel, invocationContext: InvocationContext<GenerateContentConfig>) {
+  private getConfig(
+    kernel: Kernel,
+    invocationContext: InvocationContext<GenerateContentConfig>,
+    omitTools?: boolean
+  ) {
     const config: GenerateContentConfig = Object.assign(
-      invocationContext.promptExecutionSettings ?? {}
+      invocationContext.promptExecutionSettings?.toObject() ?? {}
     )
 
-    if (invocationContext.toolCallBehavior) {
-      const tool = this.getTool(kernel, invocationContext.toolCallBehavior)
+    if (omitTools) {
+      return config
+    }
 
-      if (tool) {
-        config.tools = [...(config.tools ?? []), tool]
-      }
+    const tools = this.getTools(
+      kernel,
+      invocationContext.functionChoiceBehavior,
+      invocationContext.toolCallBehavior
+    )
+
+    if (tools) {
+      const { functionDeclarations, toolConfig } = tools
+      config.tools = [{ functionDeclarations }]
+      config.toolConfig = toolConfig
     }
 
     return config
   }
 
-  private getTool(kernel: Kernel, toolCallBehavior: ToolCallBehavior): Tool {
-    const tool: Tool = { functionDeclarations: [] }
-    if (toolCallBehavior instanceof RequiredKernelFunction) {
-      const kernelFunction = toolCallBehavior.getRequiredFunction()
-      tool.functionDeclarations = [
-        ...(tool.functionDeclarations ?? []),
-        GeminiChatCompletion.buildFunctionDeclaration(kernelFunction),
-      ]
+  private getTools(
+    kernel: Kernel,
+    functionChoiceBehavior?: FunctionChoiceBehavior,
+    toolCallBehavior?: ToolCallBehavior
+  ): { functionDeclarations: FunctionDeclaration[]; toolConfig?: ToolConfig } | undefined {
+    if (!functionChoiceBehavior && !toolCallBehavior) {
+      return
     }
 
-    if (toolCallBehavior instanceof AllowedKernelFunctions) {
-      kernel.getPlugins().forEach((plugin) => {
-        plugin.getFunctions().forEach((kernelFunction) => {
-          if (
-            toolCallBehavior.isAllKernelFunctionsAllowed() ||
-            toolCallBehavior.isKernelFunctionAllowed(kernelFunction)
-          ) {
-            tool.functionDeclarations = [
-              ...(tool.functionDeclarations ?? []),
-              GeminiChatCompletion.buildFunctionDeclaration(kernelFunction),
-            ]
-          }
-        })
+    if (functionChoiceBehavior) {
+      return this.getFunctionChoiceBehaviorToolsConfig(functionChoiceBehavior, kernel)
+    } else if (toolCallBehavior) {
+      return this.getToolCallBehaviourToolsConfig(toolCallBehavior, kernel)
+    }
+  }
+
+  private getFunctionChoiceBehaviorToolsConfig(
+    functionChoiceBehavior: FunctionChoiceBehavior,
+    kernel: Kernel
+  ): { functionDeclarations: FunctionDeclaration[]; toolConfig?: ToolConfig } | undefined {
+    const fns: KernelFunction<any>[] = []
+
+    kernel.getPlugins().forEach((plugin) => {
+      plugin.getFunctions().forEach((kernelFunction) => {
+        fns.push(kernelFunction)
       })
+    })
+
+    if (!fns.length) {
+      return
     }
 
-    return tool
+    let allowedPluginFunctions = fns
+
+    if (functionChoiceBehavior.getFunctions()?.length) {
+      // if you specified list of functions to allow, then only those will be allowed
+      allowedPluginFunctions = allowedPluginFunctions.filter((fn) =>
+        functionChoiceBehavior.isFunctionAllowed(fn.getPluginName(), fn.getName())
+      )
+    }
+
+    const functionDeclarations = allowedPluginFunctions.map((kernelFunction) =>
+      GeminiChatCompletion.buildFunctionDeclaration(kernelFunction)
+    )
+
+    let mode: FunctionCallingConfigMode = FunctionCallingConfigMode.MODE_UNSPECIFIED
+    if (functionChoiceBehavior instanceof RequiredFunctionChoiceBehavior) {
+      mode = FunctionCallingConfigMode.ANY
+    } else if (functionChoiceBehavior instanceof AutoFunctionChoiceBehavior) {
+      mode = FunctionCallingConfigMode.AUTO
+    } else if (functionChoiceBehavior instanceof NoneFunctionChoiceBehavior) {
+      mode = FunctionCallingConfigMode.NONE
+    }
+    const toolConfig: ToolConfig = {
+      functionCallingConfig: {
+        mode,
+        allowedFunctionNames:
+          mode === FunctionCallingConfigMode.ANY
+            ? functionDeclarations.map((d) => d.name ?? "").filter(Boolean)
+            : undefined,
+      },
+    }
+
+    return {
+      functionDeclarations,
+      toolConfig,
+    }
+  }
+
+  private getToolCallBehaviourToolsConfig(
+    toolCallBehavior: ToolCallBehavior,
+    kernel: Kernel
+  ): { functionDeclarations: FunctionDeclaration[]; toolConfig?: ToolConfig } | undefined {
+    const fns: KernelFunction<any>[] = []
+
+    kernel.getPlugins().forEach((plugin) => {
+      plugin.getFunctions().forEach((kernelFunction) => {
+        fns.push(kernelFunction)
+      })
+    })
+
+    if (!fns.length) {
+      return
+    }
+
+    let allowedPluginFunctions = fns
+    let mode: FunctionCallingConfigMode = FunctionCallingConfigMode.AUTO
+
+    if (toolCallBehavior instanceof RequiredKernelFunction) {
+      mode = FunctionCallingConfigMode.ANY
+      allowedPluginFunctions = allowedPluginFunctions.filter(
+        (fn) => fn.getName() === toolCallBehavior.getRequiredFunction().getName()
+      )
+    } else {
+      const enabledKernelFunctions: AllowedKernelFunctions =
+        toolCallBehavior as AllowedKernelFunctions
+
+      allowedPluginFunctions = allowedPluginFunctions.filter(
+        (fn) =>
+          enabledKernelFunctions.isAllKernelFunctionsAllowed() ??
+          enabledKernelFunctions.isFunctionAllowed(fn.getPluginName(), fn.getName())
+      )
+    }
+
+    const functionDeclarations = allowedPluginFunctions.map((kernelFunction) =>
+      GeminiChatCompletion.buildFunctionDeclaration(kernelFunction)
+    )
+
+    const toolConfig: ToolConfig = {
+      functionCallingConfig: {
+        mode,
+        allowedFunctionNames:
+          mode === FunctionCallingConfigMode.ANY
+            ? functionDeclarations.map((d) => d.name ?? "").filter(Boolean)
+            : undefined,
+      },
+    }
+
+    return {
+      functionDeclarations,
+      toolConfig,
+    }
   }
 
   getGeminiChatMessageContentFromResponse(
@@ -402,7 +505,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
       content.parts.forEach((part) => {
         if (part.functionCall?.name) {
-          functionCalls.push(new GeminiFunctionCallContent(part.functionCall))
+          functionCalls.push(new GeminiFunctionCallContent(part.functionCall)) // an Unexecuted function
         }
 
         if (part.text) {
@@ -429,21 +532,10 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   }
 
   static buildFunctionDeclaration(kernelFunction: KernelFunction<any>): FunctionDeclaration {
-    const funcDecalration: FunctionDeclaration = {
-      name: ToolCallBehavior.formFullFunctionName(
-        kernelFunction.getPluginName(),
-        kernelFunction.getName()
-      ),
-      description: kernelFunction.getDescription(),
-    }
-
-    const parameters = kernelFunction.getMetadata().getParameters()
-    if (parameters && parameters.length) {
-      const schema = [...parameters].reduce((a, c) => ({ ...a, ...c.toJsonSchema() }), {})
-      funcDecalration.parameters = schema
-    }
-
-    return funcDecalration
+    return GeminiFunction.toFunctionDeclaration(
+      kernelFunction.getMetadata(),
+      kernelFunction.getPluginName()
+    )
   }
 }
 

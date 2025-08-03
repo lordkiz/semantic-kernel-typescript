@@ -23,7 +23,7 @@ export default class FunctionCallContent<T> extends KernelContentImpl<T> {
     super()
     this._functionName = functionName
     this._pluginName = pluginName
-    this._id = id
+    this._id = id || this.fullName
     this._kernelArguments = kernelArguments?.copy()
   }
 

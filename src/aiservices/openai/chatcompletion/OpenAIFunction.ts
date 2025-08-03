@@ -1,18 +1,9 @@
 import { InputVariable, KernelFunctionMetadata } from "@semantic-kernel-typescript/core/functions"
 import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration"
 import { FunctionDefinition } from "openai/resources"
+import { AIServiceFunction } from "../../commons/AIServiceFunction"
 
-export default class OpenAIFunction {
-  private pluginName: string
-  private name: string
-  private functionDefinition: FunctionDefinition
-
-  constructor(name: string, pluginName: string, functionDefinition: FunctionDefinition) {
-    this.name = name
-    this.pluginName = pluginName
-    this.functionDefinition = functionDefinition
-  }
-
+export default class OpenAIFunction extends AIServiceFunction<FunctionDefinition> {
   static build(metadata: KernelFunctionMetadata<any>, pluginName: string): OpenAIFunction {
     const name = metadata.getName()
     const functionDefinition = OpenAIFunction.toFunctionDefinition(metadata, pluginName)
@@ -57,17 +48,5 @@ export default class OpenAIFunction {
 
   static getSchemaForFunctionParameter(parameter: InputVariable): FunctionDefinition {
     return parameter.toJsonSchema() as FunctionDefinition
-  }
-
-  getName() {
-    return this.name
-  }
-
-  getPluginName() {
-    return this.pluginName
-  }
-
-  getFunctionDefinition() {
-    return this.functionDefinition
   }
 }
