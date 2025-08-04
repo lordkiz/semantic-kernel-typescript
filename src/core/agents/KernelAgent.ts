@@ -1,9 +1,9 @@
-import { Observable, of } from "rxjs"
+import { last, map, Observable, of, switchMap } from "rxjs"
 import { v4 as uuid4 } from "uuid"
 import Kernel from "../Kernel"
 import { KernelArguments, PromptTemplate } from "../functions"
 import { Logger } from "../log/Logger"
-import { FunctionResult, InvocationContext } from "../orchestration"
+import { FunctionResult, InvocationContext, PromptExecutionSettings } from "../orchestration"
 import { ChatMessageContent } from "../services"
 import AgentInvokeOptions from "./AgentInvokeOptions"
 import AgentResponseItem from "./AgentResponseItem"
@@ -50,6 +50,14 @@ export abstract class KernelAgent implements Agent {
     return this._description
   }
 
+  get invocationContext() {
+    return this._invocationContext
+  }
+
+  get kernel(): Kernel {
+    return this._kernel
+  }
+
   get kernelArguments() {
     return this._kernelArguments
   }
@@ -62,9 +70,32 @@ export abstract class KernelAgent implements Agent {
     return this._template
   }
 
-  renderInstructionsAsync(): Observable<FunctionResult<string>> {
+  mergeArguments(anotherKernelArguments?: KernelArguments) {
+    if (!anotherKernelArguments) {
+      return this.kernelArguments
+    }
+
+    const executionSettings = new PromptExecutionSettings(
+      Object.assign(
+        this.kernelArguments.getExecutionSettings(),
+        anotherKernelArguments.getExecutionSettings()
+      )
+    )
+
+    return KernelArguments.Builder()
+      .withVariables(this.kernelArguments)
+      .withVariables(anotherKernelArguments)
+      .withExecutionSettings(executionSettings)
+      .build()
+  }
+
+  renderInstructionsAsync(
+    kernel: Kernel,
+    kernelArguments?: KernelArguments,
+    invocationContext?: InvocationContext
+  ): Observable<FunctionResult<string>> {
     if (this.template) {
-      return this.template.renderAsync(this._kernel, this.kernelArguments, this._invocationContext)
+      return this.template.renderAsync(kernel, kernelArguments, invocationContext)
     } else {
       if (!this.instructions) {
         Logger.warn("No template or instructions provided to KernelAgent. Returning empty string")
@@ -75,15 +106,21 @@ export abstract class KernelAgent implements Agent {
 
   ensureThreadExistsWithMessages<T extends AgentThread>(
     messages: ChatMessageContent<any>[],
-    thread: AgentThread
-  ): T {
-    const newThread = !thread.isDeleted ? thread.copy() : thread.create()
+    AgentThreadClass: new (...args: any[]) => T,
+    thread?: AgentThread
+  ): Observable<T> {
+    const newThread: T = (
+      thread && !thread.isDeleted ? thread.copy() : new AgentThreadClass(uuid4())
+    ) as T
 
-    messages.forEach((chatMessageContent) => {
-      newThread.onNewMessage(chatMessageContent)
-    })
-
-    return newThread as T
+    return newThread.createAsync().pipe(
+      switchMap(() => messages),
+      map((message) => {
+        this.notifyThread(newThread, message)
+      }),
+      switchMap(() => of(newThread)),
+      last()
+    )
   }
 
   invokeAsync<T = any>(

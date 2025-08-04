@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "emitDeclarationOnly": true,
+    "composite": true,
     "emitDecoratorMetadata": true,
-    "outFile": "index.d.ts",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "lib": [
@@ -25,26 +23,8 @@
     ],
     "module": "esnext",
     "moduleResolution": "node",
-    "noEmit": true,
     "strict": true,
     "target": "esnext",
     "types": ["reflect-metadata", "node", "jest"]
-  },
-  "references": [
-    {
-      "path": "./src/core"
-    },
-    {
-      "path": "./src/aiservices/gemini"
-    },
-    {
-      "path": "./src/aiservices/huggingface"
-    },
-    {
-      "path": "./src/aiservices/openai"
-    },
-    {
-      "path": "./src/agents"
-    }
-  ]
+  }
 }

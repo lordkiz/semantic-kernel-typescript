@@ -10,7 +10,8 @@
   "license": "MIT",
   "workspaces": [
     "src/core",
-    "src/aiservices/*"
+    "src/aiservices/*",
+    "src/agents"
   ],
   "devDependencies": {
     "@babel/core": "^7.23.9",

@@ -1,3 +1,4 @@
+import { Observable } from "rxjs"
 import { ChatMessageContent } from "../../services"
 
 type ThreadId = string
@@ -7,9 +8,9 @@ export interface AgentThread {
   get id(): ThreadId
 
   /** Create a new thread
-   * @returns AgentThread
+   * @returns Observable<string>
    */
-  create(): AgentThread
+  createAsync(): Observable<ThreadId>
 
   /** Delete the thread */
   delete(): boolean
