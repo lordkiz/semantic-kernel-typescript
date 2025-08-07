@@ -109,17 +109,22 @@ export default class KernelArguments<
     executionSettingz: PromptExecutionSettings.Builder<any>().build(),
 
     withInput<T>(content: T) {
-      this.variablez.set(KernelArguments.MAIN_KEY, ContextVariable.of(content))
+      const v = content instanceof ContextVariable ? content : ContextVariable.of(content)
+      this.variablez.set(KernelArguments.MAIN_KEY, v)
       return this
     },
 
     withVariable<T>(key: string, value: T) {
-      this.variablez.set(key, ContextVariable.of(value))
+      const v = value instanceof ContextVariable ? value : ContextVariable.of(value)
+      this.variablez.set(key, v)
       return this
     },
 
     withVariables(map: Map<string, any>) {
-      map.forEach((v, k) => this.variablez.set(k, ContextVariable.of(v)))
+      map.forEach((v, k) => {
+        const val = v instanceof ContextVariable ? v : ContextVariable.of(v)
+        this.variablez.set(k, val)
+      })
       return this
     },
 

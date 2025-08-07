@@ -9,13 +9,16 @@ export default class GitHubPlugin {
     this.token = token
   }
 
-  @DefineKernelFunction({ name: "get_user_info", description: "Get user information from GitHub" })
+  @DefineKernelFunction({
+    name: "getUserProfileAsync",
+    description: "Get user information from GitHub",
+  })
   public async getUserProfileAsync() {
     return this.makeRequest("/user")
   }
 
   @DefineKernelFunction({
-    name: "get_repo_info",
+    name: "getRepositoryAsync",
     description: "Get repository information from GitHub",
   })
   public getRepositoryAsync(
@@ -34,7 +37,7 @@ export default class GitHubPlugin {
     return this.makeRequest(query)
   }
 
-  @DefineKernelFunction({ name: "get_issues", description: "Get issues from GitHub" })
+  @DefineKernelFunction({ name: "getIssuesAsync", description: "Get issues from GitHub" })
   public getIssuesAsync(
     @KernelFunctionParameter({
       name: "organization",
@@ -76,7 +79,7 @@ export default class GitHubPlugin {
   }
 
   @DefineKernelFunction({
-    name: "get_issue_detail_info",
+    name: "getIssueDetailAsync",
     description: "Get detail information of a single issue from GitHub",
   })
   public async getIssueDetailAsync(

@@ -89,7 +89,9 @@ export class OpenAIXMLPromptParser {
 
   public static unescapeRequest(message: ChatCompletionMessageParam): ChatCompletionMessageParam {
     const content =
-      typeof message.content === "string" ? he.decode(message.content) : message.content
+      typeof message.content === "string"
+        ? he.decode(message.content)
+        : JSON.stringify(message.content)
     return { ...message, content } as ChatCompletionMessageParam
   }
 }

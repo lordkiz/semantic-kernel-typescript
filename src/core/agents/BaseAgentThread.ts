@@ -11,7 +11,7 @@ export abstract class BaseAgentThread implements AgentThread {
   }
 
   get id(): string {
-    throw new Error("Method not implemented.")
+    return this._id
   }
 
   createAsync(): Observable<string> {

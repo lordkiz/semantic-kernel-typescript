@@ -26,5 +26,7 @@
     "strict": true,
     "target": "esnext",
     "types": ["reflect-metadata", "node", "jest"]
-  }
+  },
+
+  "include": ["../commons/**/*"]
 }

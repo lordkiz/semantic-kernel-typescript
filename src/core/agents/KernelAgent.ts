@@ -77,8 +77,8 @@ export abstract class KernelAgent implements Agent {
 
     const executionSettings = new PromptExecutionSettings(
       Object.assign(
-        this.kernelArguments.getExecutionSettings(),
-        anotherKernelArguments.getExecutionSettings()
+        this.kernelArguments.getExecutionSettings().toObject(),
+        anotherKernelArguments.getExecutionSettings().toObject()
       )
     )
 
