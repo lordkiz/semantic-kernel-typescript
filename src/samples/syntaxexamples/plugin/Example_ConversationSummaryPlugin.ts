@@ -13,8 +13,7 @@ import OpenAI from "openai"
 import { lastValueFrom, Observable } from "rxjs"
 import { ConversationSummaryPlugin } from "../../plugins/ConversationSummaryPlugin"
 
-const OPENAI_API_KEY =
-  "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"
+const OPENAI_API_KEY = "OPEN_AI_KEY"
 const MODEL_ID = "gpt-4.1"
 
 // Initialize  client
