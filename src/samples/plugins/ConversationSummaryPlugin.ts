@@ -6,7 +6,11 @@ import {
 } from "@semantic-kernel-typescript/core/functions"
 import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
 import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
-import { PromptExecutionSettings } from "@semantic-kernel-typescript/core/orchestration"
+import {
+  InvocationContext,
+  PromptExecutionSettings,
+} from "@semantic-kernel-typescript/core/orchestration"
+import { ServiceClass } from "@semantic-kernel-typescript/core/services/types/AIServiceSelector"
 import { TextChunker } from "@semantic-kernel-typescript/core/text"
 import { mergeMap, Observable, of, reduce } from "rxjs"
 import { PromptFunctionConstants } from "./PromptFunctionConstants"
@@ -18,11 +22,15 @@ export class ConversationSummaryPlugin {
   private promptExecutionSettings: PromptExecutionSettings
   private maxTokens: number = 1024
 
+  private serviceClass: ServiceClass<any>
+
   constructor(
+    service: ServiceClass<any>,
     promptExecutionSettings: PromptExecutionSettings,
     /** The max tokens to process in a single prompt function call.  */
     maxTokens?: number
   ) {
+    this.serviceClass = service
     this.promptExecutionSettings = promptExecutionSettings
 
     if (maxTokens) {
@@ -69,7 +77,11 @@ export class ConversationSummaryPlugin {
     return of(paragraphs).pipe(
       mergeMap((paragraph) => {
         return func
-          .invokeAsync(kernel, KernelArguments.Builder().withInput(paragraph).build())
+          .invokeAsync(
+            kernel,
+            KernelArguments.Builder().withInput(paragraph).build(),
+            InvocationContext.Builder().withServiceClass(this.serviceClass).build()
+          )
           .pipe(reduce((acc, val) => acc + "\n" + val.getResult(), ""))
       })
     )
@@ -88,6 +100,7 @@ export class ConversationSummaryPlugin {
   public SummarizeConversationAsync(
     @KernelFunctionParameter({ description: "A long conversation transcript.", name: "input" })
     input: string,
+    @KernelFunctionParameter({ description: "Kernel to use", name: "kernel" })
     kernel: Kernel
   ): Observable<string> {
     return this.processAsync(this.summarizeConversationFunction, input, kernel)
@@ -106,6 +119,7 @@ export class ConversationSummaryPlugin {
   public GetConversationActionItemsAsync(
     @KernelFunctionParameter({ description: "A long conversation transcript.", name: "input" })
     input: string,
+    @KernelFunctionParameter({ description: "Kernel to use", name: "kernel" })
     kernel: Kernel
   ): Observable<string> {
     return this.processAsync(this.conversationActionItemsFunction, input, kernel)
@@ -124,6 +138,7 @@ export class ConversationSummaryPlugin {
   public GetConversationTopicsAsync(
     @KernelFunctionParameter({ description: "A long conversation transcript.", name: "input" })
     input: string,
+    @KernelFunctionParameter({ description: "Kernel to use", name: "kernel" })
     kernel: Kernel
   ): Observable<string> {
     return this.processAsync(this.conversationTopicsFunction, input, kernel)

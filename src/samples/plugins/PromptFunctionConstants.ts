@@ -1,7 +1,7 @@
 export class PromptFunctionConstants {
   public static SummarizeConversationDefinition = `
         BEGIN CONTENT TO SUMMARIZE:
-        {{$INPUT}}
+        {{$input}}
 
         END CONTENT TO SUMMARIZE.
 
@@ -49,7 +49,7 @@ export class PromptFunctionConstants {
 
         CONTENT STARTS HERE.
 
-        {{$INPUT}}
+        {{$input}}
 
         CONTENT STOPS HERE.
 
@@ -83,6 +83,6 @@ export class PromptFunctionConstants {
         }
         +++++
         [Input]
-        {{$INPUT}}
+        {{$input}}
         [Output]`
 }
