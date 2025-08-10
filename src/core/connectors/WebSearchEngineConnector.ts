@@ -1,5 +1,3 @@
-import { Observable } from "rxjs"
-
 /**
  * Represents a web page.
  */
@@ -37,5 +35,5 @@ export interface WebSearchEngineConnector {
    * @param offset Number of results to skip. Defaults to 0.
    * @return First snippet returned from search.
    */
-  searchAsync(query: string, count: number, offset: number): Observable<WebPage[]>
+  searchAsync(query: string, count: number, offset: number): Promise<WebPage[]>
 }

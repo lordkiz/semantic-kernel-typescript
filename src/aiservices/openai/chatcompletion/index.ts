@@ -1,3 +1,4 @@
+import { ChatCompletionCreateParams } from "openai/resources"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatCompletion from "./OpenAIChatCompletion"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
@@ -7,6 +8,7 @@ import { OpenAIToolCallConfig } from "./OpenAIToolCallConfig"
 import { OpenAIToolChoice } from "./OpenAIToolChoice"
 import { OpenAIXMLPromptParser } from "./OpenAIXMLPromptParser"
 
+type OpenAIChatCompletionPromptExecutionSettings = ChatCompletionCreateParams
 export {
   FunctionInvocationError,
   OpenAIChatCompletion,
@@ -16,4 +18,5 @@ export {
   OpenAIToolCallConfig,
   OpenAIToolChoice,
   OpenAIXMLPromptParser,
+  type OpenAIChatCompletionPromptExecutionSettings,
 }

@@ -2,7 +2,7 @@ import { type WebSearchEngineConnector } from "@semantic-kernel-typescript/core/
 import { SKException } from "@semantic-kernel-typescript/core/exceptions"
 import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
 import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
-import { map, Observable } from "rxjs"
+import { from, lastValueFrom, map } from "rxjs"
 
 export class WebSearchEnginePlugin {
   /** The count parameter name. */
@@ -18,7 +18,10 @@ export class WebSearchEnginePlugin {
   }
 
   /** Performs a web search using the provided query, count, and offset. */
-  @DefineKernelFunction({ name: "search", description: "Searches the web for the given query" })
+  @DefineKernelFunction({
+    name: "searchAsync",
+    description: "Searches the web for the given query",
+  })
   public searchAsync(
     @KernelFunctionParameter({ description: "The search query", name: "query" }) query: string,
     @KernelFunctionParameter({
@@ -33,17 +36,19 @@ export class WebSearchEnginePlugin {
       defaultValue: 0,
     })
     offset: number
-  ): Observable<string> {
-    return this.connector.searchAsync(query, count, offset).pipe(
-      map((results) => {
-        if (!results?.length) {
-          throw new SKException("Failed to get a response from the web search engine.")
-        }
+  ): Promise<string> {
+    return lastValueFrom(
+      from(this.connector.searchAsync(query, count, offset)).pipe(
+        map((results) => {
+          if (!results?.length) {
+            throw new SKException("Failed to get a response from the web search engine.")
+          }
 
-        return count == 1
-          ? results[0].snippet
-          : JSON.stringify(results.slice(0, count).map((it) => it.snippet))
-      })
+          return count == 1
+            ? results[0].snippet
+            : JSON.stringify(results.slice(0, count).map((it) => it.snippet))
+        })
+      )
     )
   }
 }
