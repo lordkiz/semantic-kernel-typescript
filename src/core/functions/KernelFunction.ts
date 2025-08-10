@@ -117,7 +117,7 @@ export default abstract class KernelFunction<T> {
 
         const v = value.getValue()
         if (p.required && v === undefined) {
-          throw new SKException(`no value provided for required parameter ${p.name}`)
+          throw new SKException(`no value provided for required parameter: ${p.name}`)
         }
         return v
       })
