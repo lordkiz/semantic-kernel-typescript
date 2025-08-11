@@ -1,13 +1,7 @@
-import {
-  trace,
-  Span,
-  SpanKind,
-  SpanStatusCode,
-  Context,
-} from "@opentelemetry/api";
-import SemanticKernelTelemetrySpan from "./SemanticKernelTelemetrySpan";
-import SemanticKernelTelemetry from "./SemanticKernelTelemetry";
-import OpenAI from "openai";
+import { Span, SpanKind, SpanStatusCode } from "@opentelemetry/api"
+import OpenAI from "openai"
+import SemanticKernelTelemetry from "./SemanticKernelTelemetry"
+import SemanticKernelTelemetrySpan from "./SemanticKernelTelemetrySpan"
 
 export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
   constructor(
@@ -16,7 +10,7 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
     spanScope: { close: () => void },
     contextScope: { close: () => void }
   ) {
-    super(span, reactorContextModifier, spanScope, contextScope);
+    super(span, reactorContextModifier, spanScope, contextScope)
   }
 
   public static startChatCompletionSpan(
@@ -37,7 +31,7 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
       maxTokens,
       temperature,
       topP
-    );
+    )
   }
 
   public startTextCompletionSpan(
@@ -58,7 +52,7 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
       maxTokens,
       temperature,
       topP
-    );
+    )
   }
 
   public static startCompletionSpan(
@@ -71,8 +65,8 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
     temperature: number | null,
     topP: number | null
   ): ChatCompletionSpan {
-    const finalModelName = modelName ?? "unknown";
-    const tracer = trace.getTracer("semantic-kernel");
+    const finalModelName = modelName ?? "unknown"
+    const tracer = telemetry.tracer
 
     const span = tracer.startSpan(`${operationName} ${finalModelName}`, {
       kind: SpanKind.CLIENT,
@@ -86,39 +80,34 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
         }),
         ...(topP !== null && { "gen_ai.request.top_p": topP }),
       },
-    });
+    })
 
-    const contextModifier = (ctx: any) => ({ ...ctx, span });
-    const spanScope = { close: () => span.end() };
-    const contextScope = { close: () => {} };
+    const contextModifier = (ctx: any) => ({ ...ctx, span })
+    const spanScope = { close: () => span.end() }
+    const contextScope = { close: () => {} }
 
-    return new ChatCompletionSpan(
-      span,
-      contextModifier,
-      spanScope,
-      contextScope
-    );
+    return new ChatCompletionSpan(span, contextModifier, spanScope, contextScope)
   }
 
   public endSpanWithUsage(chatCompletions: OpenAI.ChatCompletion): void {
-    const usage: OpenAI.CompletionUsage | undefined = chatCompletions.usage;
+    const usage: OpenAI.CompletionUsage | undefined = chatCompletions.usage
     if (usage) {
-      this.getSpan().setAttributes({
+      this.span.setAttributes({
         "gen_ai.usage.output_tokens": usage.completion_tokens,
         "gen_ai.usage.input_tokens": usage.prompt_tokens,
         "gen_ai.usage.total_tokens": usage.total_tokens,
-      });
+      })
     }
-    this.getSpan().setStatus({ code: SpanStatusCode.OK });
-    this.close();
+    this.span.setStatus({ code: SpanStatusCode.OK })
+    this.close()
   }
 
   public endSpanWithError(error: Error): void {
-    this.getSpan().recordException(error);
-    this.getSpan().setStatus({
+    this.span.recordException(error)
+    this.span.setStatus({
       code: SpanStatusCode.ERROR,
       message: error.message,
-    });
-    this.close();
+    })
+    this.close()
   }
 }

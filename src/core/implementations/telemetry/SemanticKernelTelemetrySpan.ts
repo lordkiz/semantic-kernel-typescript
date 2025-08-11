@@ -1,32 +1,30 @@
-import { trace, context, Span, Context, SpanOptions } from "@opentelemetry/api";
-import Closeable from "../../ds/Closeable";
-import { Logger } from "../../log/Logger";
-import RXJS from "rxjs";
+import { Span } from "@opentelemetry/api"
+import RXJS from "rxjs"
+import Closeable from "../../ds/Closeable"
+import { Logger } from "../../log/Logger"
 
 export interface SpanConstructor<T extends SemanticKernelTelemetrySpan> {
   build(
     contextModifier: (ctx: any) => any,
     spanScope: SemanticKernelTelemetrySpan,
     contextScope: SemanticKernelTelemetrySpan
-  ): T;
+  ): T
 }
 
 export default abstract class SemanticKernelTelemetrySpan implements Closeable {
-  private LOGGER = Logger;
-
   private static readonly SPAN_TIMEOUT_MS = parseInt(
-    process.env.SEMANTICKERNEL_TELEMETRY_SPAN_TIMEOUT || "120000"
-  );
+    process.env.SEMANTIC_KERNEL_TELEMETRY_SPAN_TIMEOUT || "120000"
+  )
 
-  private readonly span: Span;
-  private readonly reactorContextModifier: (ctx: any) => any;
-  private readonly spanScope: { close: () => void };
-  private readonly contextScope: { close: () => void };
-  private closed: boolean = false;
-  private finalizerGuardian: FinalizationRegistry<string>;
+  private readonly _span: Span
+  private readonly _reactorContextModifier: (ctx: any) => any
+  private readonly _spanScope: { close: () => void }
+  private readonly _contextScope: { close: () => void }
+  private _closed: boolean = false
+  private _finalizerGuardian: FinalizationRegistry<string>
 
   // Timeout to close the span if it was not closed within the specified time to avoid memory leaks
-  private watchdog: RXJS.Subscription;
+  private watchdog: RXJS.Subscription
 
   constructor(
     span: Span,
@@ -34,25 +32,25 @@ export default abstract class SemanticKernelTelemetrySpan implements Closeable {
     spanScope: { close: () => void },
     contextScope: { close: () => void }
   ) {
-    this.span = span;
-    this.reactorContextModifier = reactorContextModifier;
-    this.spanScope = spanScope;
-    this.contextScope = contextScope;
+    this._span = span
+    this._reactorContextModifier = reactorContextModifier
+    this._spanScope = spanScope
+    this._contextScope = contextScope
 
     this.watchdog = RXJS.of(1)
       .pipe(RXJS.delay(SemanticKernelTelemetrySpan.SPAN_TIMEOUT_MS))
       .subscribe({
         complete: this.closeOnInactivity,
-      });
+      })
 
     // Finalizer guardian to ensure span closure
-    this.finalizerGuardian = new FinalizationRegistry((heldValue) => {
-      if (!this.closed && heldValue === "span") {
-        console.warn("Span was not closed");
-        this.close();
+    this._finalizerGuardian = new FinalizationRegistry((heldValue) => {
+      if (!this._closed && heldValue === "span") {
+        console.warn("Span was not closed")
+        this.close()
       }
-    });
-    this.finalizerGuardian.register(this, "span");
+    })
+    this._finalizerGuardian.register(this, "span")
   }
 
   // static build<T extends SemanticKernelTelemetrySpan>(
@@ -82,46 +80,46 @@ export default abstract class SemanticKernelTelemetrySpan implements Closeable {
   //   );
   // }
 
-  getReactorContextModifier(): (ctx: any) => any {
-    return this.reactorContextModifier;
+  get reactorContextModifier(): (ctx: any) => any {
+    return this._reactorContextModifier
   }
 
   close() {
-    if (!this.closed) {
-      this.closed = true;
-      this.LOGGER.info("Closing span:", this.span);
-      if (this.span.isRecording()) {
+    if (!this._closed) {
+      this._closed = true
+      Logger.info("Closing span:", this._span)
+      if (this._span.isRecording()) {
         try {
-          this.span.end();
+          this._span.end()
         } catch (e) {
-          this.LOGGER.error("Error closing span", e);
+          Logger.error("Error closing span", e)
         }
       }
       try {
-        this.contextScope?.close();
+        this._contextScope?.close()
       } catch (e) {
-        this.LOGGER.error("Error closing context scope", e);
+        Logger.error("Error closing context scope", e)
       }
 
       try {
-        this.spanScope.close();
+        this._spanScope.close()
       } catch (e) {
-        this.LOGGER.error("Error closing span scope", e);
+        Logger.error("Error closing span scope", e)
       }
 
-      this.watchdog.unsubscribe();
-      this.finalizerGuardian.unregister(this);
+      this.watchdog.unsubscribe()
+      this._finalizerGuardian.unregister(this)
     }
   }
 
-  getSpan() {
-    return this.span;
+  get span() {
+    return this._span
   }
 
   private closeOnInactivity() {
-    if (!this.closed) {
-      Logger.warn("Span was not closed, timing out");
-      this.close();
+    if (!this._closed) {
+      Logger.warn("Span was not closed, timing out")
+      this.close()
     }
   }
 }

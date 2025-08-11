@@ -33,7 +33,7 @@ export default class FunctionSpan extends SemanticKernelTelemetrySpan {
       },
     })
 
-    // Context handling - simplified for JS/TS
+    // Context handling
     const contextModifier = (ctx: any) => ({ ...ctx, span })
     const spanScope = { close: () => span.end() }
     const contextScope = { close: () => {} }
@@ -45,7 +45,6 @@ export default class FunctionSpan extends SemanticKernelTelemetrySpan {
     const attributes: Record<string, any> = {}
 
     // Convert arguments to span attributes
-    // This is a simplified version - you might want to filter or format arguments differently
     for (const [key, value] of Object.entries(args)) {
       if (value !== undefined && value !== null) {
         attributes[`semantic_kernel.function.argument.${key}`] =
@@ -58,11 +57,11 @@ export default class FunctionSpan extends SemanticKernelTelemetrySpan {
 
   public onFunctionSuccess<T>(result: FunctionResult<T>): void {
     try {
-      this.getSpan().setStatus({ code: SpanStatusCode.OK })
+      this.span.setStatus({ code: SpanStatusCode.OK })
 
       // Optionally add result metadata to span
       if (result.metadata) {
-        this.getSpan().setAttributes({
+        this.span.setAttributes({
           "semantic_kernel.function.result.type": result.resultVariable.type,
           "semantic_kernel.function.result.success": true,
           ...this.getResultMetadataAttributes(result.metadata),
@@ -75,14 +74,14 @@ export default class FunctionSpan extends SemanticKernelTelemetrySpan {
 
   public onFunctionError(error: Error): void {
     try {
-      this.getSpan().setStatus({
+      this.span.setStatus({
         code: SpanStatusCode.ERROR,
         message: error.message,
       })
-      this.getSpan().recordException(error)
+      this.span.recordException(error)
 
       // Add error metadata
-      this.getSpan().setAttributes({
+      this.span.setAttributes({
         "semantic_kernel.function.error": true,
         "semantic_kernel.function.error.type": error.name,
         "semantic_kernel.function.error.stack": error.stack,
