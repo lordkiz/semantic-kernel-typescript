@@ -115,7 +115,7 @@ export default abstract class KernelFunction<T> {
         const rawValue = kernelArguments?.get(p.name) ?? p.defaultValue
         const value = rawValue instanceof ContextVariable ? rawValue : ContextVariable.of(rawValue)
 
-        const v = value.getValue()
+        const v = value.value
         if (p.required && v === undefined) {
           throw new SKException(`no value provided for required parameter: ${p.name}`)
         }
@@ -147,7 +147,6 @@ export default abstract class KernelFunction<T> {
    *                          {@link FunctionResult}
    * @param invocationContext The arguments to pass to the function's invocation
    * @return The result of the function's execution.
-   * @see FunctionResult#getResultVariable()
    */
   abstract invokeAsync(
     kernel: Kernel,

@@ -16,12 +16,12 @@ export default class FunctionResultMetadata<UsageType> {
    */
   static CREATED_AT = "createdAt"
 
-  private metadata: CaseInsensitiveMap<KernelArguments>
+  private _metadata: CaseInsensitiveMap<KernelArguments>
 
   constructor()
   constructor(metadata: CaseInsensitiveMap<KernelArguments>)
   constructor(metadata?: CaseInsensitiveMap<KernelArguments>) {
-    this.metadata = new CaseInsensitiveMap(metadata!)
+    this._metadata = new CaseInsensitiveMap(metadata!)
   }
 
   static build<UsageType>(id: string): FunctionResultMetadata<UsageType>
@@ -71,8 +71,8 @@ export default class FunctionResultMetadata<UsageType> {
    *
    * @return The metadata about the result of the function invocation.
    */
-  getMetadata() {
-    return new CaseInsensitiveMap(this.metadata)
+  get metadata() {
+    return new CaseInsensitiveMap(this._metadata)
   }
 
   /**
@@ -80,9 +80,9 @@ export default class FunctionResultMetadata<UsageType> {
    *
    * @return The id of the result of the function invocation.
    */
-  getId(): string | undefined {
+  get id(): string | undefined {
     const id = this.metadata.getOrDefault(FunctionResultMetadata.ID, new KernelArguments())
-    return id.get(FunctionResultMetadata.ID)?.getValue()
+    return id.get(FunctionResultMetadata.ID)?.value
   }
 
   /**

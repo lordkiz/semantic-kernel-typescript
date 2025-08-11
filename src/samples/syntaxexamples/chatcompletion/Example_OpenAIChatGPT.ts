@@ -10,7 +10,7 @@ const client = new OpenAI({
 
 const messageOutput = (chatHistory: ChatHistory) => {
   const message = chatHistory.getLastMessage()
-  console.log(message?.getAuthorRole() + ": " + message?.getContent())
+  console.log(message?.AuthorRole + ": " + message?.content)
   console.log("------------------------")
 }
 
@@ -18,7 +18,7 @@ const kernel = Kernel.Builder().build()
 
 const GPTReply = async (chatGPT: ChatCompletionService, chatHistory: ChatHistory) => {
   const reply = await lastValueFrom(chatGPT.getChatMessageContentsAsync(chatHistory, kernel))
-  const message = reply.map((v) => v.getContent()).join("")
+  const message = reply.map((v) => v.content).join("")
   chatHistory.addAssistantMessage(message)
 }
 

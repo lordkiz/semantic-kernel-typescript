@@ -9,12 +9,12 @@ export default abstract class FunctionChoiceBehavior {
   private fullFunctionNames: Set<string>
 
   protected fns: KernelFunction<any>[]
-  protected options: FunctionChoiceBehaviorOptions
+  protected opts: FunctionChoiceBehaviorOptions
 
   constructor(plugins?: KernelPlugin[], options?: FunctionChoiceBehaviorOptions) {
     const kernelFunctions = (plugins ?? [])
       .map((plugin) => {
-        const funcs = Array.from(plugin.getFunctions().values())
+        const funcs = Array.from(plugin.functions.values())
         return funcs
       })
       .flatMap((it) => it)
@@ -31,7 +31,7 @@ export default abstract class FunctionChoiceBehavior {
       }
     })
 
-    this.options = options || FunctionChoiceBehaviorOptions.Builder().build()
+    this.opts = options || FunctionChoiceBehaviorOptions.Builder().build()
   }
 
   /**
@@ -39,7 +39,7 @@ export default abstract class FunctionChoiceBehavior {
    *
    * @return The functions that are allowed.
    */
-  getFunctions() {
+  get functions() {
     return Object.seal(this.fns)
   }
 
@@ -48,8 +48,8 @@ export default abstract class FunctionChoiceBehavior {
    *
    * @return The options for the function choice behavior.
    */
-  getOptions() {
-    return this.options
+  get options() {
+    return this.opts
   }
 
   /**

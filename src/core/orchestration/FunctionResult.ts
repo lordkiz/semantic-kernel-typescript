@@ -1,4 +1,4 @@
-import Variable from "../variables/ContextVariable"
+import ContextVariable from "../variables/ContextVariable"
 import FunctionResultMetadata from "./FunctionResultMetadata"
 
 /**
@@ -10,18 +10,12 @@ import FunctionResultMetadata from "./FunctionResultMetadata"
  * @param <T> The type of the result of the function invocation.
  */
 export default class FunctionResult<T> {
-  private result: T
-  private metadata: FunctionResultMetadata<unknown>
-  private unconvertedResult: object
+  private _result: T
+  private _metadata: FunctionResultMetadata<unknown>
 
-  constructor(
-    result: T,
-    metadata?: FunctionResultMetadata<unknown>,
-    unconvertedResult?: Variable<T>
-  ) {
-    this.result = result
-    this.metadata = metadata || FunctionResultMetadata.empty()
-    this.unconvertedResult = unconvertedResult || {}
+  constructor(result: T, metadata?: FunctionResultMetadata<unknown>) {
+    this._result = result
+    this._metadata = metadata || FunctionResultMetadata.empty()
   }
 
   /**
@@ -30,8 +24,8 @@ export default class FunctionResult<T> {
    * @return The result of the function invocation.
    * @throws ClassCastException If the result is not of the expected type.
    */
-  getResult(): T {
-    return this.result
+  get result(): T {
+    return this._result
   }
 
   /**
@@ -39,8 +33,8 @@ export default class FunctionResult<T> {
    *
    * @return The result of the function invocation.
    */
-  getResultVariable(): Variable<T> {
-    return Variable.of(this.result)
+  get resultVariable(): ContextVariable<T> {
+    return ContextVariable.of(this.result)
   }
 
   /**
@@ -48,7 +42,7 @@ export default class FunctionResult<T> {
    *
    * @return The metadata about the result of the function invocation.
    */
-  getMetadata() {
-    return this.metadata
+  get metadata() {
+    return this._metadata
   }
 }

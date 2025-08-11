@@ -18,7 +18,7 @@ const kernel = Kernel.Builder().build()
 
 const messageOutput = (chatHistory: ChatHistory) => {
   const message = chatHistory.getLastMessage()
-  console.log(message?.getAuthorRole() + ": " + message?.getContent().slice(0, 200))
+  console.log(message?.AuthorRole + ": " + message?.content.slice(0, 200))
   console.log("------------------------")
 }
 
@@ -45,7 +45,7 @@ const describeImage = async (chatGPT: OpenAIChatCompletion) => {
 
     const message = reply[0]
     console.log("\n------------------------")
-    console.log(message.getContent())
+    console.log(message.content)
   })
 }
 
@@ -68,7 +68,7 @@ const describeUrl = async (chatGPT: OpenAIChatCompletion) => {
 
   const message = reply[0]
   console.log("\n------------------------")
-  console.log(message.getContent())
+  console.log(message.content)
 }
 
 const main = async () => {

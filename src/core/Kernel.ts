@@ -14,7 +14,7 @@ import { AIServiceSelector } from "./services/types/AIServiceSelector"
 
 export default class Kernel {
   private readonly serviceSelector: AIServiceSelector
-  private readonly plugins: KernelPluginCollection
+  private readonly _plugins: KernelPluginCollection
   private readonly globalKernelHooks: KernelHooks
   private readonly services: AIServiceCollection
   private readonly serviceSelectorProvider?: (services: AIServiceCollection) => AIServiceSelector
@@ -32,7 +32,7 @@ export default class Kernel {
       ? serviceSelectorProvider(services)
       : new OrderedAIServiceSelector(services)
 
-    this.plugins = new KernelPluginCollection(plugins || [])
+    this._plugins = new KernelPluginCollection(plugins || [])
     this.globalKernelHooks = globalKernelHooks || new KernelHooks()
   }
 
@@ -40,12 +40,8 @@ export default class Kernel {
     return new KernelBuilder()
   }
 
-  public static from(kernel: Kernel): KernelBuilder {
-    return new KernelBuilder(kernel.services, kernel.serviceSelectorProvider, kernel.plugins)
-  }
-
   public toBuilder(): KernelBuilder {
-    return new KernelBuilder(this.services, this.serviceSelectorProvider, this.plugins)
+    return new KernelBuilder(this.services, this.serviceSelectorProvider, this._plugins)
   }
 
   public invokeAsync<T>(
@@ -87,15 +83,15 @@ export default class Kernel {
   }
 
   public getPlugin(pluginName: string): KernelPlugin | undefined {
-    return this.plugins.getPlugin(pluginName)
+    return this._plugins.getPlugin(pluginName)
   }
 
-  public getPlugins(): KernelPlugin[] {
-    return this.plugins.getPlugins()
+  public get plugins(): KernelPlugin[] {
+    return this._plugins.plugins
   }
 
   public getFunction<T>(pluginName: string, functionName: string): KernelFunction<T> {
-    const func = this.plugins.getFunction(pluginName, functionName)
+    const func = this._plugins.getFunction(pluginName, functionName)
 
     if (!func) {
       throw new Error(`Function ${functionName} not found in plugin ${pluginName}`)
@@ -104,8 +100,8 @@ export default class Kernel {
     return func as KernelFunction<T>
   }
 
-  public getFunctions(): KernelFunction<any>[] {
-    return this.plugins.getFunctions()
+  public get functions(): KernelFunction<any>[] {
+    return this._plugins.functions
   }
 
   public getGlobalKernelHooks(): KernelHooks {
@@ -148,7 +144,7 @@ export class KernelBuilder {
   ) {
     if (services) this.services = new AIServiceCollection(services)
     this.serviceSelectorProvider = serviceSelectorProvider
-    if (plugins) this.plugins = [...plugins.getPlugins()]
+    if (plugins) this.plugins = [...plugins.plugins]
   }
 
   public withAIService<T extends AIService>(

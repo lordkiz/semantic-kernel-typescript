@@ -11,7 +11,7 @@ abstract class FnInvokeEvent<T> implements KernelHookEvent<unknown> {
     this.fn = fn
     this.kernelArguments = kernelArguments
   }
-  getOptions(): unknown {
+  get options(): unknown {
     throw new Error("Method not implemented.")
   }
 
@@ -27,13 +27,13 @@ abstract class FnInvokeEvent<T> implements KernelHookEvent<unknown> {
 export class FunctionInvokingEvent<T> extends FnInvokeEvent<T> {}
 
 export class FunctionInvokedEvent<T> extends FnInvokeEvent<T> {
-  private result: FunctionResult<T>
+  private _result: FunctionResult<T>
 
   constructor(fn: KernelFunction<T>, kernelArguments: KernelArguments, result: FunctionResult<T>) {
     super(fn, kernelArguments)
-    this.result = result
+    this._result = result
   }
-  getResult() {
-    return this.result
+  get result() {
+    return this._result
   }
 }

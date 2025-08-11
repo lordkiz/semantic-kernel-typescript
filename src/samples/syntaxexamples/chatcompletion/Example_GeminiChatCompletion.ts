@@ -9,7 +9,7 @@ const kernel = Kernel.Builder().build()
 
 const messageOutput = (chatHistory: ChatHistory) => {
   const message = chatHistory.getLastMessage()
-  console.log(message?.getAuthorRole() + ": " + message?.getContent())
+  console.log(message?.AuthorRole + ": " + message?.content)
   console.log("------------------------")
 }
 
@@ -19,7 +19,7 @@ const reply = async (geminiChat: ChatCompletionService, chatHistory: ChatHistory
   const message: string[] = []
 
   replyyy.forEach((chatMessageContent) => {
-    message.push(chatMessageContent.getContent())
+    message.push(chatMessageContent.content)
   })
 
   chatHistory.addAssistantMessage(message.join(""))

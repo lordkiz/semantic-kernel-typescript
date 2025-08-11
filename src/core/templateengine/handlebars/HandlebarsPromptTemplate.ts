@@ -9,6 +9,7 @@ import Kernel from "../../Kernel"
 import FunctionResult from "../../orchestration/FunctionResult"
 import InvocationContext from "../../orchestration/InvocationContext"
 import ChatMessageContent from "../../services/chatcompletion/ChatMessageContent"
+import ContextVariable from "../../variables/ContextVariable"
 
 /**
  * A prompt template that uses the Handlebars template engine to render prompts.
@@ -65,8 +66,8 @@ class HandleBarsPromptTemplateHandler {
 
     this.handlebars.registerHelper("message", this.handleMessage)
 
-    kernel.getPlugins().forEach((plugin) => {
-      plugin.getFunctions().forEach(async (kernelFunction) => {
+    kernel.plugins.forEach((plugin) => {
+      plugin.functions.forEach(async (kernelFunction) => {
         const fnName = kernelFunction.getMethod().name
         const instanceName = kernelFunction.getInstance()?.name ?? ""
         const helperName = instanceName + `${instanceName ? "." : ""}` + fnName
@@ -81,12 +82,12 @@ class HandleBarsPromptTemplateHandler {
 
   render(kernelArguments: KernelArguments): string {
     const args: Record<string, any> = {}
-    kernelArguments.forEach((v, k) => {
-      args[k] = v.getValue()
+    kernelArguments.forEach((v: ContextVariable<any>, k) => {
+      args[k] = v.value
       // ensure key $key is included in the args.
       // this enables us to also use {{$input}} syntax in prompt templates
       if (args[`$${k}`] === undefined) {
-        args[`$${k}`] = v.getValue()
+        args[`$${k}`] = v.value
       }
     })
 
@@ -102,9 +103,9 @@ class HandleBarsPromptTemplateHandler {
 
       if (message) {
         if (!role) {
-          role = message.getAuthorRole()
+          role = message.AuthorRole
         }
-        content = message.getContent()
+        content = message.content
       }
     }
 

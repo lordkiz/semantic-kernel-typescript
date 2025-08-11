@@ -24,11 +24,11 @@ interface ChatMessageContentParams<T> {
  * @typeparam T - The type of the inner content within the messages
  */
 export default class ChatMessageContent<T> extends KernelContentImpl<T> {
-  private readonly authorRole: AuthorRole
-  private readonly content: string
-  private readonly items: KernelContent<T>[] | undefined
-  private readonly encoding: BufferEncoding | undefined
-  private readonly contentType: ChatMessageContentType
+  private readonly _authorRole: AuthorRole
+  private readonly _content: string
+  private readonly _items: KernelContent<T>[] | undefined
+  private readonly _encoding: BufferEncoding | undefined
+  private readonly _contentType: ChatMessageContentType
 
   constructor({
     authorRole,
@@ -41,22 +41,22 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
     metadata,
   }: ChatMessageContentParams<T>) {
     super(innerContent, modelId, metadata)
-    this.authorRole = authorRole
-    this.items = items
-    this.content = content
-    this.encoding = encoding
-    this.contentType = contentType
+    this._authorRole = authorRole
+    this._items = items
+    this._content = content
+    this._encoding = encoding
+    this._contentType = contentType
   }
 
   static clone<T>(chatMessageContent: ChatMessageContent<T>) {
     return new ChatMessageContent<T>({
-      authorRole: chatMessageContent.getAuthorRole(),
-      content: chatMessageContent.getContent(),
-      items: chatMessageContent.getItems(),
-      encoding: chatMessageContent.getEncoding(),
-      contentType: chatMessageContent.getContentType(),
-      modelId: chatMessageContent.getModelId(),
-      innerContent: chatMessageContent.getInnerContent(),
+      authorRole: chatMessageContent.AuthorRole,
+      content: chatMessageContent.content,
+      items: chatMessageContent.items,
+      encoding: chatMessageContent.encoding,
+      contentType: chatMessageContent.contentType,
+      modelId: chatMessageContent.modelId,
+      innerContent: chatMessageContent.innerContent,
       metadata: chatMessageContent.getMetadata(),
     })
   }
@@ -66,8 +66,8 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    *
    * @return The author role that generated the content
    */
-  public getAuthorRole(): AuthorRole {
-    return this.authorRole
+  public get AuthorRole(): AuthorRole {
+    return this._authorRole
   }
 
   /**
@@ -75,8 +75,8 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    *
    * @return The content, which may be null
    */
-  public getContent(): string {
-    return this.content
+  public get content(): string {
+    return this._content
   }
 
   /**
@@ -84,8 +84,8 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    *
    * @return The items, which may be null
    */
-  public getItems(): KernelContent<T>[] | undefined {
-    return this.items ? [...this.items] : undefined
+  public get items(): KernelContent<T>[] | undefined {
+    return this._items ? [...this._items] : undefined
   }
 
   /**
@@ -93,8 +93,8 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    *
    * @return The encoding, which may be null
    */
-  public getEncoding(): BufferEncoding | undefined {
-    return this.encoding
+  public get encoding(): BufferEncoding | undefined {
+    return this._encoding
   }
 
   /**
@@ -102,8 +102,8 @@ export default class ChatMessageContent<T> extends KernelContentImpl<T> {
    *
    * @return The content type
    */
-  public getContentType(): ChatMessageContentType {
-    return this.contentType
+  public get contentType(): ChatMessageContentType {
+    return this._contentType
   }
 
   public toString(): string {

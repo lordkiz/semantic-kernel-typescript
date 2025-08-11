@@ -6,14 +6,14 @@ import { Logger } from "../log/Logger"
  * A plugin contains a collection of functions that can be invoked by the Semantic Kernel.
  */
 export default class KernelPlugin implements Iterable<KernelFunction<any>> {
-  private name: string
-  private description: string
-  private functions: CaseInsensitiveMap<KernelFunction<any>>
+  private _name: string
+  private _description: string
+  private _functions: CaseInsensitiveMap<KernelFunction<any>>
 
   constructor(name: string, description: string, functions: KernelFunction<any>[]) {
-    this.name = name
-    this.description = description
-    this.functions = new CaseInsensitiveMap<KernelFunction<unknown>>()
+    this._name = name
+    this._description = description
+    this._functions = new CaseInsensitiveMap<KernelFunction<unknown>>()
 
     functions?.forEach((fn) => {
       this.addFunction(fn)
@@ -21,7 +21,7 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
   }
 
   [Symbol.iterator](): Iterator<KernelFunction<unknown>, any, any> {
-    return this.functions.values()[Symbol.iterator]()
+    return this._functions.values()[Symbol.iterator]()
   }
 
   /**
@@ -32,7 +32,7 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    * @return The function with the specified name, or {@code null} if no such function exists.
    */
   get(functionName: string) {
-    return this.functions.get(functionName)
+    return this._functions.get(functionName)
   }
 
   /**
@@ -41,11 +41,11 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    * @param fn The function to add.
    */
   addFunction(fn: KernelFunction<any>) {
-    if (this.functions.get(fn.getName())) {
+    if (this._functions.get(fn.getName())) {
       Logger.warn(`function ${fn.getName()} already exists overwriting existing function`)
     }
 
-    this.functions.put(fn.getName(), fn)
+    this._functions.put(fn.getName(), fn)
   }
 
   /**
@@ -53,8 +53,8 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    *
    * @return The functions in the plugin.
    */
-  getFunctions() {
-    return Object.seal(this.functions)
+  get functions() {
+    return Object.seal(this._functions)
   }
 
   /**
@@ -62,8 +62,8 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    *
    * @return The name of the plugin.
    */
-  getName() {
-    return this.name
+  get name() {
+    return this._name
   }
 
   /**
@@ -71,7 +71,7 @@ export default class KernelPlugin implements Iterable<KernelFunction<any>> {
    *
    * @return The description of the plugin.
    */
-  getDescription() {
-    return this.description
+  get description() {
+    return this._description
   }
 }

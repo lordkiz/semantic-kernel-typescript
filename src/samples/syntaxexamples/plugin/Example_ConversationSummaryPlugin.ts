@@ -166,7 +166,7 @@ const getConversationActionItemsAsync = async () => {
 
   console.log("Action Items: ")
 
-  console.log(await lastValueFrom(actionItems.getResult()))
+  console.log(await lastValueFrom(actionItems.result))
 }
 
 const getConversationTopicsAsync = async () => {
@@ -180,7 +180,7 @@ const getConversationTopicsAsync = async () => {
   )
 
   console.log("Topics: ")
-  console.log(await lastValueFrom(topics.getResult()))
+  console.log(await lastValueFrom(topics.result))
 }
 
 const getConversationSummaryAsync = async () => {
@@ -195,7 +195,7 @@ const getConversationSummaryAsync = async () => {
 
   console.log("Summary: ")
 
-  console.log(await lastValueFrom(summary.getResult()))
+  console.log(await lastValueFrom(summary.result))
 }
 
 const main = async () => {

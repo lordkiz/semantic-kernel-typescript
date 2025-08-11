@@ -100,7 +100,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
         new FunctionInvokedEvent(this, updatedArguments, new FunctionResult(res))
       )
 
-      return updatedResult.getResult()
+      return updatedResult.result
     }
 
     return from(resolveResult())

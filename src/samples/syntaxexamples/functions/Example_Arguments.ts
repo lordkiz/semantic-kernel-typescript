@@ -49,7 +49,7 @@ const main = async () => {
 
   const functionResult = await lastValueFrom(kernel.invokeAsync(kernelFunction, kernelArguments))
 
-  console.log(functionResult.getResult())
+  console.log(functionResult.result)
 }
 
 main()

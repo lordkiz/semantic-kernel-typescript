@@ -82,7 +82,7 @@ export class ConversationSummaryPlugin {
             KernelArguments.Builder().withInput(paragraph).build(),
             InvocationContext.Builder().withServiceClass(this.serviceClass).build()
           )
-          .pipe(reduce((acc, val) => acc + "\n" + val.getResult(), ""))
+          .pipe(reduce((acc, val) => acc + "\n" + val.result, ""))
       })
     )
   }

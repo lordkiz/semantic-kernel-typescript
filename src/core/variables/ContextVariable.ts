@@ -1,40 +1,40 @@
 import { Logger } from "../log/Logger"
 
 export default class ContextVariable<T> {
-  private value: T
+  private _value: T
   constructor(value: T) {
-    this.value = value
+    this._value = value
   }
 
   static of<T>(value: T): ContextVariable<T> {
     return new ContextVariable(value)
   }
 
-  getRawValue() {
-    return this.value
+  get rawValue() {
+    return this._value
   }
 
-  getValue() {
+  get value() {
     return this.resolveValue()
   }
 
-  getType() {
-    return typeof this.value
+  get type() {
+    return typeof this.resolveValue()
   }
 
   private resolveValue(): T {
     try {
       if (
-        typeof this.value === "string" &&
-        (this.value.startsWith("[") || this.value.startsWith("{"))
+        typeof this._value === "string" &&
+        (this._value.startsWith("[") || this._value.startsWith("{"))
       ) {
-        return JSON.parse(this.value) as T
+        return JSON.parse(this._value) as T
       }
-      return this.value
+      return this.rawValue
     } catch (e) {
       Logger.warn(`encountered error while resolving value. Returning raw value. Error: ${e}`)
 
-      return this.getRawValue()
+      return this.rawValue
     }
   }
 }

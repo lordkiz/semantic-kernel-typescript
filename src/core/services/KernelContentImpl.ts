@@ -1,5 +1,5 @@
-import FunctionResultMetadata from "../orchestration/FunctionResultMetadata";
-import { KernelContent } from "./types/KernelContent";
+import FunctionResultMetadata from "../orchestration/FunctionResultMetadata"
+import { KernelContent } from "./types/KernelContent"
 
 export default abstract class KernelContentImpl<T> implements KernelContent<T> {
   /*
@@ -7,34 +7,22 @@ export default abstract class KernelContentImpl<T> implements KernelContent<T> {
    * abstraction. The usage of this property is considered "unsafe".
    * Use it only if strictly necessary.
    */
-  private innerContent: T | undefined;
+  private _innerContent: T | undefined
 
   /**
    * The model ID used to generate the content.
    */
-  private modelId: string | undefined;
+  private _modelId: string | undefined
 
   /**
    * The metadata associated with the content.
    */
-  private metadata: FunctionResultMetadata<any> | undefined;
+  private _metadata: FunctionResultMetadata<any> | undefined
 
-  constructor();
-  constructor(
-    innerContent?: T,
-    modelId?: string,
-    metadata?: FunctionResultMetadata<any>
-  );
-  constructor(
-    innerContent: T,
-    modelId: string,
-    metadata?: FunctionResultMetadata<any>
-  );
-  constructor(
-    innerContent: T,
-    modelId: string,
-    metadata: FunctionResultMetadata<any>
-  );
+  constructor()
+  constructor(innerContent?: T, modelId?: string, metadata?: FunctionResultMetadata<any>)
+  constructor(innerContent: T, modelId: string, metadata?: FunctionResultMetadata<any>)
+  constructor(innerContent: T, modelId: string, metadata: FunctionResultMetadata<any>)
   /**
    * Initializes a new instance of the {@link KernelContentImpl} class.
    *
@@ -42,18 +30,14 @@ export default abstract class KernelContentImpl<T> implements KernelContent<T> {
    * @param modelId      The model identifier used to generate the content.
    * @param metadata     The metadata associated with the content.
    */
-  constructor(
-    innerContent?: T,
-    modelId?: string,
-    metadata?: FunctionResultMetadata<any>
-  ) {
-    this.innerContent = innerContent;
-    this.modelId = modelId;
-    this.metadata = metadata;
+  constructor(innerContent?: T, modelId?: string, metadata?: FunctionResultMetadata<any>) {
+    this._innerContent = innerContent
+    this._modelId = modelId
+    this._metadata = metadata
   }
 
-  getModelId() {
-    return this.modelId;
+  get modelId() {
+    return this._modelId
   }
 
   /**
@@ -61,8 +45,8 @@ export default abstract class KernelContentImpl<T> implements KernelContent<T> {
    *
    * @return The inner content representation.
    */
-  getInnerContent(): T | undefined {
-    return this.innerContent;
+  get innerContent(): T | undefined {
+    return this._innerContent
   }
 
   /**
@@ -71,10 +55,10 @@ export default abstract class KernelContentImpl<T> implements KernelContent<T> {
    * @return The metadata associated with the content.
    */
   getMetadata<UsageType>(): FunctionResultMetadata<UsageType> | undefined {
-    return this.metadata;
+    return this._metadata
   }
 
-  getContent(): string | undefined {
-    return `${this.getInnerContent()}`;
+  get content(): string | undefined {
+    throw new Error("Implement in subclass")
   }
 }

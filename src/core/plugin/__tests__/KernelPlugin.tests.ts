@@ -42,7 +42,7 @@ describe("KernelPlugin", () => {
       .get("sqrt")
       ?.invoke(kernel, KernelArguments.Builder().withVariable("num", 12).build())
 
-    expect(functionResult?.getResult()).toEqual(3.4641016151377544)
+    expect(functionResult?.result).toEqual(3.4641016151377544)
   })
 
   it("can add, find and execute new funtions", async () => {
@@ -57,12 +57,12 @@ describe("KernelPlugin", () => {
       .get("sqrt")
       ?.invoke(kernel, KernelArguments.Builder().withVariable("num", 12).build())
 
-    expect(functionResult?.getResult()).toEqual(3.4641016151377544)
+    expect(functionResult?.result).toEqual(3.4641016151377544)
 
     const functionResult2 = await plugin
       .get("square")
       ?.invoke(kernel, KernelArguments.Builder().withVariable("num", 12).build())
 
-    expect(functionResult2?.getResult()).toEqual(144)
+    expect(functionResult2?.result).toEqual(144)
   })
 })

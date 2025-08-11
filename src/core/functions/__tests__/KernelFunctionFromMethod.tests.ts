@@ -15,6 +15,6 @@ describe("KernelFunctionFromMethod", () => {
       .get("sqrt")
       ?.invoke(kernel, KernelArguments.Builder().withVariable("num", 12).build())
 
-    expect(functionResult?.getResult()).toEqual(3.4641016151377544)
+    expect(functionResult?.result).toEqual(3.4641016151377544)
   })
 })

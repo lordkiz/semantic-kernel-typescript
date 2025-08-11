@@ -35,7 +35,7 @@ const main = async () => {
 
   observable.subscribe({
     next(value) {
-      console.log(value.getResult())
+      console.log(value.result)
     },
   })
 }

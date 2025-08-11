@@ -28,7 +28,7 @@ export default class FunctionCallContent<T> extends KernelContentImpl<T> {
   }
 
   static getFunctionTools(messageContent: ChatMessageContent<any>) {
-    return (messageContent.getItems() ?? []).filter((item) => item instanceof FunctionCallContent)
+    return (messageContent.items ?? []).filter((item) => item instanceof FunctionCallContent)
   }
 
   get id() {
@@ -48,7 +48,7 @@ export default class FunctionCallContent<T> extends KernelContentImpl<T> {
     return ToolCallBehavior.formFullFunctionName(this._pluginName ?? "", this._functionName)
   }
 
-  override getContent(): string | undefined {
+  override get content(): string | undefined {
     return undefined
   }
 }

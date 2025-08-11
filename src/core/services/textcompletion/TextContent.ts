@@ -5,7 +5,7 @@ import KernelContentImpl from "../KernelContentImpl"
  * Content from a text completion service.
  */
 export default class TextContent extends KernelContentImpl<string> {
-  private readonly content: string
+  private readonly _content: string
 
   /**
    * Initializes a new instance of the {@code TextContent} class with a provided content, model
@@ -17,7 +17,7 @@ export default class TextContent extends KernelContentImpl<string> {
    */
   constructor(content: string, modelId: string, metadata: FunctionResultMetadata<object>) {
     super(content, modelId, metadata)
-    this.content = content
+    this._content = content
   }
 
   /**
@@ -25,11 +25,11 @@ export default class TextContent extends KernelContentImpl<string> {
    *
    * @return The content.
    */
-  public getValue() {
+  public get value() {
     return this.content
   }
 
-  override getContent() {
-    return this.content
+  override get content() {
+    return this._content
   }
 }

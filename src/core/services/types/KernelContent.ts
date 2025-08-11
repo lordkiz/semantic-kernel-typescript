@@ -1,4 +1,4 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata";
+import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
 
 /**
  * Base class which represents the content returned by an AI service.
@@ -12,18 +12,18 @@ export interface KernelContent<T> {
    * Use it only if strictly necessary.
    * @return The inner content.
    */
-  getInnerContent(): T | undefined;
+  get innerContent(): T | undefined
 
   /**
    * The metadata associated with the content.
    * @return The metadata.
    */
-  getMetadata<UsageType>(): FunctionResultMetadata<UsageType> | undefined;
+  getMetadata<UsageType>(): FunctionResultMetadata<UsageType> | undefined
 
   /**
    * Gets the content returned by the AI service.
    *
    * @return The content.
    */
-  getContent(): string | undefined;
+  get content(): string | undefined
 }

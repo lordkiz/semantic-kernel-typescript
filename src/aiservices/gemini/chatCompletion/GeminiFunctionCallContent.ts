@@ -38,9 +38,7 @@ export default class GeminiFunctionCallContent extends FunctionCallContent<any> 
   }
 
   static getFunctionTools(messageContent: ChatMessageContent<any>) {
-    return (messageContent.getItems() ?? []).filter(
-      (item) => item instanceof GeminiFunctionCallContent
-    )
+    return (messageContent.items ?? []).filter((item) => item instanceof GeminiFunctionCallContent)
   }
 
   /**

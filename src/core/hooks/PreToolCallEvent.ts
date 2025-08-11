@@ -15,7 +15,7 @@ export class PreToolCallEvent implements KernelHookEvent<any> {
     this.kernelArguments = kernelArguments
     this.fn = fn
   }
-  getOptions() {
+  get options() {
     throw new Error("Method not implemented.")
   }
 

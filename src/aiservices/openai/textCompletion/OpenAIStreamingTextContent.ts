@@ -15,11 +15,11 @@ export default class OpenAIStreamingTextContent extends StreamingTextContent<Tex
     super(0, content)
   }
 
-  override getContent() {
-    const content = this.getInnerContent()
+  override get content() {
+    const content = this.innerContent
     if (!content) {
       return
     }
-    return content.getContent()
+    return content.content
   }
 }

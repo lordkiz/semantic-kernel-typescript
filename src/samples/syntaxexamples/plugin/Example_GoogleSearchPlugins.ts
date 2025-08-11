@@ -65,7 +65,7 @@ const example1Async = async (kernel: Kernel, searchPluginName: string) => {
   console.log(question)
   console.log(`-------${searchPluginName}:  `)
 
-  console.log(answer.getResult())
+  console.log(answer.result)
 }
 
 const example2Async = async (kernel: Kernel) => {
@@ -132,7 +132,7 @@ const example2Async = async (kernel: Kernel) => {
 
   let answer = await kernel.invoke(kernelFunction, kernelArguments, invocationContext)
 
-  const result = answer.getResult()
+  const result = answer.result
 
   if (result.includes("google.searchAsync")) {
     const promptTemplate = new KernelPromptTemplateFactory().tryCreate(
@@ -144,11 +144,11 @@ const example2Async = async (kernel: Kernel) => {
     const information = await lastValueFrom(promptTemplate.renderAsync(kernel))
 
     console.log("information found: ")
-    console.log(information.getResult())
+    console.log(information.result)
 
     kernelArguments = KernelArguments.Builder()
       .withVariable("question", question)
-      .withVariable("externalInformation", information.getResult())
+      .withVariable("externalInformation", information.result)
       .build()
 
     answer = await kernel.invoke(kernelFunction, kernelArguments, invocationContext)
@@ -157,7 +157,7 @@ const example2Async = async (kernel: Kernel) => {
   }
 
   console.log("---- ANSWER:")
-  console.log(answer.getResult())
+  console.log(answer.result)
 }
 
 main()

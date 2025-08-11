@@ -105,11 +105,11 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
           (content) =>
             new GeminiStreamingChatMessageContent(
               uuidv4(),
-              content.getAuthorRole(),
-              content.getContent(),
+              content.AuthorRole,
+              content.content,
               this.modelId,
-              content.getInnerContent(),
-              content.getEncoding(),
+              content.innerContent,
+              content.encoding,
               content.getMetadata()
             )
         )
@@ -145,7 +145,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     invocationContext: InvocationContext<GenerateContentConfig>,
     invocationAttempts: number | undefined = 0
   ): Promise<ChatMessageContent<any>[]> {
-    const omitTools = fullHistory.getLastMessage()?.getAuthorRole() === AuthorRole.TOOL
+    const omitTools = fullHistory.getLastMessage()?.AuthorRole === AuthorRole.TOOL
 
     const contents = this.getContents(fullHistory)
 
@@ -192,7 +192,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
       )
       const functionResponsesMessage = new GeminiChatMessageContent<any>(
         AuthorRole.TOOL,
-        functionCallContent.functionResult?.getResult(),
+        functionCallContent.functionResult?.result,
         undefined,
         undefined,
         undefined,
@@ -290,11 +290,11 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     chatHistory.getMessages().forEach((chatMessageContent) => {
       const content: Content = { role: AuthorRole.USER }
 
-      if (chatMessageContent.getAuthorRole() === AuthorRole.ASSISTANT) {
+      if (chatMessageContent.AuthorRole === AuthorRole.ASSISTANT) {
         content.role = AuthorRole.MODEL
-        const isAFunctionCall = Boolean(chatMessageContent.getItems()?.length)
+        const isAFunctionCall = Boolean(chatMessageContent.items?.length)
         if (isAFunctionCall) {
-          ;((chatMessageContent.getItems() ?? []) as GeminiFunctionCallContent[]).forEach(
+          ;((chatMessageContent.items ?? []) as GeminiFunctionCallContent[]).forEach(
             (geminiFunctionCall) => {
               content.parts = [
                 ...(content.parts ?? []),
@@ -303,9 +303,9 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
             }
           )
         } else {
-          content.parts = [...(content.parts ?? []), { text: chatMessageContent.getContent() }]
+          content.parts = [...(content.parts ?? []), { text: chatMessageContent.content }]
         }
-      } else if (chatMessageContent.getAuthorRole() === AuthorRole.TOOL) {
+      } else if (chatMessageContent.AuthorRole === AuthorRole.TOOL) {
         content.role = AuthorRole.USER
 
         const fns = GeminiFunctionCallContent.getFunctionTools(chatMessageContent)
@@ -313,7 +313,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
         fns.forEach((geminiFunctionCall) => {
           const functionResult = geminiFunctionCall.functionResult
 
-          if (!functionResult || !functionResult?.getResult()) {
+          if (!functionResult || !functionResult?.result) {
             throw new SKException("Gemini failed to return a result")
           }
 
@@ -324,13 +324,13 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
           const part = createPartFromFunctionResponse(
             geminiFunctionCall.id,
             geminiFunctionCall.fullName,
-            { result: functionResult.getResult() }
+            { result: functionResult.result }
           )
 
           content.parts = [...(content.parts ?? []), part]
         })
       } else {
-        content.parts = [...(content.parts ?? []), { text: chatMessageContent.getContent() }]
+        content.parts = [...(content.parts ?? []), { text: chatMessageContent.content }]
       }
 
       contents.push(content)
@@ -389,8 +389,8 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   ): { functionDeclarations: FunctionDeclaration[]; toolConfig?: ToolConfig } | undefined {
     const fns: KernelFunction<any>[] = []
 
-    kernel.getPlugins().forEach((plugin) => {
-      plugin.getFunctions().forEach((kernelFunction) => {
+    kernel.plugins.forEach((plugin) => {
+      plugin.functions.forEach((kernelFunction) => {
         fns.push(kernelFunction)
       })
     })
@@ -401,7 +401,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
     let allowedPluginFunctions = fns
 
-    if (functionChoiceBehavior.getFunctions()?.length) {
+    if (functionChoiceBehavior.functions?.length) {
       // if you specified list of functions to allow, then only those will be allowed
       allowedPluginFunctions = allowedPluginFunctions.filter((fn) =>
         functionChoiceBehavior.isFunctionAllowed(fn.getPluginName(), fn.getName())
@@ -442,8 +442,8 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   ): { functionDeclarations: FunctionDeclaration[]; toolConfig?: ToolConfig } | undefined {
     const fns: KernelFunction<any>[] = []
 
-    kernel.getPlugins().forEach((plugin) => {
-      plugin.getFunctions().forEach((kernelFunction) => {
+    kernel.plugins.forEach((plugin) => {
+      plugin.functions.forEach((kernelFunction) => {
         fns.push(kernelFunction)
       })
     })

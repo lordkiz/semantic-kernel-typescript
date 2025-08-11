@@ -61,7 +61,7 @@ const main = async () => {
     InvocationContext.Builder().withServiceClass(OpenAIChatCompletion).build()
   )
 
-  console.log(result.getResult())
+  console.log(result.result)
 
   result = await kernel.invoke(
     excuseFunction,
@@ -69,7 +69,7 @@ const main = async () => {
     InvocationContext.Builder().withServiceClass(OpenAIChatCompletion).build()
   )
 
-  console.log(result.getResult())
+  console.log(result.result)
 
   const date = new Date().toUTCString()
   const message = "Translate this date " + date + " to French format"
@@ -88,7 +88,7 @@ const main = async () => {
     InvocationContext.Builder().withServiceClass(OpenAIChatCompletion).build()
   )
 
-  console.log(fixedFunctionResult.getResult())
+  console.log(fixedFunctionResult.result)
 }
 
 main()

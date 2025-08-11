@@ -81,7 +81,7 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
 
     const rendered = this.template.renderAsync(kernel, updatedArguments, invocationContext).pipe(
       concatMap((fnResult) => {
-        const initialPrompt = fnResult.getResult()
+        const initialPrompt = fnResult.result
 
         const promptHookResult = kernelHooks.executeHooks(
           new PromptRenderedEvent(this, updatedArguments, initialPrompt)
@@ -133,13 +133,11 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
             .pipe(
               mergeMap((it) => it),
               map((chatMessageContent) => {
-                const fnRes = new FunctionResult(
-                  chatMessageContent.getContent()
-                ) as FunctionResult<T>
+                const fnRes = new FunctionResult(chatMessageContent.content) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
                   new FunctionInvokedEvent(this, args, fnRes)
                 )
-                return updatedResult.getResult()
+                return updatedResult.result
               })
             )
         } else if ("getTextContentsAsync" in service) {
@@ -152,11 +150,11 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
             .pipe(
               mergeMap((it) => it),
               map((textContent) => {
-                const fnRes = new FunctionResult(textContent.getContent()) as FunctionResult<T>
+                const fnRes = new FunctionResult(textContent.content) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
                   new FunctionInvokedEvent(this, args, fnRes)
                 )
-                return updatedResult.getResult()
+                return updatedResult.result
               })
             )
         } else {

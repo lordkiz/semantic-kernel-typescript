@@ -128,7 +128,7 @@ const main = async () => {
 
   const result = await kernel.invoke(func, undefined, invocationContext)
 
-  console.log(result.getResult())
+  console.log(result.result)
   //
   //
   //
@@ -160,12 +160,12 @@ const main = async () => {
 
     if (
       !lastMessage ||
-      (lastMessage.getAuthorRole() === AuthorRole.ASSISTANT && !lastMessage.getItems()?.length)
+      (lastMessage.AuthorRole === AuthorRole.ASSISTANT && !lastMessage.items?.length)
     ) {
       break
     }
 
-    for (const toolCall of lastMessage.getItems() ?? []) {
+    for (const toolCall of lastMessage.items ?? []) {
       if (toolCall instanceof FunctionCallContent) {
         const fn = kernel.getFunction(toolCall.pluginName ?? "", toolCall.functionName)
         if (!fn) {
@@ -177,7 +177,7 @@ const main = async () => {
           InvocationContext.Builder().withServiceClass(GeminiChatCompletion).build()
         )
 
-        const content = (await functionResult).getResult() as string
+        const content = (await functionResult).result as string
 
         chatHistory.addMessage(
           content,
@@ -191,9 +191,9 @@ const main = async () => {
 
   chatHistory
     .getMessages()
-    .filter((it) => !!it.getContent())
+    .filter((it) => !!it.content)
     .forEach((m) => {
-      console.log(m.getContent())
+      console.log(m.content)
     })
 
   //
@@ -228,7 +228,7 @@ const main = async () => {
 
   chatHistory = new ChatHistory(messages)
 
-  console.log(chatHistory.getLastMessage()?.getContent())
+  console.log(chatHistory.getLastMessage()?.content)
 
   chatHistory.addMessage("What type of animal are they?", AuthorRole.USER)
 
@@ -238,7 +238,7 @@ const main = async () => {
 
   chatHistory = new ChatHistory(messages)
 
-  console.log(chatHistory.getLastMessage()?.getContent())
+  console.log(chatHistory.getLastMessage()?.content)
 }
 
 main()

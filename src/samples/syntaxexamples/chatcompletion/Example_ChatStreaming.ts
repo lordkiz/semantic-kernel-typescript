@@ -17,7 +17,7 @@ const kernel = Kernel.Builder().build()
 const displayMessage = (chatHistory: ChatHistory) => {
   const message = chatHistory.getLastMessage()
   if (message) {
-    console.log(`${message.getAuthorRole()}: ${message.getContent()}`)
+    console.log(`${message.AuthorRole}: ${message.content}`)
     console.log("------------------------")
   }
 }
@@ -35,7 +35,7 @@ const handleStreamingResponse = async (
     await new Promise<void>((resolve, reject) => {
       observable.subscribe({
         next: (value) => {
-          answer += value.getContent()
+          answer += value.content
         },
         error: (err) => {
           console.error("Error during streaming:", err)

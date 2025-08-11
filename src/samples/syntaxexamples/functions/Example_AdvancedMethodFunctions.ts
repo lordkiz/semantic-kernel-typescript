@@ -28,10 +28,7 @@ class FunctionsChainingPlugin {
       .pipe(
         map(
           (value) =>
-            new MyCustomType(
-              2 * value.getResult().number,
-              "From function1 + " + value.getResult().text
-            )
+            new MyCustomType(2 * value.result.number, "From function1 + " + value.result.text)
         )
       )
   }
@@ -62,7 +59,7 @@ const main = async () => {
     KernelArguments.Builder().withVariable("kernel", kernel).build()
   )
 
-  result.getResult().subscribe({
+  result.result.subscribe({
     next(value) {
       console.log("CustomType.Number: " + value.number)
 

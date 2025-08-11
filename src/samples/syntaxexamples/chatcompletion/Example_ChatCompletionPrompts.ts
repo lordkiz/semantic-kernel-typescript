@@ -43,7 +43,7 @@ const main = async () => {
   console.log(chatPrompt)
 
   console.log("Chat Prompt Result:")
-  console.log(chatPromptResult.getResult())
+  console.log(chatPromptResult.result)
 
   // console.log("Chat Prompt Result:");
 }

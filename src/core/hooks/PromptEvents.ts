@@ -10,7 +10,7 @@ abstract class PromptREvent implements KernelHookEvent<any> {
     this.fn = fn
     this.kernelArguments = kernelArguments
   }
-  getOptions() {
+  get options() {
     throw new Error("Method not implemented.")
   }
 

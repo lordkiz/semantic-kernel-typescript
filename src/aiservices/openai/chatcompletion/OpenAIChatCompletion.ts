@@ -136,7 +136,7 @@ export default class OpenAIChatCompletion
 
     let allowedPluginFunctions = fns
 
-    if (functionChoiceBehavior.getFunctions()?.length) {
+    if (functionChoiceBehavior.functions?.length) {
       // if you specified list of functions to allow, then only those will be allowed
       allowedPluginFunctions = allowedPluginFunctions.filter((fn) =>
         functionChoiceBehavior.isFunctionAllowed(fn.pluginName, fn.name)
@@ -151,7 +151,7 @@ export default class OpenAIChatCompletion
       tools: toolDefinitions,
       toolChoice,
       autoInvoke,
-      options: functionChoiceBehavior.getOptions(),
+      options: functionChoiceBehavior.options,
     }
   }
 
@@ -296,10 +296,10 @@ export default class OpenAIChatCompletion
   private static getChatCompletionMessageParam(
     message: ChatMessageContent<any>
   ): ChatCompletionMessageParam {
-    const authorRole = message.getAuthorRole()
-    const content = message.getContent()
+    const authorRole = message.AuthorRole
+    const content = message.content
 
-    if (message.getContentType() === ChatMessageContentType.IMAGE_URL && content) {
+    if (message.contentType === ChatMessageContentType.IMAGE_URL && content) {
       return OpenAIChatCompletion.formImageMessage(message, content)
     }
 
@@ -321,7 +321,7 @@ export default class OpenAIChatCompletion
         return chatCompletionUserMessageParam
       }
       case AuthorRole.TOOL: {
-        const id = message.getMetadata()?.getId()
+        const id = message.getMetadata()?.id
         if (!id) {
           throw new SKException(
             "Require to create a tool call message, but no tool call id is available"
@@ -411,7 +411,7 @@ export default class OpenAIChatCompletion
             ? JSON.stringify(
                 Object.keys(kernelArguments).reduce(
                   (acc, key) => {
-                    acc[key] = kernelArguments.get(key)?.getValue()
+                    acc[key] = kernelArguments.get(key)?.value
                     return acc
                   },
                   {} as Record<string, any>
@@ -629,8 +629,8 @@ export default class OpenAIChatCompletion
 
     const fns: OpenAIFunction[] = []
     if (kernel) {
-      kernel.getPlugins().forEach((plugin) => {
-        plugin.getFunctions().forEach((kernelFunction) => {
+      kernel.plugins.forEach((plugin) => {
+        plugin.functions.forEach((kernelFunction) => {
           fns.push(
             OpenAIFunction.build(kernelFunction.getMetadata(), kernelFunction.getPluginName())
           )
@@ -663,8 +663,8 @@ export default class OpenAIChatCompletion
   ): Observable<OpenAIChatMessages> {
     const fns: OpenAIFunction[] = []
     if (kernel) {
-      kernel.getPlugins().forEach((plugin) => {
-        plugin.getFunctions().forEach((kernelFunction) => {
+      kernel.plugins.forEach((plugin) => {
+        plugin.functions.forEach((kernelFunction) => {
           fns.push(
             OpenAIFunction.build(kernelFunction.getMetadata(), kernelFunction.getPluginName())
           )
@@ -788,7 +788,7 @@ export default class OpenAIChatCompletion
       ),
       invocationContext,
       kernel
-    ).getOptions()
+    ).options
 
     return { options, toolCallConfig }
   }
@@ -820,7 +820,7 @@ export default class OpenAIChatCompletion
             const requestToolMessage: ChatCompletionToolMessageParam = {
               role: "tool",
               tool_call_id: functionToolCall.id,
-              content: functionResult.getResult(),
+              content: functionResult.result,
             }
             return messages.add(requestToolMessage)
           })

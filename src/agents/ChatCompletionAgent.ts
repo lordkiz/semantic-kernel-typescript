@@ -107,7 +107,7 @@ export default class ChatCompletionAgent extends KernelAgent {
       const agentInvocationContext = invocationContextBuilder.build()
 
       return this.renderInstructionsAsync(kernel, kernelArguments, agentInvocationContext).pipe(
-        map((functionResult) => functionResult.getResult()),
+        map((functionResult) => functionResult.result),
         map((instructions) => {
           const chatHistory = new ChatHistory(instructions)
           if (additionalInstructions) {
@@ -128,8 +128,7 @@ export default class ChatCompletionAgent extends KernelAgent {
                       return message
                     })
                     .filter(
-                      (message) =>
-                        !!message.getContent() && message.getAuthorRole() !== AuthorRole.TOOL
+                      (message) => !!message.content && message.AuthorRole !== AuthorRole.TOOL
                     )
                 })
               )
