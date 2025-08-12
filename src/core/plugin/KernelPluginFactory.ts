@@ -12,7 +12,7 @@ export default class KernelPluginFactory {
 
     const plugin = KernelPluginFactory.createFromFunctions(pluginName, "", kernelFunctions)
 
-    if (plugin.getFunctions().size === 0) {
+    if (plugin.functions.size === 0) {
       Logger.warn(`No functions found in instance ${instance.name}`)
     }
     return plugin

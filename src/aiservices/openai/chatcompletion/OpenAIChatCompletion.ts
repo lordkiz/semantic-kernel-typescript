@@ -50,13 +50,17 @@ import {
   ChatCompletionToolChoiceOption,
   ChatCompletionToolMessageParam,
   ChatCompletionUserMessageParam,
+  CompletionUsage,
 } from "openai/resources"
 import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } from "rxjs"
+import { v4 as uuid4 } from "uuid"
 import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { OpenAIService } from "../OpenAIService"
 import FunctionInvocationError from "./FunctionInvocationError"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
-import OpenAIChatMessages from "./OpenAIChatMessages"
+import OpenAIChatMessages, {
+  ChatCompletionMessageParamWithCompletionUsage,
+} from "./OpenAIChatMessages"
 import OpenAIFunction from "./OpenAIFunction"
 import OpenAIStreamingChatMessageContent from "./OpenAIStreamingChatMessageContent"
 import { OpenAIToolCallConfig } from "./OpenAIToolCallConfig"
@@ -341,7 +345,7 @@ export default class OpenAIChatCompletion
   }
 
   private static toOpenAIChatMessageContent(
-    chatCompletionMessageParams: ChatCompletionMessageParam[]
+    chatCompletionMessageParams: ChatCompletionMessageParamWithCompletionUsage[]
   ): ChatMessageContent<any>[] {
     return chatCompletionMessageParams.map((chatCompletionMessageParam) => {
       let chatMessageContent = new OpenAIChatMessageContent(
@@ -359,7 +363,7 @@ export default class OpenAIChatCompletion
           undefined,
           undefined,
           undefined,
-          undefined,
+          FunctionResultMetadata.build(uuid4(), chatCompletionMessageParam.usage),
           calls
         )
       } else if (chatCompletionMessageParam.role === "tool") {
@@ -698,8 +702,12 @@ export default class OpenAIChatCompletion
 
     return from(this.client.chat.completions.create({ ...options, stream: false })).pipe(
       mergeMap((chatCompletions) => {
-        const responseMessages = chatCompletions.choices.map((m) => m.message).filter(Boolean)
-        messages.addAll(responseMessages)
+        const { messages: responseMessages, functionResultMetadata } =
+          this.extractChatCompletionMessages(chatCompletions)
+
+        messages.addAll(
+          responseMessages.map((m) => ({ ...m, usage: functionResultMetadata.getUsage() }))
+        )
 
         // execute PostChatCompletionHook
         ChatCompletionUtils.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
@@ -713,7 +721,8 @@ export default class OpenAIChatCompletion
 
         // Or if there are no tool calls to be done
         const response = responseMessages[0]
-        const toolCalls = response.tool_calls
+        const toolCalls = (response as OpenAI.Chat.Completions.ChatCompletionAssistantMessageParam)
+          .tool_calls
         if (!toolCalls?.length) {
           return of(messages)
         }
@@ -793,16 +802,19 @@ export default class OpenAIChatCompletion
     return { options, toolCallConfig }
   }
 
-  private extractChatCompletionMessages(completions: ChatCompletion): ChatCompletionMessageParam[] {
-    // const completionMetadata = FunctionResultMetadata.build<CompletionUsage>(
-    //   completions.id,
-    //   completions.usage!,
-    //   completions.created!
-    // )
+  private extractChatCompletionMessages(completions: ChatCompletion): {
+    functionResultMetadata: FunctionResultMetadata<CompletionUsage>
+    messages: ChatCompletionMessageParam[]
+  } {
+    const completionMetadata = FunctionResultMetadata.build<CompletionUsage>(
+      completions.id,
+      completions.usage!,
+      completions.created!
+    )
     const messages: ChatCompletionMessageParam[] = completions.choices
       .map((m) => m.message)
       .filter(Boolean)
-    return messages
+    return { functionResultMetadata: completionMetadata, messages }
   }
 
   private performToolCall(

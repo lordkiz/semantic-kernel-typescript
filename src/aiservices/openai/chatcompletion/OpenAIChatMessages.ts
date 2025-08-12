@@ -1,11 +1,15 @@
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
 import { ChatMessages } from "@semantic-kernel-typescript/core/orchestration"
 import _ from "lodash"
-import { ChatCompletionMessageParam } from "openai/resources"
+import { ChatCompletionMessageParam, CompletionUsage } from "openai/resources"
 import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
 
+export type ChatCompletionMessageParamWithCompletionUsage = ChatCompletionMessageParam & {
+  usage?: CompletionUsage
+}
+
 export default class OpenAIChatMessages extends ChatMessages<
-  ChatCompletionMessageParam,
+  ChatCompletionMessageParamWithCompletionUsage,
   OpenAIChatMessageContent<any>
 > {
   /**

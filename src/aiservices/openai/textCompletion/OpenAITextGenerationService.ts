@@ -54,10 +54,7 @@ export default class OpenAITextGenerationService
     const completionOptions = this.getCompletionsOptions(text, requestSettings)
 
     return from(
-      this.getClient().completions.create(
-        completionOptions,
-        OpenAIRequestSettings.getRequestOptions()
-      )
+      this.client.completions.create(completionOptions, OpenAIRequestSettings.getRequestOptions())
     ).pipe(
       map((c) => {
         const completions = c as OpenAI.Completions.Completion
@@ -78,7 +75,6 @@ export default class OpenAITextGenerationService
     requestSettings?: PromptExecutionSettings
   ): CompletionCreateParams {
     if (
-      // @ts-expect-error Record constraint
       (requestSettings as unknown as PromptExecutionSettings<CompletionCreateParams>)?.toObject()
         .max_tokens ??
       0 < 1
@@ -100,7 +96,7 @@ export default class OpenAITextGenerationService
     return {
       ...requestSettings?.toObject(),
       prompt: text,
-      model: this.getModelId(),
+      model: this.modelId,
     }
   }
 }

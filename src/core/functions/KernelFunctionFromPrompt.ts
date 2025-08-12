@@ -133,7 +133,10 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
             .pipe(
               mergeMap((it) => it),
               map((chatMessageContent) => {
-                const fnRes = new FunctionResult(chatMessageContent.content) as FunctionResult<T>
+                const fnRes = new FunctionResult(
+                  chatMessageContent.content,
+                  chatMessageContent.getMetadata()
+                ) as FunctionResult<T>
                 const updatedResult = kernelHooks.executeHooks(
                   new FunctionInvokedEvent(this, args, fnRes)
                 )

@@ -146,6 +146,16 @@ export default class KernelHooks {
    * @return this instance of the {@link KernelHooks} class
    */
   addHook(hook: KernelHook<any>): string
+
+  /**
+   * Add a {@link KernelHook} to the collection of hooks.
+   *
+   * @param hookName the key of the hook in the collection
+   * @param hook     the hook to add
+   * @return the key of the hook in the collection
+   */
+  addHook(hook: KernelHook<any>, hookName: string): string
+
   /**
    * Add a {@link KernelHook} to the collection of hooks.
    *

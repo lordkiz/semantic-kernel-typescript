@@ -17,8 +17,8 @@ export abstract class KernelHook<T extends KernelHookEvent<unknown>> extends Pre
 > {
   static DEFAULT_PRIORITY = 50
 
-  execute(t: T): T {
-    return t
+  execute(event: T): T {
+    return event
   }
 
   get priority(): number {
@@ -56,7 +56,9 @@ export abstract class PromptRenderedHook extends KernelHook<PromptRenderedEvent>
   }
 }
 
-export abstract class PreChatCompletionHook extends KernelHook<PreChatCompletionEvent<any>> {
+export abstract class PreChatCompletionHook<OptionsType = any> extends KernelHook<
+  PreChatCompletionEvent<OptionsType>
+> {
   override test(argumentz: KernelHookEvent<this>): boolean {
     return argumentz instanceof PreChatCompletionEvent
   }
