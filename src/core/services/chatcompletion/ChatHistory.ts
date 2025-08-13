@@ -52,7 +52,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    *
    * @return List of messages in the chat
    */
-  getMessages() {
+  get messages() {
     return Object.seal(Array.from(this.chatMessageContents))
   }
 
@@ -77,7 +77,7 @@ export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
    * @param value The chat history to add to this chat history
    */
   addAll(value: ChatHistory) {
-    this.chatMessageContents = [...this.chatMessageContents, ...value.getMessages()]
+    this.chatMessageContents = [...this.chatMessageContents, ...value.messages]
   }
 
   /**

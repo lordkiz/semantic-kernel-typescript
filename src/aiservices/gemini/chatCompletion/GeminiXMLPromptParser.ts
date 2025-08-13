@@ -42,7 +42,7 @@ class GeminiChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPromp
   }
 
   public areMessagesEmpty(): boolean {
-    return this.chatHistory.getMessages().length === 0
+    return this.chatHistory.messages.length === 0
   }
 
   public fromRawPrompt(rawPrompt: string): ChatPromptParseVisitor<ParsedPrompt> {
@@ -60,7 +60,7 @@ class GeminiChatPromptParseVisitor implements ChatPromptParseVisitor<ParsedPromp
       return this.parsedRaw
     }
     return {
-      chatHistory: new ChatHistory(this.chatHistory.getMessages()),
+      chatHistory: new ChatHistory(this.chatHistory.messages),
       functionDefinitions:
         this.functionDefinitions.length > 0 ? Object.seal(this.functionDefinitions) : undefined,
     }

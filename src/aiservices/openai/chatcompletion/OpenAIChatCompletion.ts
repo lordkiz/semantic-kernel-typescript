@@ -536,9 +536,7 @@ export default class OpenAIChatCompletion
       invocationContext ?? InvocationContext.Builder<ChatCompletionCreateParams>().build()
     ).pipe(
       map((m) => {
-        let result = new ChatHistory(
-          OpenAIChatCompletion.toOpenAIChatMessageContent(m.getAllMessages())
-        )
+        let result = new ChatHistory(OpenAIChatCompletion.toOpenAIChatMessageContent(m.allMessages))
 
         if (invocationContext?.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY) {
           const lastMessage = result.getLastMessage()
@@ -546,7 +544,7 @@ export default class OpenAIChatCompletion
           result = new ChatHistory(msgContents)
         }
 
-        return result.getMessages()
+        return result.messages
       })
     )
   }
@@ -557,7 +555,7 @@ export default class OpenAIChatCompletion
     invocationContext: InvocationContext<ChatCompletionCreateParams>
   ): Observable<ChatMessageContent<string>[]> {
     const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompletionMessageParams(
-      chatHistory.getMessages()
+      chatHistory.messages
     )
 
     const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
@@ -568,18 +566,18 @@ export default class OpenAIChatCompletion
       map((chatMessagesHistory) => {
         let chatHistoryResult: ChatHistory
         if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {
-          chatHistoryResult = new ChatHistory(chatHistory.getMessages())
+          chatHistoryResult = new ChatHistory(chatHistory.messages)
         } else {
           chatHistoryResult = new ChatHistory()
         }
 
         chatHistoryResult.addAll(
           new ChatHistory(
-            OpenAIChatCompletion.toOpenAIChatMessageContent(chatMessagesHistory.getNewMessages())
+            OpenAIChatCompletion.toOpenAIChatMessageContent(chatMessagesHistory.newMessages)
           )
         )
 
-        chatHistoryResult.addAll(new ChatHistory(chatMessagesHistory.getNewChatMessageContent()))
+        chatHistoryResult.addAll(new ChatHistory(chatMessagesHistory.newChatMessageContent))
 
         if (
           invocationContext?.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY &&
@@ -588,7 +586,7 @@ export default class OpenAIChatCompletion
           chatHistoryResult = new ChatHistory([chatHistoryResult.getLastMessage()!])
         }
 
-        return chatHistoryResult.getMessages()
+        return chatHistoryResult.messages
       })
     )
   }
@@ -626,7 +624,7 @@ export default class OpenAIChatCompletion
     }
 
     const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompletionMessageParams(
-      chatHistory.getMessages()
+      chatHistory.messages
     )
 
     const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
@@ -752,8 +750,8 @@ export default class OpenAIChatCompletion
               let currentMessages = messages
 
               if (e instanceof FunctionInvocationError) {
-                currentMessages.assertCommonHistory(e.getMessages())
-                currentMessages = new OpenAIChatMessages(e.getMessages())
+                currentMessages.assertCommonHistory(e.messages)
+                currentMessages = new OpenAIChatMessages(e.messages)
               }
 
               return this.doChatMessageContentsWithFunctionsAsync(
@@ -782,7 +780,7 @@ export default class OpenAIChatCompletion
     const toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
       invocationContext,
       fns,
-      messages.getAllMessages(),
+      messages.allMessages,
       requestIndex
     )
 
@@ -790,7 +788,7 @@ export default class OpenAIChatCompletion
       new PreChatCompletionEvent(
         OpenAIChatCompletion.getCompletionsOptions(
           this,
-          messages.getAllMessages(),
+          messages.allMessages,
           invocationContext,
           toolCallConfig
         )

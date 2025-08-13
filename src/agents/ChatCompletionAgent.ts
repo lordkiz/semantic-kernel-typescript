@@ -46,7 +46,7 @@ export default class ChatCompletionAgent extends KernelAgent {
   ): Observable<AgentResponseItem<ChatMessageContent<T>>[]> {
     return this.ensureThreadExistsWithMessages(messages, ChatHistoryAgentThread, thread).pipe(
       map((chatHistoryAgentThread) => {
-        const history = new ChatHistory(chatHistoryAgentThread.chatHistory.getMessages())
+        const history = new ChatHistory(chatHistoryAgentThread.chatHistory.messages)
 
         return this.performInvokeAsync(history, chatHistoryAgentThread, options).pipe(
           map((chatMesageContents) => {

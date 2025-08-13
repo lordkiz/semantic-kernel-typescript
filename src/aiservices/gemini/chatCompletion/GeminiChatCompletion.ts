@@ -78,7 +78,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
         : promptOrChatHistory
 
     return this.doChatMessageContentsAsync(
-      new ChatHistory(chatHistory.getMessages()),
+      new ChatHistory(chatHistory.messages),
       new ChatHistory(),
       kernel,
       invocationContext ?? InvocationContext.Builder().build(),
@@ -165,16 +165,16 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
     if (!generateContentResponse.functionCalls?.length) {
       if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {
-        return fullHistory.getMessages()
+        return fullHistory.messages
       }
 
       if (invocationContext.returnMode === InvocationReturnMode.LAST_MESSAGE_ONLY) {
         const lastMessage = new ChatHistory()
         lastMessage.addChatMessageContent(geminiChatMessageContent)
-        return lastMessage.getMessages()
+        return lastMessage.messages
       }
 
-      return newHistory.getMessages()
+      return newHistory.messages
     }
 
     const functionResults = generateContentResponse.functionCalls.map((geminiFunctionCall) => {
@@ -287,7 +287,7 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
   private getContents(chatHistory: ChatHistory): Content[] {
     const contents: Content[] = []
 
-    chatHistory.getMessages().forEach((chatMessageContent) => {
+    chatHistory.messages.forEach((chatMessageContent) => {
       const content: Content = { role: AuthorRole.USER }
 
       if (chatMessageContent.AuthorRole === AuthorRole.ASSISTANT) {

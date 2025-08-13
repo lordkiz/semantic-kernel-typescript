@@ -1,23 +1,23 @@
 export default class ChatMessages<MessageType, ContentType> {
-  private newMessages: MessageType[]
-  private allMessages: MessageType[]
-  private newChatMessageContent: ContentType[]
+  private _newMessages: MessageType[]
+  private _allMessages: MessageType[]
+  private _newChatMessageContent: ContentType[]
 
   constructor(
     allMessages: MessageType[],
     newMessages?: MessageType[],
     newChatMessageContent?: ContentType[]
   ) {
-    this.allMessages = Object.seal(allMessages)
-    this.newMessages = Object.seal(newMessages ?? [])
-    this.newChatMessageContent = Object.seal(newChatMessageContent ?? [])
+    this._allMessages = Object.seal(allMessages)
+    this._newMessages = Object.seal(newMessages ?? [])
+    this._newChatMessageContent = Object.seal(newChatMessageContent ?? [])
   }
 
   addAll(requestMessages: MessageType[]): ChatMessages<MessageType, ContentType> {
-    const tmpAllMessages = [...this.allMessages, ...requestMessages]
-    const tmpNewMessages = [...this.newMessages, ...requestMessages]
-    this.allMessages = tmpAllMessages
-    this.newMessages = tmpNewMessages
+    const tmpAllMessages = [...this._allMessages, ...requestMessages]
+    const tmpNewMessages = [...this._newMessages, ...requestMessages]
+    this._allMessages = tmpAllMessages
+    this._newMessages = tmpNewMessages
     return this
   }
 
@@ -26,22 +26,22 @@ export default class ChatMessages<MessageType, ContentType> {
   }
 
   addChatMessage(chatMessageContent: ContentType[]) {
-    const tmpChatMessageContent = [...this.newChatMessageContent, ...chatMessageContent]
-    this.newChatMessageContent = tmpChatMessageContent
+    const tmpChatMessageContent = [...this._newChatMessageContent, ...chatMessageContent]
+    this._newChatMessageContent = tmpChatMessageContent
 
     return this
   }
 
-  getAllMessages() {
-    return this.allMessages
+  get allMessages() {
+    return this._allMessages
   }
 
-  getNewMessages() {
-    return this.newMessages
+  get newMessages() {
+    return this._newMessages
   }
 
-  getNewChatMessageContent() {
-    return this.newChatMessageContent
+  get newChatMessageContent() {
+    return this._newChatMessageContent
   }
 
   /**

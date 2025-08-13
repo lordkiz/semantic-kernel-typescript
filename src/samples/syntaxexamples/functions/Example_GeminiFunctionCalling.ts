@@ -189,8 +189,7 @@ const main = async () => {
     }
   }
 
-  chatHistory
-    .getMessages()
+  chatHistory.messages
     .filter((it) => !!it.content)
     .forEach((m) => {
       console.log(m.content)

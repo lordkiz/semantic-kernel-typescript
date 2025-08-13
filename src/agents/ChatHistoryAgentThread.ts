@@ -34,7 +34,7 @@ export default class ChatHistoryAgentThread extends BaseAgentThread {
    * @return A new instance of the thread.
    */
   override copy(): ChatHistoryAgentThread {
-    return new ChatHistoryAgentThread(this.id, new ChatHistory(this._chatHistory.getMessages()))
+    return new ChatHistoryAgentThread(this.id, new ChatHistory(this._chatHistory.messages))
   }
 
   override onNewMessage(newMessage: ChatMessageContent<any>): void {

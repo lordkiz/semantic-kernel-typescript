@@ -20,9 +20,9 @@ export default class OpenAIChatMessages extends ChatMessages<
    */
   override assertCommonHistory(messages: ChatCompletionMessageParam[]): boolean {
     let index = 0
-    while (index < messages.length && index < this.getAllMessages().length) {
+    while (index < messages.length && index < this.allMessages.length) {
       const a = messages[index]
-      const b = this.getAllMessages()[index]
+      const b = this.allMessages[index]
 
       let matches = false
 
