@@ -32,7 +32,7 @@ const main = async () => {
 
   const geminiChat = GeminiChatCompletion.Builder()
     .withClient(client)
-    .withModelId("gemini-2.5-flash")
+    .withModelId("gemini-2.0-flash")
     .build()
 
   console.log("Chat Content: ")

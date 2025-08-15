@@ -18,7 +18,7 @@ import { lastValueFrom } from "rxjs"
 
 // Configuration
 const GEMINI_API_KEY = "GEMINI_API_KEY"
-const MODEL_ID = "gemini-2.5-flash"
+const MODEL_ID = "gemini-2.0-flash"
 
 // Initialize GoogleGenAI client
 const client = new GoogleGenAI({

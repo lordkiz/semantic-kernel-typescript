@@ -93,12 +93,10 @@ export class CancellationHookHandler extends FunctionInvokingHook<string> {
 /** A simple FunctionInvokedHook to demonstate PrechatCompletion */
 export class PrechatHookHandler extends PreChatCompletionHook {
   override execute(event: PreChatCompletionEvent<any>): PreChatCompletionEvent<any> {
-    const options = event.options
-    const messages = options.messages
-    messages.push({ role: "system", content: "Use upper case text when responding to the prompt." })
+    const chatHistory = event.chatHistory
+    chatHistory.addSystemMessage("Use upper case text when responding to the prompt.")
 
-    options.messages = messages
-    return new PreChatCompletionEvent(options)
+    return new PreChatCompletionEvent(event.options, chatHistory)
   }
 }
 
