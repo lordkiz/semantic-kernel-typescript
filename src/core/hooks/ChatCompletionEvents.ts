@@ -1,3 +1,4 @@
+import { ChatHistory } from "../services"
 import { KernelHookEvent } from "./types/KernelHookEvent"
 
 /**
@@ -5,13 +6,19 @@ import { KernelHookEvent } from "./types/KernelHookEvent"
  */
 export class PreChatCompletionEvent<OptionsType> implements KernelHookEvent<OptionsType> {
   private _options: OptionsType
+  private _chatHistory: ChatHistory
 
-  constructor(options: OptionsType) {
+  constructor(options: OptionsType, chatHistory: ChatHistory) {
     this._options = options
+    this._chatHistory = chatHistory
   }
 
   get options() {
     return this._options
+  }
+
+  get chatHistory() {
+    return this._chatHistory
   }
 }
 
