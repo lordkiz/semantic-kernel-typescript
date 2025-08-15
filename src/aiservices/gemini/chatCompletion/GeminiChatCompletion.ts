@@ -20,6 +20,7 @@ import {
   RequiredFunctionChoiceBehavior,
 } from "@semantic-kernel-typescript/core/functionchoice"
 import { KernelArguments, KernelFunction } from "@semantic-kernel-typescript/core/functions"
+import { PostChatCompletionEvent } from "@semantic-kernel-typescript/core/hooks"
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
 import {
   FunctionResult,
@@ -42,6 +43,7 @@ import {
 } from "@semantic-kernel-typescript/core/services"
 import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
+import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { GeminiService } from "../GeminiService"
 import GeminiChatMessageContent from "./GeminiChatMessageContent"
 import GeminiFunction from "./GeminiFunction"
@@ -146,10 +148,17 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
     invocationAttempts: number | undefined = 0
   ): Promise<ChatMessageContent<any>[]> {
     const omitTools = fullHistory.getLastMessage()?.AuthorRole === AuthorRole.TOOL
+    const initialOptions = this.getConfig(kernel, invocationContext, omitTools)
 
-    const contents = this.getContents(fullHistory)
+    const { options: config, chatHistory: possiblyUpdatedChatHistory } =
+      ChatCompletionUtils.executePrechatHooks(
+        initialOptions,
+        fullHistory,
+        kernel,
+        invocationContext
+      )
 
-    const config = this.getConfig(kernel, invocationContext, omitTools)
+    const contents = this.getContents(possiblyUpdatedChatHistory)
 
     const generateContentResponse = await this.client.models.generateContent({
       model: this.modelId,
@@ -162,6 +171,9 @@ export default class GeminiChatCompletion extends GeminiService implements ChatC
 
     fullHistory.addChatMessageContent(geminiChatMessageContent)
     newHistory.addChatMessageContent(geminiChatMessageContent)
+
+    // execute PostChatCompletionHook
+    ChatCompletionUtils.executeHook(new PostChatCompletionEvent(), invocationContext, kernel)
 
     if (!generateContentResponse.functionCalls?.length) {
       if (invocationContext.returnMode === InvocationReturnMode.FULL_HISTORY) {

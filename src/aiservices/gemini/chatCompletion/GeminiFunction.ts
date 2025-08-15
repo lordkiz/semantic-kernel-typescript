@@ -16,12 +16,13 @@ export default class GeminiFunction extends AIServiceFunction<FunctionDeclaratio
     pluginName: string
   ): FunctionDeclaration {
     try {
-      const parameters: Record<string, any> = {}
-      const required: string[] = []
-
       const metaParameters = metadata.getParameters()
 
+      let parameters: Record<string, any> | undefined = undefined
+      const required: string[] = []
+
       if (metaParameters.length) {
+        parameters = {}
         parameters.type = "object"
         parameters.properties = {}
 
