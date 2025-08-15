@@ -9,10 +9,7 @@ import {
   RequiredFunctionChoiceBehavior,
 } from "@semantic-kernel-typescript/core/functionchoice"
 import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
-import {
-  PostChatCompletionEvent,
-  PreChatCompletionEvent,
-} from "@semantic-kernel-typescript/core/hooks"
+import { PostChatCompletionEvent } from "@semantic-kernel-typescript/core/hooks"
 import { PreToolCallEvent } from "@semantic-kernel-typescript/core/hooks/PreToolCallEvent"
 import { Logger } from "@semantic-kernel-typescript/core/log/Logger"
 import {
@@ -31,8 +28,6 @@ import {
   ChatCompletionService,
   ChatHistory,
   ChatMessageContent,
-  ChatMessageContentType,
-  ChatMessageImageContent,
   StreamingChatContent,
   TextAIService,
 } from "@semantic-kernel-typescript/core/services"
@@ -40,16 +35,12 @@ import { authorRoleFromString } from "@semantic-kernel-typescript/core/services/
 import OpenAI from "openai"
 import {
   ChatCompletion,
-  ChatCompletionAssistantMessageParam,
-  ChatCompletionContentPartImage,
   ChatCompletionCreateParams,
   ChatCompletionMessageParam,
   ChatCompletionMessageToolCall,
-  ChatCompletionSystemMessageParam,
   ChatCompletionTool,
   ChatCompletionToolChoiceOption,
   ChatCompletionToolMessageParam,
-  ChatCompletionUserMessageParam,
   CompletionUsage,
 } from "openai/resources"
 import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } from "rxjs"
@@ -293,57 +284,6 @@ export default class OpenAIChatCompletion
     return options
   }
 
-  private static getChatCompletionMessageParams(messages: ChatMessageContent<any>[]) {
-    return messages.map((c) => OpenAIChatCompletion.getChatCompletionMessageParam(c))
-  }
-
-  private static getChatCompletionMessageParam(
-    message: ChatMessageContent<any>
-  ): ChatCompletionMessageParam {
-    const authorRole = message.AuthorRole
-    const content = message.content
-
-    if (message.contentType === ChatMessageContentType.IMAGE_URL && content) {
-      return OpenAIChatCompletion.formImageMessage(message, content)
-    }
-
-    switch (authorRole) {
-      case AuthorRole.ASSISTANT:
-        return OpenAIChatCompletion.formAssistantMessage(message, content)
-      case AuthorRole.SYSTEM: {
-        const chatCompletionSystemMessageParam: ChatCompletionSystemMessageParam = {
-          role: "system",
-          content,
-        }
-        return chatCompletionSystemMessageParam
-      }
-      case AuthorRole.USER: {
-        const chatCompletionUserMessageParam: ChatCompletionUserMessageParam = {
-          role: "user",
-          content,
-        }
-        return chatCompletionUserMessageParam
-      }
-      case AuthorRole.TOOL: {
-        const id = message.getMetadata()?.id
-        if (!id) {
-          throw new SKException(
-            "Require to create a tool call message, but no tool call id is available"
-          )
-        }
-        const chatCompletionToolMessageParam: ChatCompletionToolMessageParam = {
-          role: "tool",
-          content,
-          tool_call_id: id,
-        }
-        return chatCompletionToolMessageParam
-      }
-      default:
-        Logger.debug(`Unexpected author role: ${authorRole}`)
-        throw new SKException("Unexpected author role: " + authorRole)
-    }
-  }
-
   private static toOpenAIChatMessageContent(
     chatCompletionMessageParams: ChatCompletionMessageParamWithCompletionUsage[]
   ): ChatMessageContent<any>[] {
@@ -398,73 +338,6 @@ export default class OpenAIChatCompletion
         throw new SKException("Unknown tool call type: " + call.function.name)
       }
     })
-  }
-
-  static formAssistantMessage(
-    message: ChatMessageContent<any>,
-    content?: string
-  ): ChatCompletionAssistantMessageParam {
-    const assistantMessage: ChatCompletionAssistantMessageParam = { role: "assistant", content }
-    const toolCalls = FunctionCallContent.getFunctionTools(message)
-
-    if (toolCalls?.length) {
-      assistantMessage.tool_calls = toolCalls.map((toolCall) => {
-        const kernelArguments = toolCall.kernelArguments
-        const args =
-          kernelArguments && kernelArguments.size > 0
-            ? JSON.stringify(
-                Object.keys(kernelArguments).reduce(
-                  (acc, key) => {
-                    acc[key] = kernelArguments.get(key)?.value
-                    return acc
-                  },
-                  {} as Record<string, any>
-                )
-              )
-            : "{}"
-
-        let prefix = ""
-        if (toolCall.pluginName) {
-          prefix = toolCall.pluginName + ToolCallBehavior.FUNCTION_NAME_SEPARATOR
-        }
-
-        const name = prefix + toolCall.functionName
-        const fn = {
-          name,
-          arguments: args,
-        }
-        const functionToolCall: ChatCompletionMessageToolCall = {
-          id: toolCall.id!,
-          function: fn,
-          type: "function",
-        }
-        return functionToolCall
-      })
-    }
-
-    return assistantMessage
-  }
-
-  static formImageMessage(
-    message: ChatMessageContent<any>,
-    content: string
-  ): ChatCompletionUserMessageParam {
-    const imageUrl: ChatCompletionContentPartImage.ImageURL = {
-      url: content,
-      detail: (message as ChatMessageImageContent<any>)
-        .getDetail()
-        ?.toLowerCase() as ChatCompletionContentPartImage.ImageURL["detail"],
-    }
-
-    return {
-      content: [
-        {
-          image_url: imageUrl,
-          type: "image_url",
-        },
-      ],
-      role: "user",
-    }
   }
 
   ///
@@ -554,11 +427,7 @@ export default class OpenAIChatCompletion
     kernel: Kernel,
     invocationContext: InvocationContext<ChatCompletionCreateParams>
   ): Observable<ChatMessageContent<string>[]> {
-    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompletionMessageParams(
-      chatHistory.messages
-    )
-
-    const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
+    const chatMessages = OpenAIChatMessages.fromChatHistory(chatHistory)
 
     return this.doChatMessageContentsAsync(chatMessages, kernel, invocationContext).pipe<
       ChatMessageContent<any>[]
@@ -623,11 +492,7 @@ export default class OpenAIChatCompletion
       )
     }
 
-    const chatCompletiontMessageParams = OpenAIChatCompletion.getChatCompletionMessageParams(
-      chatHistory.messages
-    )
-
-    const chatMessages = new OpenAIChatMessages(chatCompletiontMessageParams)
+    const chatMessages = OpenAIChatMessages.fromChatHistory(chatHistory)
 
     const fns: OpenAIFunction[] = []
     if (kernel) {
@@ -640,7 +505,24 @@ export default class OpenAIChatCompletion
       })
     }
 
-    const { options } = this.executePrechatHooks(chatMessages, kernel, fns, invocationContext, 0)
+    const toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
+      invocationContext,
+      fns,
+      chatMessages.allMessages,
+      0
+    )
+
+    const { options } = ChatCompletionUtils.executePrechatHooks(
+      OpenAIChatCompletion.getCompletionsOptions(
+        this,
+        chatMessages.allMessages,
+        invocationContext,
+        toolCallConfig
+      ),
+      chatHistory,
+      kernel,
+      invocationContext
+    )
 
     return from(this.client.chat.completions.stream({ ...options, stream: true })).pipe(
       mergeMap((chunk) => {
@@ -675,7 +557,7 @@ export default class OpenAIChatCompletion
     }
 
     return this.doChatMessageContentsWithFunctionsAsync(
-      messages,
+      new ChatHistory(OpenAIChatCompletion.toOpenAIChatMessageContent(messages.allMessages)),
       kernel,
       fns,
       invocationContext,
@@ -684,18 +566,47 @@ export default class OpenAIChatCompletion
   }
 
   private doChatMessageContentsWithFunctionsAsync(
-    messages: OpenAIChatMessages,
+    chatHistory: ChatHistory,
     kernel: Kernel,
     fns: OpenAIFunction[],
     invocationContext: InvocationContext<ChatCompletionCreateParams>,
     requestIndex: number | undefined = 0
   ): Observable<OpenAIChatMessages> {
-    const { options, toolCallConfig } = this.executePrechatHooks(
-      messages,
-      kernel,
-      fns,
+    let messages = OpenAIChatMessages.fromChatHistory(chatHistory)
+    let toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
       invocationContext,
+      fns,
+      messages.allMessages,
       requestIndex
+    )
+
+    const { chatHistory: possiblyUpdatedChatHistory } = ChatCompletionUtils.executePrechatHooks(
+      OpenAIChatCompletion.getCompletionsOptions(
+        this,
+        messages.allMessages,
+        invocationContext,
+        toolCallConfig
+      ),
+      chatHistory,
+      kernel,
+      invocationContext
+    )
+
+    // the prechatHook could have modified chat history
+    messages = OpenAIChatMessages.fromChatHistory(possiblyUpdatedChatHistory)
+
+    toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
+      invocationContext,
+      fns,
+      messages.allMessages,
+      requestIndex
+    )
+
+    const options = OpenAIChatCompletion.getCompletionsOptions(
+      this,
+      messages.allMessages,
+      invocationContext,
+      toolCallConfig
     )
 
     return from(this.client.chat.completions.create({ ...options, stream: false })).pipe(
@@ -735,7 +646,9 @@ export default class OpenAIChatCompletion
           mergeMap((it) => it),
           mergeMap((chatMessages) => {
             return this.doChatMessageContentsWithFunctionsAsync(
-              chatMessages,
+              new ChatHistory(
+                OpenAIChatCompletion.toOpenAIChatMessageContent(chatMessages.allMessages)
+              ),
               kernel,
               fns,
               invocationContext,
@@ -755,7 +668,9 @@ export default class OpenAIChatCompletion
               }
 
               return this.doChatMessageContentsWithFunctionsAsync(
-                currentMessages,
+                new ChatHistory(
+                  OpenAIChatCompletion.toOpenAIChatMessageContent(currentMessages.allMessages)
+                ),
                 kernel,
                 fns,
                 invocationContext,
@@ -768,36 +683,6 @@ export default class OpenAIChatCompletion
         )
       })
     ) as Observable<OpenAIChatMessages>
-  }
-
-  private executePrechatHooks(
-    messages: OpenAIChatMessages,
-    kernel: Kernel,
-    fns: OpenAIFunction[],
-    invocationContext: InvocationContext<ChatCompletionCreateParams>,
-    requestIndex: number
-  ): { options: ChatCompletionCreateParams; toolCallConfig: OpenAIToolCallConfig | undefined } {
-    const toolCallConfig = OpenAIChatCompletion.getToolCallConfig(
-      invocationContext,
-      fns,
-      messages.allMessages,
-      requestIndex
-    )
-
-    const options = ChatCompletionUtils.executeHook(
-      new PreChatCompletionEvent(
-        OpenAIChatCompletion.getCompletionsOptions(
-          this,
-          messages.allMessages,
-          invocationContext,
-          toolCallConfig
-        )
-      ),
-      invocationContext,
-      kernel
-    ).options
-
-    return { options, toolCallConfig }
   }
 
   private extractChatCompletionMessages(completions: ChatCompletion): {
