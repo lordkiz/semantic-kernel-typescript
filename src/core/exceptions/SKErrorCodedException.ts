@@ -1,18 +1,17 @@
-import SKException from "./SKException"
+import { ErrorCode } from "./abstracts/ErrorCode"
+import { SKException } from "./SKException"
 
-class SKErrorCodedException<T extends string> extends SKException {
-  private errorCode: T
-  constructor(errorCode: T)
-  constructor(errorCode: T, message?: string)
-  constructor(errorCode: T, message: string, cause?: Error)
-  constructor(errorCode: T, message?: string, cause?: Error) {
-    super(SKException.formatDefaultMessage(errorCode, message), cause)
-    this.errorCode = errorCode
+export class SKErrorCodedException extends SKException {
+  private _errorCode: ErrorCode
+  constructor(errorCode: ErrorCode)
+  constructor(errorCode: ErrorCode, message?: string)
+  constructor(errorCode: ErrorCode, message: string, cause?: Error)
+  constructor(errorCode: ErrorCode, message?: string, cause?: Error) {
+    super(SKException.formatDefaultMessage(errorCode.message, message), cause)
+    this._errorCode = errorCode
   }
 
-  getErrorCode(): T {
-    return this.errorCode
+  get errorCode(): ErrorCode {
+    return this._errorCode
   }
 }
-
-export default SKErrorCodedException

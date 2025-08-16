@@ -1,5 +1,5 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
-import KernelContentImpl from "../KernelContentImpl"
+import { FunctionResultMetadata } from "../../orchestration/FunctionResultMetadata"
+import { KernelContentImpl } from "../KernelContentImpl"
 import { KernelContent } from "../types/KernelContent"
 import { AuthorRole } from "./AuthorRole"
 import { ChatMessageContentType } from "./message/ChatMessageContentType"
@@ -23,7 +23,7 @@ interface ChatMessageContentParams<T> {
  *
  * @typeparam T - The type of the inner content within the messages
  */
-export default class ChatMessageContent<T> extends KernelContentImpl<T> {
+export class ChatMessageContent<T> extends KernelContentImpl<T> {
   private readonly _authorRole: AuthorRole
   private readonly _content: string
   private readonly _items: KernelContent<T>[] | undefined

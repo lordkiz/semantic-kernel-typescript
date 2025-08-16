@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import SKException from "../../exceptions/SKException"
+import { SKException } from "../../exceptions/SKException"
 import { KERNEL_FUNCTION_METADATA_KEY, SKSample } from "./constants"
 
 export type DefineKernelFunctionOptions = Partial<{

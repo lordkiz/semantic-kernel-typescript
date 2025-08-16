@@ -1,6 +1,6 @@
-import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
+import { SemanticKernelBuilder } from "../builders/SemanticKernelBuilder"
 
-export default class FunctionChoiceBehaviorOptions {
+export class FunctionChoiceBehaviorOptions {
   private parallelCallsAllowed: boolean
 
   constructor(parallelCallsAllowed: boolean) {

@@ -1,7 +1,7 @@
-import FunctionResultMetadata from "../orchestration/FunctionResultMetadata"
+import { FunctionResultMetadata } from "../orchestration/FunctionResultMetadata"
 import { KernelContent } from "./types/KernelContent"
 
-export default abstract class KernelContentImpl<T> implements KernelContent<T> {
+export abstract class KernelContentImpl<T> implements KernelContent<T> {
   /*
    * The inner content representation. Use this to bypass the current
    * abstraction. The usage of this property is considered "unsafe".

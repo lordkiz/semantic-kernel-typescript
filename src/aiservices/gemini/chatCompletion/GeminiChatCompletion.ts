@@ -45,13 +45,13 @@ import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
 import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { GeminiService } from "../GeminiService"
-import GeminiChatMessageContent from "./GeminiChatMessageContent"
-import GeminiFunction from "./GeminiFunction"
-import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
-import GeminiStreamingChatMessageContent from "./GeminiStreamingChatMessageContent"
+import { GeminiChatMessageContent } from "./GeminiChatMessageContent"
+import { GeminiFunction } from "./GeminiFunction"
+import { GeminiFunctionCallContent } from "./GeminiFunctionCallContent"
+import { GeminiStreamingChatMessageContent } from "./GeminiStreamingChatMessageContent"
 import { GeminiXMLPromptParser } from "./GeminiXMLPromptParser"
 
-export default class GeminiChatCompletion extends GeminiService implements ChatCompletionService {
+export class GeminiChatCompletion extends GeminiService implements ChatCompletionService {
   constructor(client: GoogleGenAI, modelId: string, deploymentName?: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }

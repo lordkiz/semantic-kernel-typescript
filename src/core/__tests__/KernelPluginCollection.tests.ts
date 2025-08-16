@@ -1,6 +1,6 @@
-import SKException from "../exceptions/SKException"
-import KernelPluginCollection from "../KernelPluginCollection"
-import KernelPluginFactory from "../plugin/KernelPluginFactory"
+import { SKException } from "../exceptions/SKException"
+import { KernelPluginCollection } from "../KernelPluginCollection"
+import { KernelPluginFactory } from "../plugin/KernelPluginFactory"
 import { PluginWithNameAndDescription, PluginWithNonKernelMethod } from "./mocks/pluginMocks"
 
 describe("KernelPluginCollection", () => {
@@ -15,22 +15,16 @@ describe("KernelPluginCollection", () => {
 
   it("is able to find all functions", () => {
     const kernelPluginCollection = new KernelPluginCollection([plugin1, plugin2])
-    expect(kernelPluginCollection.getFunctions().length).toEqual(2)
-    expect(kernelPluginCollection.getFunctions().map((k) => k.getName())).toEqual([
-      "sqrt",
-      "square",
-    ])
+    expect(kernelPluginCollection.functions.length).toEqual(2)
+    expect(kernelPluginCollection.functions.map((k) => k.getName())).toEqual(["sqrt", "square"])
   })
 
   it("can add plugin", async () => {
     const kernelPluginCollection = new KernelPluginCollection([plugin1])
-    expect(kernelPluginCollection.getFunctions().map((k) => k.getName())).toEqual(["sqrt"])
+    expect(kernelPluginCollection.functions.map((k) => k.getName())).toEqual(["sqrt"])
 
     kernelPluginCollection.add(plugin2)
-    expect(kernelPluginCollection.getFunctions().map((k) => k.getName())).toEqual([
-      "sqrt",
-      "square",
-    ])
+    expect(kernelPluginCollection.functions.map((k) => k.getName())).toEqual(["sqrt", "square"])
   })
 
   it("can find a function associated with a plugin", () => {

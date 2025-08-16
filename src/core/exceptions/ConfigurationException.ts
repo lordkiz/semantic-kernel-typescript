@@ -1,4 +1,5 @@
-import SKErrorCodedException from "./SKErrorCodedException";
+import { ErrorCode } from "./abstracts/ErrorCode"
+import { SKErrorCodedException } from "./SKErrorCodedException"
 
 enum ConfigurationErrorCodeEnum {
   "UNKNOWN_ERROR" = "UNKNOWN_ERROR",
@@ -8,30 +9,22 @@ enum ConfigurationErrorCodeEnum {
   "VALUE_NOT_FOUND" = "VALUE_NOT_FOUND",
 }
 
-const configurationCodeToMessageMap: Record<
-  ConfigurationErrorCodeEnum,
-  string
-> = {
+const configurationCodeToMessageMap: Record<ConfigurationErrorCodeEnum, string> = {
   CONFIGURATION_NOT_FOUND: "could not find configuration file",
   COULD_NOT_READ_CONFIGURATION: "could not parse or load configuration file",
-  NO_VALID_CONFIGURATIONS_FOUND:
-    "could not find any valid configuration settings",
+  NO_VALID_CONFIGURATIONS_FOUND: "could not find any valid configuration settings",
   UNKNOWN_ERROR: "unknown error",
   VALUE_NOT_FOUND: "could not find value for configuration key",
-};
+}
 
-export class ConfigurationErrorCode {
-  code: ConfigurationErrorCodeEnum;
-
+export class ConfigurationErrorCode extends ErrorCode {
   constructor(code: ConfigurationErrorCodeEnum) {
-    this.code = code;
+    super(code)
   }
 
-  getMessage() {
-    return configurationCodeToMessageMap[this.code];
+  override get message() {
+    return configurationCodeToMessageMap[this.code as ConfigurationErrorCodeEnum]
   }
 }
 
-class ConfigurationException extends SKErrorCodedException<ConfigurationErrorCode> {}
-
-export default ConfigurationException;
+export class ConfigurationException extends SKErrorCodedException {}

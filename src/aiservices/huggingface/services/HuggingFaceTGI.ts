@@ -12,13 +12,10 @@ import {
 import { OpenAIChatCompletion } from "@semantic-kernel-typescript/openai/chatcompletion"
 import OpenAI from "openai"
 import { Observable } from "rxjs"
-import HuggingFaceClient from "../HuggingFaceClient"
-import HuggingFaceService from "../HuggingFaceService"
+import { HuggingFaceClient } from "../HuggingFaceClient"
+import { HuggingFaceService } from "../HuggingFaceService"
 
-export default class HuggingFaceTGI
-  extends HuggingFaceService<OpenAI>
-  implements ChatCompletionService
-{
+export class HuggingFaceTGI extends HuggingFaceService<OpenAI> implements ChatCompletionService {
   private implementationClass: OpenAIChatCompletion
 
   constructor(client: OpenAI, modelId: string, deploymentName?: string, serviceId?: string) {

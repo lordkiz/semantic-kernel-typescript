@@ -10,10 +10,7 @@ import { TranscriptionCreateParamsNonStreaming } from "openai/resources/audio"
 import { from, map, Observable } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 
-export default class OpenAIAudioToTextService
-  extends OpenAIService<OpenAI>
-  implements AudioToTextService
-{
+export class OpenAIAudioToTextService extends OpenAIService<OpenAI> implements AudioToTextService {
   constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }

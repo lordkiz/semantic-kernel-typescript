@@ -1,7 +1,7 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
-import KernelArguments from "../functions/KernelArguments"
+import { CaseInsensitiveMap } from "../ds/CaseInsensitiveMap"
+import { KernelArguments } from "../functions/KernelArguments"
 
-export default class FunctionResultMetadata<UsageType> {
+export class FunctionResultMetadata<UsageType> {
   /**
    * The key for id metadata.
    */

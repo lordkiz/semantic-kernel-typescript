@@ -1,10 +1,10 @@
 import { Observable } from "rxjs"
 import { AIServiceBuilder } from "../../builders"
-import Kernel from "../../Kernel"
-import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings"
-import StreamingTextContent from "../StreamingTextContent"
+import { Kernel } from "../../Kernel"
+import { PromptExecutionSettings } from "../../orchestration/PromptExecutionSettings"
+import { StreamingTextContent } from "../StreamingTextContent"
 import { TextAIService } from "../types/TextAIService"
-import TextContent from "./TextContent"
+import { TextContent } from "./TextContent"
 
 /**
  * Builder for a TextGenerationService

@@ -1,9 +1,9 @@
 import { DefineKernelFunction } from "../../functions/decorators/DefineKernelFunction"
 import { KernelFunctionParameter } from "../../functions/decorators/KernelFunctionParameter"
-import KernelArguments from "../../functions/KernelArguments"
-import KernelFunctionFactory from "../../functions/KernelFunctionFactory"
-import Kernel from "../../Kernel"
-import KernelPluginFactory from "../KernelPluginFactory"
+import { KernelArguments } from "../../functions/KernelArguments"
+import { KernelFunctionFactory } from "../../functions/KernelFunctionFactory"
+import { Kernel } from "../../Kernel"
+import { KernelPluginFactory } from "../KernelPluginFactory"
 
 class ExamplePlugin {
   @DefineKernelFunction({ name: "sqrt", description: "Take the square root of a number" })

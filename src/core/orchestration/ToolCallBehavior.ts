@@ -1,9 +1,9 @@
-import KernelFunction from "../functions/KernelFunction"
+import { KernelFunction } from "../functions/KernelFunction"
 
 /**
  * Defines the behavior of a tool call. Currently, the only tool available is function calling.
  */
-export default class ToolCallBehavior {
+export class ToolCallBehavior {
   static DEFAULT_MAXIMUM_AUTO_INVOKE_ATTEMPTS = 5
   static FUNCTION_NAME_SEPARATOR = "-"
 

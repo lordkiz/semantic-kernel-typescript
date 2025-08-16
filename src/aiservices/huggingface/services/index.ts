@@ -1,5 +1,5 @@
 import { OpenAIChatCompletionPromptExecutionSettings } from "@semantic-kernel-typescript/openai/chatcompletion"
-import HuggingFaceTGI from "./HuggingFaceTGI"
+import { HuggingFaceTGI } from "./HuggingFaceTGI"
 
 type HuggingFaceChatCompletionPromptExecutionSettings = OpenAIChatCompletionPromptExecutionSettings
 

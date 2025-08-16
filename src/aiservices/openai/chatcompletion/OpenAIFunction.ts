@@ -3,15 +3,15 @@ import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration
 import { FunctionDefinition } from "openai/resources"
 import { AIServiceFunction } from "../../commons/AIServiceFunction"
 
-export default class OpenAIFunction extends AIServiceFunction<FunctionDefinition> {
-  static build(metadata: KernelFunctionMetadata<any>, pluginName: string): OpenAIFunction {
+export class OpenAIFunction extends AIServiceFunction<FunctionDefinition> {
+  static build(metadata: KernelFunctionMetadata, pluginName: string): OpenAIFunction {
     const name = metadata.getName()
     const functionDefinition = OpenAIFunction.toFunctionDefinition(metadata, pluginName)
     return new OpenAIFunction(name, pluginName, functionDefinition)
   }
 
   static toFunctionDefinition(
-    metadata: KernelFunctionMetadata<any>,
+    metadata: KernelFunctionMetadata,
     pluginName: string
   ): FunctionDefinition {
     try {

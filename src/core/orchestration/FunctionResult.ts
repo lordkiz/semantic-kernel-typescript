@@ -1,5 +1,5 @@
-import ContextVariable from "../variables/ContextVariable"
-import FunctionResultMetadata from "./FunctionResultMetadata"
+import { ContextVariable } from "../variables/ContextVariable"
+import { FunctionResultMetadata } from "./FunctionResultMetadata"
 
 /**
  * The result of a function invocation.
@@ -9,7 +9,7 @@ import FunctionResultMetadata from "./FunctionResultMetadata"
  *
  * @param <T> The type of the result of the function invocation.
  */
-export default class FunctionResult<T> {
+export class FunctionResult<T> {
   private _result: T
   private _metadata: FunctionResultMetadata<unknown>
 

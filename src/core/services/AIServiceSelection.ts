@@ -1,4 +1,4 @@
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
+import { PromptExecutionSettings } from "../orchestration/PromptExecutionSettings"
 import { AIService } from "./types/AIService"
 
 /**
@@ -6,7 +6,7 @@ import { AIService } from "./types/AIService"
  *
  * @param <T> The type of AI service.
  */
-export default class AIServiceSelection<T extends AIService> {
+export class AIServiceSelection<T extends AIService> {
   private service: T
   private settings: PromptExecutionSettings | undefined
 

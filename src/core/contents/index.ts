@@ -1,3 +1,3 @@
-import FunctionCallContent from "./FunctionCallContent"
+import { FunctionCallContent } from "./FunctionCallContent"
 
 export { FunctionCallContent }

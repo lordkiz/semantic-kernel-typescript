@@ -1,14 +1,14 @@
-import KernelArguments from "../functions/KernelArguments"
-import KernelFunction from "../functions/KernelFunction"
+import { KernelArguments } from "../functions/KernelArguments"
+import { KernelFunction } from "../functions/KernelFunction"
 import { Logger } from "../log/Logger"
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
-import AIServiceCollection from "./AIServiceCollection"
-import AIServiceSelection from "./AIServiceSelection"
-import BaseAIServiceSelector from "./BaseAIServiceSelector"
+import { PromptExecutionSettings } from "../orchestration/PromptExecutionSettings"
+import { AIServiceCollection } from "./AIServiceCollection"
+import { AIServiceSelection } from "./AIServiceSelection"
+import { BaseAIServiceSelector } from "./BaseAIServiceSelector"
 import { AIService } from "./types/AIService"
 import { ServiceClass } from "./types/AIServiceSelector"
 
-export default class OrderedAIServiceSelector extends BaseAIServiceSelector {
+export class OrderedAIServiceSelector extends BaseAIServiceSelector {
   private LOGGER = Logger
   constructor(services: AIServiceCollection = new AIServiceCollection()) {
     super(services)

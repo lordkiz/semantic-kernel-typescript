@@ -1,11 +1,11 @@
-import CaseInsensitiveMap from "../ds/CaseInsensitiveMap"
-import KernelFunction from "../functions/KernelFunction"
+import { CaseInsensitiveMap } from "../ds/CaseInsensitiveMap"
+import { KernelFunction } from "../functions/KernelFunction"
 import { Logger } from "../log/Logger"
 
 /**
  * A plugin contains a collection of functions that can be invoked by the Semantic Kernel.
  */
-export default class KernelPlugin implements Iterable<KernelFunction<any>> {
+export class KernelPlugin implements Iterable<KernelFunction<any>> {
   private _name: string
   private _description: string
   private _functions: CaseInsensitiveMap<KernelFunction<any>>

@@ -1,9 +1,9 @@
 import { Observable } from "rxjs"
-import Kernel from "../../Kernel"
-import InvocationContext from "../../orchestration/InvocationContext"
+import { Kernel } from "../../Kernel"
+import { InvocationContext } from "../../orchestration/InvocationContext"
 import { TextAIService } from "../types/TextAIService"
-import ChatHistory from "./ChatHistory"
-import ChatMessageContent from "./ChatMessageContent"
+import { ChatHistory } from "./ChatHistory"
+import { ChatMessageContent } from "./ChatMessageContent"
 import { StreamingChatContent } from "./StreamingChatContent"
 
 /**

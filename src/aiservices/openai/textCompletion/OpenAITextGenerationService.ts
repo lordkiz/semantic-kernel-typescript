@@ -12,11 +12,11 @@ import {
 import OpenAI from "openai"
 import { CompletionCreateParams } from "openai/resources"
 import { from, map, mergeMap, Observable } from "rxjs"
-import OpenAIRequestSettings from "../implementation/OpenAIRequestSettings"
+import { OpenAIRequestSettings } from "../implementation/OpenAIRequestSettings"
 import { OpenAIService } from "../OpenAIService"
-import OpenAIStreamingTextContent from "./OpenAIStreamingTextContent"
+import { OpenAIStreamingTextContent } from "./OpenAIStreamingTextContent"
 
-export default class OpenAITextGenerationService
+export class OpenAITextGenerationService
   extends OpenAIService<OpenAI>
   implements TextGenerationService
 {

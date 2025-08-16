@@ -1,10 +1,9 @@
 import { JsonProperty } from "../../decorators/JsonProperty"
-import SKException from "../../exceptions/SKException"
+import { SKException } from "../../exceptions/SKException"
 import { JsonCreator } from "../../implementations/JsonCreator"
-import PromptExecutionSettings from "../../orchestration/PromptExecutionSettings"
-import HandlebarsPromptTemplateFactory from "../HandlebarsPromptTemplateFactory"
-import InputVariable from "../InputVariable"
-import OutputVariable from "../OutputVariable"
+import { PromptExecutionSettings } from "../../orchestration/PromptExecutionSettings"
+import { HandlebarsPromptTemplateFactory } from "../HandlebarsPromptTemplateFactory"
+import { InputVariable } from "../InputVariable"
 import { PromptTemplateOption } from "./PromptTemplateOption"
 
 export type PromptTemplateConfigurationType = {
@@ -15,11 +14,10 @@ export type PromptTemplateConfigurationType = {
   promptTemplateOptions?: Set<PromptTemplateOption>
   description?: string
   inputVariables?: InputVariable[]
-  outputVariable?: OutputVariable<any>
   executionSettings?: PromptExecutionSettings
 }
 
-export default class PromptTemplateConfig extends JsonCreator {
+export class PromptTemplateConfig extends JsonCreator {
   /**
    * The current prompt template config schema version.
    */
@@ -55,9 +53,6 @@ export default class PromptTemplateConfig extends JsonCreator {
   @JsonProperty("input_variables")
   private inputVariables: InputVariable[]
 
-  @JsonProperty("output_variable")
-  private outputVariable: OutputVariable<any>
-
   @JsonProperty("execution_settings") private executionSettings: PromptExecutionSettings
 
   constructor({
@@ -68,7 +63,6 @@ export default class PromptTemplateConfig extends JsonCreator {
     promptTemplateOptions,
     description,
     inputVariables,
-    outputVariable,
     executionSettings,
   }: PromptTemplateConfigurationType) {
     super()
@@ -81,7 +75,6 @@ export default class PromptTemplateConfig extends JsonCreator {
     this.promptTemplateOptions = promptTemplateOptions ?? new Set()
     this.description = description
     this.inputVariables = inputVariables ?? []
-    this.outputVariable = outputVariable ?? new OutputVariable<string>()
     this.executionSettings = executionSettings ?? PromptExecutionSettings.Builder<any>().build()
   }
 
@@ -94,7 +87,6 @@ export default class PromptTemplateConfig extends JsonCreator {
       promptTemplateOptions: promptTemplate.promptTemplateOptions,
       description: promptTemplate.description,
       inputVariables: promptTemplate.inputVariables,
-      outputVariable: promptTemplate.outputVariable,
       executionSettings: promptTemplate.executionSettings,
     })
   }
@@ -117,7 +109,6 @@ export default class PromptTemplateConfig extends JsonCreator {
         promptTemplateOptions: res.prompt_template_options,
         description: res.description,
         inputVariables: res.input_variables,
-        outputVariable: res.output_variable,
         executionSettings: res.execution_settings,
       })
     } catch (e) {
@@ -162,10 +153,6 @@ export default class PromptTemplateConfig extends JsonCreator {
     return Object.seal(this.inputVariables)
   }
 
-  getOutputVariable() {
-    return this.outputVariable
-  }
-
   getExecutionSettings() {
     return Object.seal(this.executionSettings)
   }
@@ -187,7 +174,6 @@ class Builder {
 
   private inputVariables: InputVariable[]
 
-  private outputVariable: OutputVariable<any>
   private executionSettings: PromptExecutionSettings | undefined
 
   constructor()
@@ -208,8 +194,6 @@ class Builder {
     this.description = promptTemplateConfig?.getDescription()
 
     this.inputVariables = Array.from(promptTemplateConfig?.getInputVariables() ?? [])
-
-    this.outputVariable = promptTemplateConfig?.getOutputVariable() ?? new OutputVariable<string>()
 
     this.executionSettings = promptTemplateConfig?.getExecutionSettings()
   }
@@ -291,17 +275,6 @@ class Builder {
   }
 
   /**
-   * Set the output variable of the prompt template config.
-   *
-   * @param outputVariable The output variable of the prompt template config.
-   * @return {@code this} builder
-   */
-  withOutputVariable(outputVariable: OutputVariable<any>) {
-    this.outputVariable = outputVariable
-    return this
-  }
-
-  /**
    * Set the prompt execution settings of the prompt template config.
    *
    * @param executionSettings The prompt execution settings of the prompt template config.
@@ -326,7 +299,6 @@ class Builder {
       promptTemplateOptions: this.promptTemplateOptions,
       description: this.description,
       inputVariables: this.inputVariables,
-      outputVariable: this.outputVariable,
       executionSettings: this.executionSettings,
     })
   }

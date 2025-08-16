@@ -1,5 +1,5 @@
-import KernelArguments from "../functions/KernelArguments"
-import KernelFunction from "../functions/KernelFunction"
+import { KernelArguments } from "../functions/KernelArguments"
+import { KernelFunction } from "../functions/KernelFunction"
 import { KernelHookEvent } from "./types/KernelHookEvent"
 
 abstract class PromptREvent implements KernelHookEvent<any> {

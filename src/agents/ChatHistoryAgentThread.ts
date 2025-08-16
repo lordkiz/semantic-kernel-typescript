@@ -3,7 +3,7 @@ import { ChatHistory, ChatMessageContent } from "@semantic-kernel-typescript/cor
 import { of } from "rxjs"
 import { v4 as uuid4 } from "uuid"
 
-export default class ChatHistoryAgentThread extends BaseAgentThread {
+export class ChatHistoryAgentThread extends BaseAgentThread {
   private _chatHistory: ChatHistory
   constructor(id: string, chatHistory?: ChatHistory) {
     super(id)

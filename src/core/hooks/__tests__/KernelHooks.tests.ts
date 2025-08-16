@@ -1,9 +1,9 @@
 import { PluginWithNameAndDescription } from "../../__tests__/mocks/pluginMocks"
-import KernelArguments from "../../functions/KernelArguments"
-import KernelFunctionFactory from "../../functions/KernelFunctionFactory"
+import { KernelArguments } from "../../functions/KernelArguments"
+import { KernelFunctionFactory } from "../../functions/KernelFunctionFactory"
 import { FunctionInvokingEvent } from "../FnInvokeEvents"
 import { FunctionInvokingHook } from "../KernelHook"
-import KernelHooks from "../KernelHooks"
+import { KernelHooks } from "../KernelHooks"
 
 let hookExecutionMockCall = jest.fn()
 

@@ -14,7 +14,7 @@ import { KernelHookEvent } from "./types/KernelHookEvent"
 /**
  * Represents a collection of hooks that can be used to intercept and modify events in the kernel.
  */
-export default class KernelHooks {
+export class KernelHooks {
   private _hooks: Map<string, KernelHook<any>>
 
   constructor()

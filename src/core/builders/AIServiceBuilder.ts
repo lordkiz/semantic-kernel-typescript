@@ -1,5 +1,5 @@
 import { AIService } from "../services"
-import SemanticKernelBuilder from "./SemanticKernelBuilder"
+import { SemanticKernelBuilder } from "./SemanticKernelBuilder"
 
 /**
  * Builder for an OpenAI service.

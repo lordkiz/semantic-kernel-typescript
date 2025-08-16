@@ -1,18 +1,15 @@
 import { Content, createPartFromFunctionResponse } from "@google/genai"
 import { SKException } from "@semantic-kernel-typescript/core/exceptions"
-import ChatMessages from "@semantic-kernel-typescript/core/orchestration/ChatMessages"
+import { ChatMessages } from "@semantic-kernel-typescript/core/orchestration"
 import {
   AuthorRole,
   ChatHistory,
   ChatMessageContent,
 } from "@semantic-kernel-typescript/core/services"
-import GeminiChatMessageContent from "./GeminiChatMessageContent"
-import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
+import { GeminiChatMessageContent } from "./GeminiChatMessageContent"
+import { GeminiFunctionCallContent } from "./GeminiFunctionCallContent"
 
-export default class GeminiChatMessages extends ChatMessages<
-  Content,
-  GeminiChatMessageContent<any>
-> {
+export class GeminiChatMessages extends ChatMessages<Content, GeminiChatMessageContent<any>> {
   static fromChatHistory(chatHistory: ChatHistory) {
     const chatCompletiontMessageContents = GeminiChatMessages.getChatCompletionMessageContents(
       chatHistory.messages

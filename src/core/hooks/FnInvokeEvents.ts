@@ -1,6 +1,6 @@
-import KernelArguments from "../functions/KernelArguments"
-import KernelFunction from "../functions/KernelFunction"
-import FunctionResult from "../orchestration/FunctionResult"
+import { KernelArguments } from "../functions/KernelArguments"
+import { KernelFunction } from "../functions/KernelFunction"
+import { FunctionResult } from "../orchestration/FunctionResult"
 import { KernelHookEvent } from "./types/KernelHookEvent"
 
 abstract class FnInvokeEvent<T> implements KernelHookEvent<unknown> {

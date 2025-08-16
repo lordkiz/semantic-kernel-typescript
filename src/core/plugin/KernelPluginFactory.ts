@@ -1,9 +1,9 @@
-import KernelFunction from "../functions/KernelFunction"
+import { KernelFunction } from "../functions/KernelFunction"
 import { Logger } from "../log/Logger"
 import { ClassUtils } from "../utils/ClassUtils"
-import KernelPlugin from "./KernelPlugin"
+import { KernelPlugin } from "./KernelPlugin"
 
-export default class KernelPluginFactory {
+export class KernelPluginFactory {
   static createFromObject(instance: InstanceType<any>, pluginName: string): KernelPlugin {
     const kernelFunctions = ClassUtils.getKernelFunctionBuildersFromInstance(instance).map((b) => {
       const fn = b.withPluginName(pluginName).build()

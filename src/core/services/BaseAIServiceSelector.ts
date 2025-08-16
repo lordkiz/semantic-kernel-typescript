@@ -1,7 +1,7 @@
-import KernelArguments from "../functions/KernelArguments"
-import KernelFunction from "../functions/KernelFunction"
-import AIServiceCollection from "./AIServiceCollection"
-import AIServiceSelection from "./AIServiceSelection"
+import { KernelArguments } from "../functions/KernelArguments"
+import { KernelFunction } from "../functions/KernelFunction"
+import { AIServiceCollection } from "./AIServiceCollection"
+import { AIServiceSelection } from "./AIServiceSelection"
 import { AIService } from "./types/AIService"
 import { AIServiceSelector, ServiceClass } from "./types/AIServiceSelector"
 
@@ -12,7 +12,7 @@ import { AIServiceSelector, ServiceClass } from "./types/AIServiceSelector"
  * implemented. Child classes must implement the method
  * {@link #trySelectAIService(Class, KernelFunction, KernelArguments, Map)}.
  */
-export default abstract class BaseAIServiceSelector implements AIServiceSelector {
+export abstract class BaseAIServiceSelector implements AIServiceSelector {
   protected services: AIServiceCollection
 
   /**

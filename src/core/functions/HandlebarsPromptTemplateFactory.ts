@@ -1,13 +1,13 @@
-import HandlebarsPromptTemplate from "../templateengine/handlebars/HandlebarsPromptTemplate"
+import { HandlebarsPromptTemplate } from "../templateengine/handlebars/HandlebarsPromptTemplate"
 import { PromptTemplate } from "./prompttemplate/PromptTemplate"
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
+import { PromptTemplateConfig } from "./prompttemplate/PromptTemplateConfig"
 import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 
 /**
  * A factory for creating a {@link HandlebarsPromptTemplate} instance for a
  * {@code PromptTemplateConfig} that uses the handlebars template format.
  */
-export default class HandlebarsPromptTemplateFactory implements PromptTemplateFactory {
+export class HandlebarsPromptTemplateFactory implements PromptTemplateFactory {
   /**
    * The handlebars template format.
    */

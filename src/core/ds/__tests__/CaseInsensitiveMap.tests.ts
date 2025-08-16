@@ -1,4 +1,4 @@
-import CaseInsensitiveMap from "../CaseInsensitiveMap"
+import { CaseInsensitiveMap } from "../CaseInsensitiveMap"
 
 describe("CaseInsensitiveMap", () => {
   it("keys are case insensitive", () => {

@@ -1,6 +1,6 @@
-import AudioContent from "./AudioContent"
-import AudioToTextExecutionSettings from "./AudioToTextExecutionSettings"
-import TextToAudioExecutionSettings from "./TextToAudioExecutionSettings"
+import { AudioContent } from "./AudioContent"
+import { AudioToTextExecutionSettings } from "./AudioToTextExecutionSettings"
+import { TextToAudioExecutionSettings } from "./TextToAudioExecutionSettings"
 import { AudioToTextService } from "./types/AudioToTextService"
 import { TextToAudioService } from "./types/TextToAudioService"
 

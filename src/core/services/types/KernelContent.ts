@@ -1,4 +1,4 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
+import { FunctionResultMetadata } from "../../orchestration/FunctionResultMetadata"
 
 /**
  * Base class which represents the content returned by an AI service.

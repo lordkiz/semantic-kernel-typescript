@@ -1,6 +1,6 @@
-import KernelArguments from "../../functions/KernelArguments"
-import KernelFunction from "../../functions/KernelFunction"
-import AIServiceSelection from "../AIServiceSelection"
+import { KernelArguments } from "../../functions/KernelArguments"
+import { KernelFunction } from "../../functions/KernelFunction"
+import { AIServiceSelection } from "../AIServiceSelection"
 import { AIService } from "./AIService"
 
 export type ServiceClass<T extends AIService> = { new (...args: any[]): T }

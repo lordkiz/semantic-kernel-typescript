@@ -1,7 +1,7 @@
 import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
 import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
 
-export default class GitHubPlugin {
+export class GitHubPlugin {
   public static baseUrl = "https://api.github.com"
   private readonly token
 

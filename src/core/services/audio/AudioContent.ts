@@ -1,7 +1,7 @@
 /**
  * Represents audio content.
  */
-export default class AudioContent {
+export class AudioContent {
   private readonly _data: Buffer
   private readonly _modelId: string | undefined
 

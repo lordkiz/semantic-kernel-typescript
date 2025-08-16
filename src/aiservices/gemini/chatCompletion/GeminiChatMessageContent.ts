@@ -1,15 +1,15 @@
-import FunctionResultMetadata from "@semantic-kernel-typescript/core/orchestration/FunctionResultMetadata"
+import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
 import { AuthorRole } from "@semantic-kernel-typescript/core/services/chatcompletion/AuthorRole"
-import ChatMessageContent from "@semantic-kernel-typescript/core/services/chatcompletion/ChatMessageContent"
+import { ChatMessageContent } from "@semantic-kernel-typescript/core/services/chatcompletion/ChatMessageContent"
 import { ChatMessageContentType } from "@semantic-kernel-typescript/core/services/chatcompletion/message/ChatMessageContentType"
-import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
+import { GeminiFunctionCallContent } from "./GeminiFunctionCallContent"
 
 /**
  * Represents the content of a chat message.
  *
  * @param <T> The type of the inner content.
  */
-export default class GeminiChatMessageContent<T> extends ChatMessageContent<T> {
+export class GeminiChatMessageContent<T> extends ChatMessageContent<T> {
   constructor(
     authorRole: AuthorRole,
     content: string,

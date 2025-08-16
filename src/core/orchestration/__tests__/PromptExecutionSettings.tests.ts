@@ -1,4 +1,4 @@
-import PromptExecutionSettings from "../PromptExecutionSettings"
+import { PromptExecutionSettings } from "../PromptExecutionSettings"
 
 describe("PromptExecutionSettings", () => {
   it("has DEFAULT_SERVICE_ID by default", () => {

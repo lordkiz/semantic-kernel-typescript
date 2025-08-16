@@ -1,6 +1,6 @@
 import { KernelPlugin } from "../plugin"
-import FunctionChoiceBehavior from "./FunctionChoiceBehavior"
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
+import { FunctionChoiceBehavior } from "./FunctionChoiceBehavior"
+import { FunctionChoiceBehaviorOptions } from "./FunctionChoiceBehaviorOptions"
 
 /**
  * A set of allowed kernel functions. All kernel functions are allowed if allKernelFunctionsAllowed is true.
@@ -8,7 +8,7 @@ import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
  * <p>
  * If a function is allowed, it may be called. If it is not allowed, it will not be called.
  */
-export default class AutoFunctionChoiceBehavior extends FunctionChoiceBehavior {
+export class AutoFunctionChoiceBehavior extends FunctionChoiceBehavior {
   private autoInvoke: boolean
 
   /**

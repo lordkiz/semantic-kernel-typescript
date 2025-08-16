@@ -1,7 +1,7 @@
-import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder"
-import SKException from "../../../exceptions/SKException"
+import { SemanticKernelBuilder } from "../../../builders/SemanticKernelBuilder"
+import { SKException } from "../../../exceptions/SKException"
 import { AuthorRole } from "../AuthorRole"
-import ChatMessageContent from "../ChatMessageContent"
+import { ChatMessageContent } from "../ChatMessageContent"
 import { ChatMessageContentType } from "./ChatMessageContentType"
 
 enum ImageDetail {
@@ -24,7 +24,7 @@ enum ImageDetail {
  *
  * @param <T> the type of the inner content within the message
  */
-export default class ChatMessageImageContent<T> extends ChatMessageContent<T> {
+export class ChatMessageImageContent<T> extends ChatMessageContent<T> {
   static ImageDetail = ImageDetail
 
   private readonly detail: ImageDetail

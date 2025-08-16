@@ -1,4 +1,4 @@
-import Predicate from "../ds/Predicate"
+import { Predicate } from "../ds/Predicate"
 import { PostChatCompletionEvent, PreChatCompletionEvent } from "./ChatCompletionEvents"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "./FnInvokeEvents"
 import { PreToolCallEvent } from "./PreToolCallEvent"

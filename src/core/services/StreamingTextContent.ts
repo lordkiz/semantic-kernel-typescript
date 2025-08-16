@@ -1,5 +1,5 @@
-import FunctionResultMetadata from "../orchestration/FunctionResultMetadata"
-import KernelContentImpl from "./KernelContentImpl"
+import { FunctionResultMetadata } from "../orchestration/FunctionResultMetadata"
+import { KernelContentImpl } from "./KernelContentImpl"
 import { StreamingKernelContent } from "./types/StreamingKernelContent"
 
 /**
@@ -7,7 +7,7 @@ import { StreamingKernelContent } from "./types/StreamingKernelContent"
  *
  * @param <T> The type of the content.
  */
-export default abstract class StreamingTextContent<T>
+export abstract class StreamingTextContent<T>
   extends KernelContentImpl<T>
   implements StreamingKernelContent<T>
 {

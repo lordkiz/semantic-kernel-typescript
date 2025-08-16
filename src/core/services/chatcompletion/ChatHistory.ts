@@ -1,12 +1,12 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
+import { FunctionResultMetadata } from "../../orchestration/FunctionResultMetadata"
 import { AuthorRole } from "./AuthorRole"
-import ChatMessageContent from "./ChatMessageContent"
-import ChatMessageTextContent from "./message/ChatMessageTextContent"
+import { ChatMessageContent } from "./ChatMessageContent"
+import { ChatMessageTextContent } from "./message/ChatMessageTextContent"
 
 /**
  * Provides a history of messages between the User, Assistant and System
  */
-export default class ChatHistory implements Iterable<ChatMessageContent<any>> {
+export class ChatHistory implements Iterable<ChatMessageContent<any>> {
   private chatMessageContents: ChatMessageContent<any>[]
 
   constructor()

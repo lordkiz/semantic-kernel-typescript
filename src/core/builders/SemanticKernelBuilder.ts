@@ -3,11 +3,11 @@
  *
  * @param <T> the type to build.
  */
-export default interface SemanticKernelBuilder<T> {
+export interface SemanticKernelBuilder<T> {
   /**
    * Build the object.
    *
    * @return a constructed object.
    */
-  build(): T;
+  build(): T
 }

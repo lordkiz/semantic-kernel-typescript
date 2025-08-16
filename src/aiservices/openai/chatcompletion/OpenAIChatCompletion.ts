@@ -47,21 +47,19 @@ import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } f
 import { v4 as uuid4 } from "uuid"
 import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { OpenAIService } from "../OpenAIService"
-import FunctionInvocationError from "./FunctionInvocationError"
-import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
-import OpenAIChatMessages, {
+import { FunctionInvocationError } from "./FunctionInvocationError"
+import { OpenAIChatMessageContent } from "./OpenAIChatMessageContent"
+import {
   ChatCompletionMessageParamWithCompletionUsage,
+  OpenAIChatMessages,
 } from "./OpenAIChatMessages"
-import OpenAIFunction from "./OpenAIFunction"
-import OpenAIStreamingChatMessageContent from "./OpenAIStreamingChatMessageContent"
+import { OpenAIFunction } from "./OpenAIFunction"
+import { OpenAIStreamingChatMessageContent } from "./OpenAIStreamingChatMessageContent"
 import { OpenAIToolCallConfig } from "./OpenAIToolCallConfig"
 import { OpenAIToolChoice } from "./OpenAIToolChoice"
 import { OpenAIXMLPromptParser } from "./OpenAIXMLPromptParser"
 
-export default class OpenAIChatCompletion
-  extends OpenAIService<OpenAI>
-  implements ChatCompletionService
-{
+export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatCompletionService {
   constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }

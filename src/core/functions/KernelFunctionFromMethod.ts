@@ -1,15 +1,14 @@
 import { from, Observable } from "rxjs"
-import SKException from "../exceptions/SKException"
+import { SKException } from "../exceptions/SKException"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
-import KernelHooks from "../hooks/KernelHooks"
-import Kernel from "../Kernel"
-import FunctionResult from "../orchestration/FunctionResult"
-import InvocationContext from "../orchestration/InvocationContext"
-import InputVariable from "./InputVariable"
-import KernelArguments from "./KernelArguments"
-import KernelFunction from "./KernelFunction"
-import KernelFunctionMetadata from "./KernelFunctionMetadata"
-import OutputVariable from "./OutputVariable"
+import { KernelHooks } from "../hooks/KernelHooks"
+import { Kernel } from "../Kernel"
+import { FunctionResult } from "../orchestration/FunctionResult"
+import { InvocationContext } from "../orchestration/InvocationContext"
+import { InputVariable } from "./InputVariable"
+import { KernelArguments } from "./KernelArguments"
+import { KernelFunction } from "./KernelFunction"
+import { KernelFunctionMetadata } from "./KernelFunctionMetadata"
 
 /**
  * A {@link KernelFunction} that is created from a method. This class is used to create a
@@ -18,24 +17,17 @@ import OutputVariable from "./OutputVariable"
  *
  * @param <T> the return type of the function
  */
-export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
+export class KernelFunctionFromMethod<T> extends KernelFunction<T> {
   private constructor(
     method: Function,
     instance: InstanceType<any>,
     pluginName: string,
     description: string,
-    parameters: InputVariable[],
-    returnParameter: OutputVariable<T>
+    parameters: InputVariable[]
   ) {
     super(
       method,
-      new KernelFunctionMetadata<T>(
-        pluginName,
-        method.name,
-        description,
-        parameters,
-        returnParameter
-      ),
+      new KernelFunctionMetadata(pluginName, method.name, description, parameters),
       instance
     )
   }
@@ -57,8 +49,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
     target: InstanceType<any>,
     pluginName?: string,
     description?: string,
-    parameters?: InputVariable[],
-    returnParameter?: OutputVariable<any>
+    parameters?: InputVariable[]
   ): KernelFunction<T> {
     const _pluginName = pluginName || ""
 
@@ -67,8 +58,7 @@ export default class KernelFunctionFromMethod<T> extends KernelFunction<T> {
       target,
       _pluginName,
       description ?? "",
-      parameters ?? [],
-      returnParameter ?? new OutputVariable()
+      parameters ?? []
     )
   }
 
@@ -127,8 +117,6 @@ class KernelFunctionFromMethodBuilder<T> {
 
   parameters: InputVariable[] | undefined
 
-  returnParameter: OutputVariable<T> | undefined
-
   /**
    * Sets the method to use to build the function.
    *
@@ -185,19 +173,6 @@ class KernelFunctionFromMethodBuilder<T> {
   }
 
   /**
-   * Sets the return parameter to use to build the function.
-   *
-   * @param returnParameter the return parameter to use
-   * @return this instance of the {@link KernelFunctionFromMethodBuilder} class
-   */
-  public withReturnParameter(
-    returnParameter: OutputVariable<T>
-  ): KernelFunctionFromMethodBuilder<T> {
-    this.returnParameter = returnParameter
-    return this
-  }
-
-  /**
    * Builds a new instance of {@link KernelFunction}.
    *
    * @return a new instance of {@link KernelFunction}
@@ -216,8 +191,7 @@ class KernelFunctionFromMethodBuilder<T> {
       this.target,
       this.pluginName,
       this.description,
-      this.parameters,
-      this.returnParameter
+      this.parameters
     )
   }
 }

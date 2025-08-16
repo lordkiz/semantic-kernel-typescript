@@ -9,7 +9,7 @@ import { ChatMessageContent } from "@semantic-kernel-typescript/core/services"
  * A GeminiFunctionCallContent which does not have a functionResult represents
  *  a function call that has not been executed
  */
-export default class GeminiFunctionCallContent extends FunctionCallContent<any> {
+export class GeminiFunctionCallContent extends FunctionCallContent<any> {
   private _functionCall: FunctionCall
 
   private _functionResult: FunctionResult<any> | undefined

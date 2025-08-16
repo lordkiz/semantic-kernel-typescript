@@ -1,7 +1,7 @@
 import { Span, SpanKind, SpanStatusCode } from "@opentelemetry/api"
 import OpenAI from "openai"
-import SemanticKernelTelemetry from "./SemanticKernelTelemetry"
-import SemanticKernelTelemetrySpan from "./SemanticKernelTelemetrySpan"
+import { SemanticKernelTelemetry } from "./SemanticKernelTelemetry"
+import { SemanticKernelTelemetrySpan } from "./SemanticKernelTelemetrySpan"
 
 export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
   constructor(

@@ -1,11 +1,11 @@
-import CaseInsensitiveMap from "./ds/CaseInsensitiveMap"
-import SKException from "./exceptions/SKException"
-import KernelFunction from "./functions/KernelFunction"
-import KernelFunctionMetadata from "./functions/KernelFunctionMetadata"
+import { CaseInsensitiveMap } from "./ds/CaseInsensitiveMap"
+import { SKException } from "./exceptions/SKException"
+import { KernelFunction } from "./functions/KernelFunction"
+import { KernelFunctionMetadata } from "./functions/KernelFunctionMetadata"
 import { Logger } from "./log/Logger"
-import KernelPlugin from "./plugin/KernelPlugin"
+import { KernelPlugin } from "./plugin/KernelPlugin"
 
-export default class KernelPluginCollection {
+export class KernelPluginCollection {
   private _plugins = new CaseInsensitiveMap<KernelPlugin>()
 
   /**
@@ -72,7 +72,7 @@ export default class KernelPluginCollection {
    *
    * @return A list of all function metadata from all plugins.
    */
-  get functionsMetadata(): KernelFunctionMetadata<any>[] {
+  get functionsMetadata(): KernelFunctionMetadata[] {
     return this.functions.map((kernelFunction) => kernelFunction.getMetadata())
   }
 

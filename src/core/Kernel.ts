@@ -1,18 +1,18 @@
 import { lastValueFrom, Observable } from "rxjs"
-import KernelArguments from "./functions/KernelArguments"
-import KernelFunction from "./functions/KernelFunction"
-import KernelFunctionFactory from "./functions/KernelFunctionFactory"
-import KernelHooks from "./hooks/KernelHooks"
-import KernelPluginCollection from "./KernelPluginCollection"
-import FunctionResult from "./orchestration/FunctionResult"
-import InvocationContext from "./orchestration/InvocationContext"
-import KernelPlugin from "./plugin/KernelPlugin"
-import AIServiceCollection from "./services/AIServiceCollection"
-import OrderedAIServiceSelector from "./services/OrderedAIServiceSelector"
+import { KernelArguments } from "./functions/KernelArguments"
+import { KernelFunction } from "./functions/KernelFunction"
+import { KernelFunctionFactory } from "./functions/KernelFunctionFactory"
+import { KernelHooks } from "./hooks/KernelHooks"
+import { KernelPluginCollection } from "./KernelPluginCollection"
+import { FunctionResult } from "./orchestration/FunctionResult"
+import { InvocationContext } from "./orchestration/InvocationContext"
+import { KernelPlugin } from "./plugin/KernelPlugin"
+import { AIServiceCollection } from "./services/AIServiceCollection"
+import { OrderedAIServiceSelector } from "./services/OrderedAIServiceSelector"
 import { AIService } from "./services/types/AIService"
 import { AIServiceSelector } from "./services/types/AIServiceSelector"
 
-export default class Kernel {
+export class Kernel {
   private readonly serviceSelector: AIServiceSelector
   private readonly _plugins: KernelPluginCollection
   private readonly globalKernelHooks: KernelHooks

@@ -3,9 +3,9 @@ import {
   KERNEL_FUNCTION_PARAMETER_METADATA_KEY,
 } from "../functions/decorators/constants"
 import { KernelFunctionParameterMetadata } from "../functions/decorators/KernelFunctionParameter"
-import InputVariable from "../functions/InputVariable"
-import KernelFunctionFactory from "../functions/KernelFunctionFactory"
-import KernelFunctionFromMethod from "../functions/KernelFunctionFromMethod"
+import { InputVariable } from "../functions/InputVariable"
+import { KernelFunctionFactory } from "../functions/KernelFunctionFactory"
+import { KernelFunctionFromMethod } from "../functions/KernelFunctionFromMethod"
 
 export class ClassUtils {
   static getKernelFunctionBuildersFromInstance(instance: InstanceType<any>) {

@@ -1,17 +1,15 @@
-import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
-import SKException from "../exceptions/SKException"
-import FunctionChoiceBehavior from "../functionchoice/FunctionChoiceBehavior"
-import KernelHooks, { UnmodifiableKernelHooks } from "../hooks/KernelHooks"
-import SemanticKernelTelemetry from "../implementations/telemetry/SemanticKernelTelemetry"
+import { SemanticKernelBuilder } from "../builders/SemanticKernelBuilder"
+import { SKException } from "../exceptions/SKException"
+import { FunctionChoiceBehavior } from "../functionchoice/FunctionChoiceBehavior"
+import { KernelHooks, UnmodifiableKernelHooks } from "../hooks/KernelHooks"
+import { SemanticKernelTelemetry } from "../implementations/telemetry/SemanticKernelTelemetry"
 import { AIService } from "../services"
 import { ServiceClass } from "../services/types/AIServiceSelector"
 import { InvocationReturnMode } from "./InvocationReturnMode"
-import PromptExecutionSettings from "./PromptExecutionSettings"
-import ToolCallBehavior from "./ToolCallBehavior"
+import { PromptExecutionSettings } from "./PromptExecutionSettings"
+import { ToolCallBehavior } from "./ToolCallBehavior"
 
-export default class InvocationContext<
-  ExecutionConfig extends Record<string, any> = Record<string, any>,
-> {
+export class InvocationContext<ExecutionConfig extends Record<string, any> = Record<string, any>> {
   private _hooks: UnmodifiableKernelHooks | undefined
 
   private _promptExecutionSettings: PromptExecutionSettings<ExecutionConfig> | undefined

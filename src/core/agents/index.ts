@@ -1,5 +1,5 @@
-import AgentInvokeOptions from "./AgentInvokeOptions"
-import AgentResponseItem from "./AgentResponseItem"
+import { AgentInvokeOptions } from "./AgentInvokeOptions"
+import { AgentResponseItem } from "./AgentResponseItem"
 import { BaseAgentThread } from "./BaseAgentThread"
 import { KernelAgent } from "./KernelAgent"
 import { type Agent } from "./types/Agent"

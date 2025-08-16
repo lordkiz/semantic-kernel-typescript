@@ -1,18 +1,18 @@
 import { FunctionDeclaration } from "@google/genai"
-import ToolCallBehavior from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
-import InputVariable from "../../../core/functions/InputVariable"
-import KernelFunctionMetadata from "../../../core/functions/KernelFunctionMetadata"
+import { InputVariable } from "@semantic-kernel-typescript/core/functions/InputVariable"
+import { KernelFunctionMetadata } from "@semantic-kernel-typescript/core/functions/KernelFunctionMetadata"
+import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
 import { AIServiceFunction } from "../../commons/AIServiceFunction"
 
-export default class GeminiFunction extends AIServiceFunction<FunctionDeclaration> {
-  static build(metadata: KernelFunctionMetadata<any>, pluginName: string): GeminiFunction {
+export class GeminiFunction extends AIServiceFunction<FunctionDeclaration> {
+  static build(metadata: KernelFunctionMetadata, pluginName: string): GeminiFunction {
     const name = metadata.getName()
     const functionDeclaration = GeminiFunction.toFunctionDeclaration(metadata, pluginName)
     return new GeminiFunction(name, pluginName, functionDeclaration)
   }
 
   static toFunctionDeclaration(
-    metadata: KernelFunctionMetadata<any>,
+    metadata: KernelFunctionMetadata,
     pluginName: string
   ): FunctionDeclaration {
     try {

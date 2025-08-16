@@ -1,10 +1,10 @@
 import { StreamingTextContent } from "@semantic-kernel-typescript/core/services"
-import TextContent from "@semantic-kernel-typescript/core/services/textcompletion/TextContent"
+import { TextContent } from "@semantic-kernel-typescript/core/services/textcompletion/TextContent"
 
 /**
  * StreamingTextContent is a wrapper for TextContent that allows for streaming.
  */
-export default class OpenAIStreamingTextContent extends StreamingTextContent<TextContent> {
+export class OpenAIStreamingTextContent extends StreamingTextContent<TextContent> {
   /**
    * Initializes a new instance of the {@code StreamingTextContent} class with a provided text
    * content.

@@ -1,10 +1,10 @@
 import { Span, SpanKind, SpanStatusCode, trace } from "@opentelemetry/api"
-import KernelArguments from "../../functions/KernelArguments"
-import FunctionResult from "../../orchestration/FunctionResult"
-import SemanticKernelTelemetry from "./SemanticKernelTelemetry"
-import SemanticKernelTelemetrySpan from "./SemanticKernelTelemetrySpan"
+import { KernelArguments } from "../../functions/KernelArguments"
+import { FunctionResult } from "../../orchestration/FunctionResult"
+import { SemanticKernelTelemetry } from "./SemanticKernelTelemetry"
+import { SemanticKernelTelemetrySpan } from "./SemanticKernelTelemetrySpan"
 
-export default class FunctionSpan extends SemanticKernelTelemetrySpan {
+export class FunctionSpan extends SemanticKernelTelemetrySpan {
   constructor(
     span: Span,
     reactorContextModifier: (ctx: any) => any,

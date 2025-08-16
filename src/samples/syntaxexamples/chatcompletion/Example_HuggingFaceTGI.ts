@@ -1,6 +1,6 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
 import { ChatCompletionService } from "@semantic-kernel-typescript/core/services/chatcompletion/ChatCompletionService"
-import ChatHistory from "@semantic-kernel-typescript/core/services/chatcompletion/ChatHistory"
+import { ChatHistory } from "@semantic-kernel-typescript/core/services/chatcompletion/ChatHistory"
 import { HuggingFaceClient } from "@semantic-kernel-typescript/huggingface"
 import { HuggingFaceTGI } from "@semantic-kernel-typescript/huggingface/services"
 import { lastValueFrom } from "rxjs"

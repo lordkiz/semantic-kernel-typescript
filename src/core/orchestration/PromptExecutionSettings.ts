@@ -1,6 +1,6 @@
 import { clamp } from "../utils/clamp"
 
-export default class PromptExecutionSettings<
+export class PromptExecutionSettings<
   /** Specifies the type of settings.
    * Example, OpenAI's Settings type would be ChatCompletionCreateParams.
    * Gemini's would be GenerateContentConfig */

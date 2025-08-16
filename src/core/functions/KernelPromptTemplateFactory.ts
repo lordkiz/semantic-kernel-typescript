@@ -1,11 +1,11 @@
-import SKException from "../exceptions/SKException"
-import HandlebarsPromptTemplate from "../templateengine/handlebars/HandlebarsPromptTemplate"
-import HandlebarsPromptTemplateFactory from "./HandlebarsPromptTemplateFactory"
+import { SKException } from "../exceptions/SKException"
+import { HandlebarsPromptTemplate } from "../templateengine/handlebars/HandlebarsPromptTemplate"
+import { HandlebarsPromptTemplateFactory } from "./HandlebarsPromptTemplateFactory"
 import { PromptTemplate } from "./prompttemplate/PromptTemplate"
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
+import { PromptTemplateConfig } from "./prompttemplate/PromptTemplateConfig"
 import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 
-export default class KernelPromptTemplateFactory extends PromptTemplateFactory {
+export class KernelPromptTemplateFactory extends PromptTemplateFactory {
   /**
    * Create a prompt template, if possible, from the given configuration. This is a convenience
    * method that wraps the {@link KernelPromptTemplateFactory#tryCreate(PromptTemplateConfig)}

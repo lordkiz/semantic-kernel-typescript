@@ -1,8 +1,8 @@
 import { KernelPlugin } from "../plugin"
-import AutoFunctionChoiceBehavior from "./AutoFunctionChoiceBehavior"
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
+import { AutoFunctionChoiceBehavior } from "./AutoFunctionChoiceBehavior"
+import { FunctionChoiceBehaviorOptions } from "./FunctionChoiceBehaviorOptions"
 
-export default class RequiredFunctionChoiceBehavior extends AutoFunctionChoiceBehavior {
+export class RequiredFunctionChoiceBehavior extends AutoFunctionChoiceBehavior {
   /**
    * Create a new instance of RequiredFunctionChoiceBehavior.
    *

@@ -1,4 +1,4 @@
-import KernelPlugin from "./KernelPlugin"
-import KernelPluginFactory from "./KernelPluginFactory"
+import { KernelPlugin } from "./KernelPlugin"
+import { KernelPluginFactory } from "./KernelPluginFactory"
 
 export { KernelPlugin, KernelPluginFactory }

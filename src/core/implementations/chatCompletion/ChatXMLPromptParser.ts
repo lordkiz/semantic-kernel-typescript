@@ -1,7 +1,7 @@
 import { XMLParser } from "fast-xml-parser"
-import SKException from "../../exceptions/SKException"
+import { SKException } from "../../exceptions/SKException"
 import { Logger } from "../../log/Logger"
-import ToolCallBehavior from "../../orchestration/ToolCallBehavior"
+import { ToolCallBehavior } from "../../orchestration/ToolCallBehavior"
 import { ChatPromptParseVisitor } from "./ChatPromptParseVisitor"
 
 interface FunctionDefinition {

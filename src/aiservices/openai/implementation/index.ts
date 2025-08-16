@@ -1,3 +1,3 @@
-import OpenAIRequestSettings from "./OpenAIRequestSettings"
+import { OpenAIRequestSettings } from "./OpenAIRequestSettings"
 
 export { OpenAIRequestSettings }

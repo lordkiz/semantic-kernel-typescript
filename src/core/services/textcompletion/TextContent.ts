@@ -1,10 +1,10 @@
-import FunctionResultMetadata from "../../orchestration/FunctionResultMetadata"
-import KernelContentImpl from "../KernelContentImpl"
+import { FunctionResultMetadata } from "../../orchestration/FunctionResultMetadata"
+import { KernelContentImpl } from "../KernelContentImpl"
 
 /**
  * Content from a text completion service.
  */
-export default class TextContent extends KernelContentImpl<string> {
+export class TextContent extends KernelContentImpl<string> {
   private readonly _content: string
 
   /**

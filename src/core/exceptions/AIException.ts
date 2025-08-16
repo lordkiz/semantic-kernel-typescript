@@ -1,4 +1,5 @@
-import SKErrorCodedException from "./SKErrorCodedException"
+import { ErrorCode } from "./abstracts/ErrorCode"
+import { SKErrorCodedException } from "./SKErrorCodedException"
 
 enum AIErrorCodeEnum {
   "UNKNOWN_ERROR" = "UNKNOWN_ERROR",
@@ -28,13 +29,13 @@ const aiCodeToMessageMap: Record<AIErrorCodeEnum, string> = {
   FUNCTION_TYPE_NOT_SUPPORTED: "the function is not supported",
 }
 
-class AIException extends SKErrorCodedException<AIErrorCodeEnum> {
+export class AIException extends SKErrorCodedException {
   constructor(errorCode: AIErrorCodeEnum, message?: string, cause?: Error) {
-    super(errorCode, message ?? aiCodeToMessageMap[errorCode], cause)
+    super(new AIExceptionErrorCode(errorCode), message ?? aiCodeToMessageMap[errorCode], cause)
   }
   static get ErrorCodes() {
     return AIErrorCodeEnum
   }
 }
 
-export default AIException
+class AIExceptionErrorCode extends ErrorCode {}

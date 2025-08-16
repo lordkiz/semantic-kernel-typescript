@@ -1,6 +1,6 @@
 import { Logger } from "../log/Logger"
 
-export default class ContextVariable<T> {
+export class ContextVariable<T> {
   private _value: T
   constructor(value: T) {
     this._value = value

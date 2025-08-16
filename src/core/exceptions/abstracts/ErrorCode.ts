@@ -1,9 +1,11 @@
 export abstract class ErrorCode {
-  code: string;
+  code: string
 
   constructor(code: string) {
-    this.code = code;
+    this.code = code
   }
 
-  abstract getMessage(): string;
+  get message(): string {
+    return this.code
+  }
 }

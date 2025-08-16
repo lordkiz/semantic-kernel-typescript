@@ -1,20 +1,20 @@
 import Handlebars, { HelperDelegate, HelperOptions } from "handlebars"
 import { Observable, of } from "rxjs"
-import SKException from "../../exceptions/SKException"
-import KernelArguments from "../../functions/KernelArguments"
-import KernelFunction from "../../functions/KernelFunction"
+import { SKException } from "../../exceptions/SKException"
+import { KernelArguments } from "../../functions/KernelArguments"
+import { KernelFunction } from "../../functions/KernelFunction"
 import { PromptTemplate } from "../../functions/prompttemplate/PromptTemplate"
-import PromptTemplateConfig from "../../functions/prompttemplate/PromptTemplateConfig"
-import Kernel from "../../Kernel"
-import FunctionResult from "../../orchestration/FunctionResult"
-import InvocationContext from "../../orchestration/InvocationContext"
-import ChatMessageContent from "../../services/chatcompletion/ChatMessageContent"
-import ContextVariable from "../../variables/ContextVariable"
+import { PromptTemplateConfig } from "../../functions/prompttemplate/PromptTemplateConfig"
+import { Kernel } from "../../Kernel"
+import { FunctionResult } from "../../orchestration/FunctionResult"
+import { InvocationContext } from "../../orchestration/InvocationContext"
+import { ChatMessageContent } from "../../services/chatcompletion/ChatMessageContent"
+import { ContextVariable } from "../../variables/ContextVariable"
 
 /**
  * A prompt template that uses the Handlebars template engine to render prompts.
  */
-export default class HandlebarsPromptTemplate implements PromptTemplate {
+export class HandlebarsPromptTemplate implements PromptTemplate {
   private promptTemplateConfig: PromptTemplateConfig
 
   /**

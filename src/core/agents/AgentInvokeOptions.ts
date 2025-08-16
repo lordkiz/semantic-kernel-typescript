@@ -1,9 +1,9 @@
-import Kernel from "../Kernel"
+import { Kernel } from "../Kernel"
 import { SemanticKernelBuilder } from "../builders"
 import { KernelArguments } from "../functions"
 import { InvocationContext } from "../orchestration"
 
-export default class AgentInvokeOptions {
+export class AgentInvokeOptions {
   private _kernel?: Kernel
   private _kernelArguments?: KernelArguments
   private _invocationContext?: InvocationContext

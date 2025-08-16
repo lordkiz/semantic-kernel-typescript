@@ -1,6 +1,6 @@
 import { Span } from "@opentelemetry/api"
 import RXJS from "rxjs"
-import Closeable from "../../ds/Closeable"
+import { Closeable } from "../../ds/Closeable"
 import { Logger } from "../../log/Logger"
 
 export interface SpanConstructor<T extends SemanticKernelTelemetrySpan> {
@@ -11,7 +11,7 @@ export interface SpanConstructor<T extends SemanticKernelTelemetrySpan> {
   ): T
 }
 
-export default abstract class SemanticKernelTelemetrySpan implements Closeable {
+export abstract class SemanticKernelTelemetrySpan implements Closeable {
   private static readonly SPAN_TIMEOUT_MS = parseInt(
     process.env.SEMANTIC_KERNEL_TELEMETRY_SPAN_TIMEOUT || "120000"
   )

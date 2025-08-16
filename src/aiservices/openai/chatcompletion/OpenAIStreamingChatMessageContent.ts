@@ -1,14 +1,14 @@
 import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
 import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
 import { AuthorRole, StreamingChatContent } from "@semantic-kernel-typescript/core/services"
-import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
+import { OpenAIChatMessageContent } from "./OpenAIChatMessageContent"
 
 /**
  * Represents the content of a chat message.
  *
  * @param <T> The type of the inner content.
  */
-export default class OpenAIStreamingChatMessageContent<T>
+export class OpenAIStreamingChatMessageContent<T>
   extends OpenAIChatMessageContent<T>
   implements StreamingChatContent<T>
 {

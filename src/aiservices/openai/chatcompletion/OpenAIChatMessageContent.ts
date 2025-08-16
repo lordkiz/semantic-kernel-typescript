@@ -6,7 +6,7 @@ import {
   ChatMessageContentType,
 } from "@semantic-kernel-typescript/core/services"
 
-export default class OpenAIChatMessageContent<T> extends ChatMessageContent<T> {
+export class OpenAIChatMessageContent<T> extends ChatMessageContent<T> {
   constructor(
     authorRole: AuthorRole,
     content: string,

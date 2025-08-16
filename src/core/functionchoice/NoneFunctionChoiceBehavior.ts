@@ -1,8 +1,8 @@
 import { KernelPlugin } from "../plugin"
-import FunctionChoiceBehavior from "./FunctionChoiceBehavior"
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
+import { FunctionChoiceBehavior } from "./FunctionChoiceBehavior"
+import { FunctionChoiceBehaviorOptions } from "./FunctionChoiceBehaviorOptions"
 
-export default class NoneFunctionChoiceBehavior extends FunctionChoiceBehavior {
+export class NoneFunctionChoiceBehavior extends FunctionChoiceBehavior {
   /**
    * Create a new instance of NoneFunctionChoiceBehavior.
    */

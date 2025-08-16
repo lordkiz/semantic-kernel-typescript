@@ -19,9 +19,9 @@ import {
   ChatMessageContent,
 } from "@semantic-kernel-typescript/core/services"
 import { map, mergeMap, Observable, throwError } from "rxjs"
-import ChatHistoryAgentThread from "./ChatHistoryAgentThread"
+import { ChatHistoryAgentThread } from "./ChatHistoryAgentThread"
 
-export default class ChatCompletionAgent extends KernelAgent {
+export class ChatCompletionAgent extends KernelAgent {
   constructor(
     id: string,
     name: string,

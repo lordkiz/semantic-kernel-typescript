@@ -1,25 +1,25 @@
 import _ from "lodash"
 import { lastValueFrom, Observable } from "rxjs"
-import SKException from "../exceptions/SKException"
-import Kernel from "../Kernel"
-import FunctionResult from "../orchestration/FunctionResult"
-import InvocationContext from "../orchestration/InvocationContext"
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
-import ContextVariable from "../variables/ContextVariable"
+import { SKException } from "../exceptions/SKException"
+import { Kernel } from "../Kernel"
+import { FunctionResult } from "../orchestration/FunctionResult"
+import { InvocationContext } from "../orchestration/InvocationContext"
+import { PromptExecutionSettings } from "../orchestration/PromptExecutionSettings"
+import { ContextVariable } from "../variables/ContextVariable"
 import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./decorators/constants"
 import { KernelFunctionParameterMetadata } from "./decorators/KernelFunctionParameter"
-import KernelArguments from "./KernelArguments"
-import KernelFunctionMetadata from "./KernelFunctionMetadata"
+import { KernelArguments } from "./KernelArguments"
+import { KernelFunctionMetadata } from "./KernelFunctionMetadata"
 
-export default abstract class KernelFunction<T> {
+export abstract class KernelFunction<T> {
   private method: Function
   private readonly instance: InstanceType<any> | undefined
-  private metadata: KernelFunctionMetadata<T>
+  private metadata: KernelFunctionMetadata
   private executionSettings: PromptExecutionSettings<any> | undefined
 
   constructor(
     method: Function,
-    metadata: KernelFunctionMetadata<T>,
+    metadata: KernelFunctionMetadata,
     instance?: InstanceType<any>,
     executionSettings?: PromptExecutionSettings<any>
   ) {

@@ -1,5 +1,5 @@
-import { PromptTemplate } from "./PromptTemplate";
-import PromptTemplateConfig from "./PromptTemplateConfig";
+import { PromptTemplate } from "./PromptTemplate"
+import { PromptTemplateConfig } from "./PromptTemplateConfig"
 
 class UnknownTemplateFormatException extends Error {
   /**
@@ -8,7 +8,7 @@ class UnknownTemplateFormatException extends Error {
    * @param templateFormat The template format that is not supported.
    */
   constructor(templateFormat: string) {
-    super("Unknown template format: " + templateFormat);
+    super("Unknown template format: " + templateFormat)
   }
 }
 
@@ -23,12 +23,12 @@ export abstract class PromptTemplateFactory {
    * @throws UnknownTemplateFormatException If the template format is not supported.
    * @see PromptTemplateConfig#getTemplateFormat()
    */
-  abstract tryCreate(templateConfig: PromptTemplateConfig): PromptTemplate;
+  abstract tryCreate(templateConfig: PromptTemplateConfig): PromptTemplate
 
   /**
    * Exception thrown when the template format is not supported.
    *
    * @see PromptTemplateConfig#getTemplateFormat()
    */
-  static UnknownTemplateFormatException = UnknownTemplateFormatException;
+  static UnknownTemplateFormatException = UnknownTemplateFormatException
 }

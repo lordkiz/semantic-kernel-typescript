@@ -1,5 +1,5 @@
 import "reflect-metadata"
-import SKException from "../../exceptions/SKException"
+import { SKException } from "../../exceptions/SKException"
 import { KERNEL_FUNCTION_PARAMETER_METADATA_KEY } from "./constants"
 
 export interface KernelFunctionParameterOptions {

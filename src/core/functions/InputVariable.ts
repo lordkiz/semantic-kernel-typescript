@@ -1,13 +1,13 @@
-import SemanticKernelBuilder from "../builders/SemanticKernelBuilder"
+import { SemanticKernelBuilder } from "../builders/SemanticKernelBuilder"
 import { JsonProperty } from "../decorators/JsonProperty"
-import SKException from "../exceptions/SKException"
+import { SKException } from "../exceptions/SKException"
 import { JsonCreator } from "../implementations/JsonCreator"
 import { KernelFunctionParameterMetadata } from "./decorators/KernelFunctionParameter"
 
 /**
  * Metadata for an input variable of a {@link KernelFunction}.
  */
-class InputVariable extends JsonCreator {
+export class InputVariable extends JsonCreator {
   @JsonProperty("name") private _name: string
   @JsonProperty("type") private _type: string
   @JsonProperty("description") private _description: string | undefined
@@ -190,8 +190,6 @@ class InputVariable extends JsonCreator {
     return res
   }
 }
-
-export default InputVariable
 
 class InputVariableBuilder implements SemanticKernelBuilder<InputVariable> {
   private _name: string | undefined

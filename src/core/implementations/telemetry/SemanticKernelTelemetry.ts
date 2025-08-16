@@ -1,7 +1,7 @@
 import { SpanContext, trace, Tracer } from "@opentelemetry/api"
-import InvocationContext from "../../orchestration/InvocationContext"
+import { InvocationContext } from "../../orchestration"
 
-export default class SemanticKernelTelemetry {
+export class SemanticKernelTelemetry {
   private _tracer: Tracer
 
   private _spanContext: SpanContext | undefined

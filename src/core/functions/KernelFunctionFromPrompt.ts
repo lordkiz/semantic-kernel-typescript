@@ -1,28 +1,27 @@
 import { concatMap, map, mergeMap, Observable } from "rxjs"
 import { v4 as uuid4 } from "uuid"
-import SKException from "../exceptions/SKException"
+import { SKException } from "../exceptions/SKException"
 import { FunctionInvokedEvent, FunctionInvokingEvent } from "../hooks/FnInvokeEvents"
-import KernelHooks from "../hooks/KernelHooks"
+import { KernelHooks } from "../hooks/KernelHooks"
 import { PromptRenderedEvent, PromptRenderingEvent } from "../hooks/PromptEvents"
-import Kernel from "../Kernel"
-import FunctionResult from "../orchestration/FunctionResult"
-import InvocationContext from "../orchestration/InvocationContext"
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
+import { Kernel } from "../Kernel"
+import { FunctionResult } from "../orchestration/FunctionResult"
+import { InvocationContext } from "../orchestration/InvocationContext"
+import { PromptExecutionSettings } from "../orchestration/PromptExecutionSettings"
 import { ChatCompletionService } from "../services"
 import { TextGenerationService } from "../services/textcompletion/TextGenerationService"
-import DefaultOriginalInstance from "./DefaultOriginalInstance"
-import HandlebarsPromptTemplateFactory from "./HandlebarsPromptTemplateFactory"
-import InputVariable from "./InputVariable"
-import KernelArguments from "./KernelArguments"
-import KernelFunction from "./KernelFunction"
-import KernelFunctionMetadata from "./KernelFunctionMetadata"
-import KernelPromptTemplateFactory from "./KernelPromptTemplateFactory"
-import OutputVariable from "./OutputVariable"
+import { DefaultOriginalInstance } from "./DefaultOriginalInstance"
+import { HandlebarsPromptTemplateFactory } from "./HandlebarsPromptTemplateFactory"
+import { InputVariable } from "./InputVariable"
+import { KernelArguments } from "./KernelArguments"
+import { KernelFunction } from "./KernelFunction"
+import { KernelFunctionMetadata } from "./KernelFunctionMetadata"
+import { KernelPromptTemplateFactory } from "./KernelPromptTemplateFactory"
 import { PromptTemplate } from "./prompttemplate/PromptTemplate"
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
+import { PromptTemplateConfig } from "./prompttemplate/PromptTemplateConfig"
 import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 
-export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
+export class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   private template: PromptTemplate
 
   /**
@@ -39,12 +38,11 @@ export default class KernelFunctionFromPrompt<T> extends KernelFunction<T> {
   ) {
     super(
       function m() {},
-      new KernelFunctionMetadata<T>(
+      new KernelFunctionMetadata(
         "",
         promptConfig.getName() ?? uuid4(),
         promptConfig.getDescription() ?? "",
-        promptConfig.getInputVariables(),
-        promptConfig.getOutputVariable()
+        promptConfig.getInputVariables()
       ),
       new DefaultOriginalInstance(),
       executionSettings ?? promptConfig.getExecutionSettings()
@@ -187,8 +185,6 @@ export class FromPromptBuilder<T> {
 
   private templateFormat: string | undefined
 
-  private outputVariable: OutputVariable<any> | undefined
-
   private promptTemplateFactory: PromptTemplateFactory | undefined
 
   private promptTemplateConfig: PromptTemplateConfig | undefined
@@ -226,11 +222,6 @@ export class FromPromptBuilder<T> {
   withTemplate(template: string): this {
     this.template = template
 
-    return this
-  }
-
-  withOutputVariable<U>(outputVariable: OutputVariable<U>): this {
-    this.outputVariable = outputVariable
     return this
   }
 
@@ -274,7 +265,6 @@ export class FromPromptBuilder<T> {
       promptTemplateOptions: new Set(),
       description: this.description,
       inputVariables: this.inputVariables,
-      outputVariable: this.outputVariable,
       executionSettings: this.executionSettings,
     })
 

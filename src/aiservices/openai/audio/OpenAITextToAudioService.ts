@@ -10,10 +10,7 @@ import { SpeechCreateParams } from "openai/resources/audio.js"
 import { from, map, mergeMap, Observable } from "rxjs"
 import { OpenAIService } from "../OpenAIService"
 
-export default class OpenAITextToAudioService
-  extends OpenAIService<OpenAI>
-  implements TextToAudioService
-{
+export class OpenAITextToAudioService extends OpenAIService<OpenAI> implements TextToAudioService {
   constructor(client: OpenAI, modelId: string, deploymentName: string, serviceId?: string) {
     super(client, modelId, deploymentName, serviceId)
   }

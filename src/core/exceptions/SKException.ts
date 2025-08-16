@@ -1,10 +1,10 @@
-class SKException extends Error {
-  constructor();
-  constructor(message?: string);
-  constructor(message?: string, cause?: Error);
-  constructor(message: string, cause?: Error);
+export class SKException extends Error {
+  constructor()
+  constructor(message?: string)
+  constructor(message?: string, cause?: Error)
+  constructor(message: string, cause?: Error)
   constructor(message?: string, cause?: Error) {
-    super(message, { cause });
+    super(message, { cause })
   }
 
   /**
@@ -16,7 +16,7 @@ class SKException extends Error {
    * @return An unchecked exception
    */
   static build(message: string, cause?: Error) {
-    return new SKException(message, cause);
+    return new SKException(message, cause)
   }
 
   /**
@@ -26,12 +26,7 @@ class SKException extends Error {
    * @param message      The message from the code which throws the exception
    * @return A formatted message
    */
-  static formatDefaultMessage(
-    errorMessage: string,
-    message: string | undefined
-  ) {
-    return `${errorMessage}: ${message}`;
+  static formatDefaultMessage(errorMessage: string, message: string | undefined) {
+    return `${errorMessage}: ${message}`
   }
 }
-
-export default SKException;

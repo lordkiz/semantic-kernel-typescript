@@ -1,7 +1,7 @@
 import { Observable } from "rxjs"
 import { ChatMessageContent } from "../../services"
-import AgentInvokeOptions from "../AgentInvokeOptions"
-import AgentResponseItem from "../AgentResponseItem"
+import { AgentInvokeOptions } from "../AgentInvokeOptions"
+import { AgentResponseItem } from "../AgentResponseItem"
 import { AgentThread } from "./AgentThread"
 
 export interface Agent {

@@ -4,7 +4,7 @@ import { ChatCompletionMessageParam } from "openai/resources"
 /**
  * Exception to be thrown when a function invocation fails.
  */
-export default class FunctionInvocationError extends SKException {
+export class FunctionInvocationError extends SKException {
   private _messages: ChatCompletionMessageParam[]
 
   constructor(e: Error, messages: ChatCompletionMessageParam[]) {

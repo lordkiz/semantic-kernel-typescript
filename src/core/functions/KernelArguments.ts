@@ -1,7 +1,7 @@
-import PromptExecutionSettings from "../orchestration/PromptExecutionSettings"
-import ContextVariable from "../variables/ContextVariable"
+import { PromptExecutionSettings } from "../orchestration/PromptExecutionSettings"
+import { ContextVariable } from "../variables/ContextVariable"
 
-export default class KernelArguments<
+export class KernelArguments<
   ExecutionSettingsType extends Record<string, any> = Record<string, any>,
 > implements Map<string, ContextVariable<any>>
 {

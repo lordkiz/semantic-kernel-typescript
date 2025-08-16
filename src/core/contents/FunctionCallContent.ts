@@ -1,14 +1,14 @@
-import KernelArguments from "../functions/KernelArguments"
-import ToolCallBehavior from "../orchestration/ToolCallBehavior"
-import ChatMessageContent from "../services/chatcompletion/ChatMessageContent"
-import KernelContentImpl from "../services/KernelContentImpl"
+import { KernelArguments } from "../functions/KernelArguments"
+import { ToolCallBehavior } from "../orchestration/ToolCallBehavior"
+import { ChatMessageContent } from "../services/chatcompletion/ChatMessageContent"
+import { KernelContentImpl } from "../services/KernelContentImpl"
 
 /**
  * Represents the content of a function call.
  * <p>
  * This class is used to represent a function call in the context of a chat message.
  */
-export default class FunctionCallContent<T> extends KernelContentImpl<T> {
+export class FunctionCallContent<T> extends KernelContentImpl<T> {
   private _id: string | undefined
   private _pluginName: string | undefined
   private _functionName: string

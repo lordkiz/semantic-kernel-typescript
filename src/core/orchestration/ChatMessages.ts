@@ -1,4 +1,4 @@
-export default class ChatMessages<MessageType, ContentType> {
+export class ChatMessages<MessageType, ContentType> {
   private _newMessages: MessageType[]
   private _allMessages: MessageType[]
   private _newChatMessageContent: ContentType[]

@@ -20,13 +20,13 @@ import {
   ChatCompletionUserMessageParam,
   CompletionUsage,
 } from "openai/resources"
-import OpenAIChatMessageContent from "./OpenAIChatMessageContent"
+import { OpenAIChatMessageContent } from "./OpenAIChatMessageContent"
 
 export type ChatCompletionMessageParamWithCompletionUsage = ChatCompletionMessageParam & {
   usage?: CompletionUsage
 }
 
-export default class OpenAIChatMessages extends ChatMessages<
+export class OpenAIChatMessages extends ChatMessages<
   ChatCompletionMessageParamWithCompletionUsage,
   OpenAIChatMessageContent<any>
 > {

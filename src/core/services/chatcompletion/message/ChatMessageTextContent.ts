@@ -1,15 +1,15 @@
-import SemanticKernelBuilder from "../../../builders/SemanticKernelBuilder"
-import SKException from "../../../exceptions/SKException"
-import FunctionResultMetadata from "../../../orchestration/FunctionResultMetadata"
+import { SemanticKernelBuilder } from "../../../builders/SemanticKernelBuilder"
+import { SKException } from "../../../exceptions/SKException"
+import { FunctionResultMetadata } from "../../../orchestration/FunctionResultMetadata"
 import { KernelContent } from "../../types/KernelContent"
 import { AuthorRole } from "../AuthorRole"
-import ChatMessageContent from "../ChatMessageContent"
+import { ChatMessageContent } from "../ChatMessageContent"
 import { ChatMessageContentType } from "./ChatMessageContentType"
 
 /**
  * Represents the content of a chat message which contains text
  */
-export default class ChatMessageTextContent extends ChatMessageContent<string> {
+export class ChatMessageTextContent extends ChatMessageContent<string> {
   /**
    * Creates a new instance of the {@link ChatMessageTextContent} class.
    *

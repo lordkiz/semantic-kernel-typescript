@@ -1,7 +1,7 @@
 /**
  * Provides Http request settings for OpenAI requests.
  */
-export default class OpenAIRequestSettings {
+export class OpenAIRequestSettings {
   private static readonly SEMANTIC_KERNEL_VERSION_PROPERTY_NAME = "semantic-kernel.version"
   private static readonly SEMANTIC_KERNEL_VERSION_PROPERTIES_FILE =
     "semantic-kernel-version.properties"

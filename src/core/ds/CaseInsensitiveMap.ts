@@ -1,4 +1,4 @@
-class CaseInsensitiveMap<V> extends Map<string, V> {
+export class CaseInsensitiveMap<V> extends Map<string, V> {
   constructor()
   constructor(map: Map<string, V>)
   constructor(map?: Map<string, V>) {
@@ -64,5 +64,3 @@ class CaseInsensitiveMap<V> extends Map<string, V> {
     return key.toLowerCase()
   }
 }
-
-export default CaseInsensitiveMap

@@ -1,7 +1,7 @@
 import { Observable } from "rxjs"
 import { AIService } from "../../types/AIService"
-import AudioContent from "../AudioContent"
-import TextToAudioExecutionSettings from "../TextToAudioExecutionSettings"
+import { AudioContent } from "../AudioContent"
+import { TextToAudioExecutionSettings } from "../TextToAudioExecutionSettings"
 
 /**
  * Provides audio to text service.

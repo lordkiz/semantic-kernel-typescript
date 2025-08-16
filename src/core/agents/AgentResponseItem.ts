@@ -1,6 +1,6 @@
 import { AgentThread } from "./types/AgentThread"
 
-export default class AgentResponseItem<T> {
+export class AgentResponseItem<T> {
   private _message: T
   private _thread: AgentThread
 

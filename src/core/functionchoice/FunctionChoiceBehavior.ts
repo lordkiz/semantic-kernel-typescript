@@ -1,11 +1,11 @@
-import KernelFunction from "../functions/KernelFunction"
+import { KernelFunction } from "../functions/KernelFunction"
 import { KernelPlugin } from "../plugin"
-import FunctionChoiceBehaviorOptions from "./FunctionChoiceBehaviorOptions"
+import { FunctionChoiceBehaviorOptions } from "./FunctionChoiceBehaviorOptions"
 
 /**
  * Defines the behavior of a tool call. Currently, the only tool available is function calling.
  */
-export default abstract class FunctionChoiceBehavior {
+export abstract class FunctionChoiceBehavior {
   private fullFunctionNames: Set<string>
 
   protected fns: KernelFunction<any>[]

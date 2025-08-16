@@ -1,14 +1,14 @@
 import { FunctionResultMetadata } from "@semantic-kernel-typescript/core/orchestration"
 import { AuthorRole, StreamingChatContent } from "@semantic-kernel-typescript/core/services"
-import GeminiChatMessageContent from "./GeminiChatMessageContent"
-import GeminiFunctionCallContent from "./GeminiFunctionCallContent"
+import { GeminiChatMessageContent } from "./GeminiChatMessageContent"
+import { GeminiFunctionCallContent } from "./GeminiFunctionCallContent"
 
 /**
  * Represents the content of a chat message.
  *
  * @param <T> The type of the inner content.
  */
-export default class GeminiStreamingChatMessageContent<T>
+export class GeminiStreamingChatMessageContent<T>
   extends GeminiChatMessageContent<T>
   implements StreamingChatContent<T>
 {

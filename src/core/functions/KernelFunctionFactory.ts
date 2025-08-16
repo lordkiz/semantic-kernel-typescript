@@ -1,8 +1,8 @@
-import KernelFunctionFromMethod from "./KernelFunctionFromMethod"
-import KernelFunctionFromPrompt, { FromPromptBuilder } from "./KernelFunctionFromPrompt"
-import PromptTemplateConfig from "./prompttemplate/PromptTemplateConfig"
+import { KernelFunctionFromMethod } from "./KernelFunctionFromMethod"
+import { FromPromptBuilder, KernelFunctionFromPrompt } from "./KernelFunctionFromPrompt"
+import { PromptTemplateConfig } from "./prompttemplate/PromptTemplateConfig"
 
-export default class KernelFunctionFactory {
+export class KernelFunctionFactory {
   /**
    * Creates a {@link KernelFunction} instance for a method, specified via a {@link Method}
    * instance
