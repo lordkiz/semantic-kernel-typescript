@@ -1,3 +1,10 @@
+import {
+  DefineKernelFunction,
+  KernelFunctionParameter,
+  type DefineKernelFunctionOptions,
+  type KernelFunctionParameterMetadata,
+  type KernelFunctionParameterOptions,
+} from "./decorators"
 import { HandlebarsPromptTemplateFactory } from "./HandlebarsPromptTemplateFactory"
 import { InputVariable } from "./InputVariable"
 import { KernelArguments } from "./KernelArguments"
@@ -13,6 +20,7 @@ import { PromptTemplateFactory } from "./prompttemplate/PromptTemplateFactory"
 import { PromptTemplateOption } from "./prompttemplate/PromptTemplateOption"
 
 export {
+  DefineKernelFunction,
   HandlebarsPromptTemplateFactory,
   InputVariable,
   KernelArguments,
@@ -21,9 +29,13 @@ export {
   KernelFunctionFromMethod,
   KernelFunctionFromPrompt,
   KernelFunctionMetadata,
+  KernelFunctionParameter,
   KernelPromptTemplateFactory,
   PromptTemplate,
   PromptTemplateConfig,
   PromptTemplateFactory,
   PromptTemplateOption,
+  type DefineKernelFunctionOptions,
+  type KernelFunctionParameterMetadata,
+  type KernelFunctionParameterOptions,
 }
