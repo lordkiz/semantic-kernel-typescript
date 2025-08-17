@@ -17,7 +17,7 @@ import { OpenAIChatCompletion } from "@semantic-kernel-typescript/openai/chatcom
 import readline from "node:readline"
 import OpenAI from "openai"
 import { lastValueFrom } from "rxjs"
-import GitHubPlugin from "../../plugins/GithubPlugin"
+import { GitHubPlugin } from "../../plugins/GithubPlugin"
 
 const OPENAI_API_KEY = "OPEN_AI_KEY"
 const MODEL_ID = "gpt-4.1"
