@@ -286,9 +286,13 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
     chatCompletionMessageParams: ChatCompletionMessageParamWithCompletionUsage[]
   ): ChatMessageContent<any>[] {
     return chatCompletionMessageParams.map((chatCompletionMessageParam) => {
+      const content =
+        typeof chatCompletionMessageParam.content === "string"
+          ? chatCompletionMessageParam.content
+          : JSON.stringify(chatCompletionMessageParam.content ?? "")
       let chatMessageContent = new OpenAIChatMessageContent(
         authorRoleFromString(chatCompletionMessageParam.role),
-        chatCompletionMessageParam.content?.toString() ?? ""
+        content
       )
 
       if (chatCompletionMessageParam.role === "assistant") {
@@ -297,7 +301,7 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
         )
         chatMessageContent = new OpenAIChatMessageContent(
           authorRoleFromString(chatCompletionMessageParam.role),
-          chatCompletionMessageParam.content?.toString() ?? "",
+          content,
           undefined,
           undefined,
           undefined,
@@ -307,7 +311,7 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
       } else if (chatCompletionMessageParam.role === "tool") {
         chatMessageContent = new OpenAIChatMessageContent(
           authorRoleFromString(chatCompletionMessageParam.role),
-          chatCompletionMessageParam.content?.toString() ?? "",
+          content,
           undefined,
           undefined,
           undefined,
