@@ -34,6 +34,12 @@ npm install @semantic-kernel-typescript/gemini @google/genai
 npm install @semantic-kernel-typescript/huggingface
 ```
 
+4. #### Semantic Kernel Typescript Agent package
+
+```bash
+npm install @semantic-kernel-typescript/agents
+```
+
 ## Writing Your First Console App
 
 ```ts
