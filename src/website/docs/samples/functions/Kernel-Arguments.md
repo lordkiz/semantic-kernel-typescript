@@ -1,0 +1,64 @@
+---
+sidebar_position: 1
+---
+
+Kernel Arguments are used to pass arguments to your defined kernel functions
+
+# Kernel Arguments
+
+```ts
+import { Kernel } from "@semantic-kernel-typescript/core"
+import {
+  DefineKernelFunction,
+  KernelArguments,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
+import { KernelPluginFactory } from "@semantic-kernel-typescript/core/plugin"
+
+class StaticTextPlugin {
+  @DefineKernelFunction({
+    description: "Change all string chars to uppercase.",
+    name: "uppercase",
+  })
+  uppercase(
+    @KernelFunctionParameter({ description: "Text to uppercase", name: "text" }) text: string
+  ) {
+    return text.toUpperCase()
+  }
+
+  @DefineKernelFunction({
+    description: "Append the day variable",
+    name: "appendDay",
+  })
+  appendDay(
+    @KernelFunctionParameter({ description: "Text to append to", name: "input" }) input: string,
+    @KernelFunctionParameter({ description: "Current day", name: "day" }) day: string
+  ) {
+    return input + day
+  }
+}
+
+const main = async () => {
+  const kernel = Kernel.Builder().build()
+
+  // Load native plugin
+  const kernelPlugin = KernelPluginFactory.createFromObject(new StaticTextPlugin(), "text")
+
+  const kernelArguments = KernelArguments.Builder()
+    .withInput("Today is: ")
+    .withVariable("day", "Monday")
+    .build()
+
+  const kernelFunction = kernelPlugin.get("appendDay")
+
+  if (!kernelFunction) {
+    throw new Error("kernel function not found")
+  }
+
+  const functionResult = await kernel.invoke(kernelFunction, kernelArguments)
+
+  console.log(functionResult.result)
+}
+
+main()
+```
