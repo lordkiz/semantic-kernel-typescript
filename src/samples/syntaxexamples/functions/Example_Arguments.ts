@@ -1,15 +1,15 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
-import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
+import {
+  DefineKernelFunction,
+  KernelArguments,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
 import { KernelPluginFactory } from "@semantic-kernel-typescript/core/plugin"
-import { lastValueFrom } from "rxjs"
 
 class StaticTextPlugin {
   @DefineKernelFunction({
     description: "Change all string chars to uppercase.",
-    name: "Uppercase",
-    returnType: "java.lang.String",
+    name: "uppercase",
   })
   uppercase(
     @KernelFunctionParameter({ description: "Text to uppercase", name: "text" }) text: string
@@ -20,7 +20,6 @@ class StaticTextPlugin {
   @DefineKernelFunction({
     description: "Append the day variable",
     name: "appendDay",
-    returnType: "string",
   })
   appendDay(
     @KernelFunctionParameter({ description: "Text to append to", name: "input" }) input: string,
@@ -47,7 +46,7 @@ const main = async () => {
     throw new Error("kernel function not found")
   }
 
-  const functionResult = await lastValueFrom(kernel.invokeAsync(kernelFunction, kernelArguments))
+  const functionResult = await kernel.invoke(kernelFunction, kernelArguments)
 
   console.log(functionResult.result)
 }

@@ -1,7 +1,9 @@
 import { type WebSearchEngineConnector } from "@semantic-kernel-typescript/core/connectors"
 import { SKException } from "@semantic-kernel-typescript/core/exceptions"
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
+import {
+  DefineKernelFunction,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
 import { from, lastValueFrom, map } from "rxjs"
 
 export class WebSearchEnginePlugin {

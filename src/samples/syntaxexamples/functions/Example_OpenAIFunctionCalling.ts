@@ -1,9 +1,11 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
 import { FunctionCallContent } from "@semantic-kernel-typescript/core/contents"
 import { AutoFunctionChoiceBehavior } from "@semantic-kernel-typescript/core/functionchoice"
-import { KernelFunctionFromPrompt } from "@semantic-kernel-typescript/core/functions"
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
+import {
+  DefineKernelFunction,
+  KernelFunctionFromPrompt,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
 import {
   FunctionResultMetadata,
   InvocationContext,

@@ -1,5 +1,7 @@
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
+import {
+  DefineKernelFunction,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
 
 /**
  * TextPlugin provides a set of functions to manipulate strings.

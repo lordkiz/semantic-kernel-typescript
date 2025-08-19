@@ -1,11 +1,11 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
 import {
+  DefineKernelFunction,
   KernelArguments,
   KernelFunction,
   KernelFunctionFactory,
+  KernelFunctionParameter,
 } from "@semantic-kernel-typescript/core/functions"
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
 import {
   InvocationContext,
   PromptExecutionSettings,

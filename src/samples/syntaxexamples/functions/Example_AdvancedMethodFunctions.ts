@@ -1,7 +1,9 @@
 import { Kernel } from "@semantic-kernel-typescript/core"
-import { KernelArguments } from "@semantic-kernel-typescript/core/functions"
-import { DefineKernelFunction } from "@semantic-kernel-typescript/core/functions/decorators/DefineKernelFunction"
-import { KernelFunctionParameter } from "@semantic-kernel-typescript/core/functions/decorators/KernelFunctionParameter"
+import {
+  DefineKernelFunction,
+  KernelArguments,
+  KernelFunctionParameter,
+} from "@semantic-kernel-typescript/core/functions"
 import { KernelPluginFactory } from "@semantic-kernel-typescript/core/plugin"
 import { map, Observable } from "rxjs"
 
