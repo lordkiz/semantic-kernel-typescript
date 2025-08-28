@@ -33,15 +33,12 @@ const client = new GoogleGenAI({
 })
 
 const main = async () => {
-  const openAIChatCompletionService = GeminiChatCompletion.Builder()
+  const chatCompletionService = GeminiChatCompletion.Builder()
     .withModelId(MODEL_ID)
     .withClient(client)
     .build()
 
-  const kernelBuilder = Kernel.Builder().withAIService(
-    GeminiChatCompletion,
-    openAIChatCompletionService
-  )
+  const kernelBuilder = Kernel.Builder().withAIService(GeminiChatCompletion, chatCompletionService)
 
   await getUsageAsync(kernelBuilder.build())
   await getRenderedPromptAsync(kernelBuilder.build())

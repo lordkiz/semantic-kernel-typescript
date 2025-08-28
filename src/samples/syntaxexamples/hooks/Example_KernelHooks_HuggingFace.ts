@@ -24,7 +24,7 @@ import {
   WriterInvokedHookHandler,
 } from "./hooks"
 
-const MODEL_ID = "gpt-4.1"
+const MODEL_ID = "qwen3-1-7b-wrh"
 
 const client = new HuggingFaceClient({
   baseURL: "https://somewhere.us-east-1.aws.endpoints.huggingface.cloud/v1/",
