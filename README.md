@@ -1,4 +1,11 @@
+<p align="center">
+<picture>
+  <img alt="Tile38" src="/website/static/img/logo.png" width="284">
+</picture>
+</p>
+<div align="center">
 # Semantic Kernel Typescript
+</div>
 
 ![process](./website/docs/assets/skts.jpeg)
 
