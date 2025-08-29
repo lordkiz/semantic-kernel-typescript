@@ -1,8 +1,0 @@
-{
-  "label": "Plugins",
-  "position": 5,
-  "link": {
-    "type": "generated-index",
-    "description": "Using Plugins in Semantic Kernel Typescript"
-  }
-}
