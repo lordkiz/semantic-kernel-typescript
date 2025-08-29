@@ -2,7 +2,7 @@
   "name": "semantic-kernel-typescript",
   "version": "0.0.1",
   "description": "Semantic Kernel for Typescript",
-  "main": "./src/index.ts",
+  "main": "index.ts",
   "scripts": {
     "build": "tsup",
     "test": "jest"
@@ -10,9 +10,9 @@
   "author": "Kizito Egeonu",
   "license": "MIT",
   "workspaces": [
-    "src/core",
-    "src/aiservices/*",
-    "src/agents"
+    "./core",
+    "./aiservices/*",
+    "./agents"
   ],
   "devDependencies": {
     "@babel/core": "^7.23.9",

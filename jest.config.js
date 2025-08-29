@@ -9,7 +9,7 @@ const tsJestTransformCfg = createDefaultPreset().transform
 module.exports = {
   cacheDirectory: ".cache/jest",
   rootDir: "./",
-  setupFilesAfterEnv: ["./src/setup.jest.ts"],
+  setupFilesAfterEnv: ["./setup.jest.ts"],
   testEnvironment: "node",
   testMatch: ["<rootDir>/**/*.tests.(ts|tsx|js)"],
   transform: {

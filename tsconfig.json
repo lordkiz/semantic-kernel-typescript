@@ -32,19 +32,19 @@
   },
   "references": [
     {
-      "path": "./src/core"
+      "path": "./core"
     },
     {
-      "path": "./src/aiservices/gemini"
+      "path": "./aiservices/gemini"
     },
     {
-      "path": "./src/aiservices/huggingface"
+      "path": "./aiservices/huggingface"
     },
     {
-      "path": "./src/aiservices/openai"
+      "path": "./aiservices/openai"
     },
     {
-      "path": "./src/agents"
+      "path": "./agents"
     }
   ]
 }
