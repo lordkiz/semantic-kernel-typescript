@@ -1,4 +1,4 @@
-<img alt="Tile38" src="/website/static/img/logo.png" width="50">
+<img alt="Semantic kernel typescript" src="/website/static/img/logo.png" width="75">
 
 # Semantic Kernel Typescript
 
