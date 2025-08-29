@@ -5,7 +5,7 @@ slug: /
 
 # Overview
 
-![process](assets/skts.png)
+![process](assets/skts.jpeg)
 
 Semantic Kernel Typescript is an unofficial port of Microsoft's [Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel) SDK. It lets you easily build AI agents and integrate the latest AI models into your Typescript codebase. It serves as an efficient middleware that enables rapid delivery of AI solutions in Typescript.
 
