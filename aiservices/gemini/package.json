@@ -14,7 +14,7 @@
   "author": "Kizito Egeonu",
   "license": "MIT",
   "dependencies": {
-    "@google/genai": "^1.9.0",
+    "@google/genai": "1.9.0",
     "@semantic-kernel-typescript/core": "^0.0.1"
   }
 }

@@ -15,9 +15,9 @@
   "author": "Kizito Egeonu",
   "license": "MIT",
   "dependencies": {
-    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/api": "1.9.0",
     "fast-xml-parser": "4.3.6",
-    "handlebars": "^4.7.8",
-    "reflect-metadata": "^0.2.2"
+    "handlebars": "4.7.8",
+    "reflect-metadata": "0.2.2"
   }
 }

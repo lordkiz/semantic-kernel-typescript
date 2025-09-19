@@ -14,10 +14,10 @@
   "author": "Kizito Egeonu",
   "license": "MIT",
   "dependencies": {
-    "@huggingface/inference": "^4.5.1",
+    "@huggingface/inference": "4.5.1",
     "@semantic-kernel-typescript/core": "^0.0.1",
     "@semantic-kernel-typescript/openai": "^0.0.1",
     "he": "1.2.0",
-    "openai": "^5.3.0"
+    "openai": "5.3.0"
   }
 }
