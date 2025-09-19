@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "composite": true,
     "emitDecoratorMetadata": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -23,8 +22,10 @@
     ],
     "module": "esnext",
     "moduleResolution": "node",
+    "skipLibCheck": true,
     "strict": true,
     "target": "esnext",
     "types": ["reflect-metadata", "node", "jest"]
-  }
+  },
+  "exclude": ["dist", "node_modules"]
 }

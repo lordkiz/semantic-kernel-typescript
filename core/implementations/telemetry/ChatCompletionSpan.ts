@@ -1,5 +1,5 @@
 import { Span, SpanKind, SpanStatusCode } from "@opentelemetry/api"
-import OpenAI from "openai"
+import { FunctionResultMetadata } from "../../orchestration"
 import { SemanticKernelTelemetry } from "./SemanticKernelTelemetry"
 import { SemanticKernelTelemetrySpan } from "./SemanticKernelTelemetrySpan"
 
@@ -89,14 +89,12 @@ export class ChatCompletionSpan extends SemanticKernelTelemetrySpan {
     return new ChatCompletionSpan(span, contextModifier, spanScope, contextScope)
   }
 
-  public endSpanWithUsage(chatCompletions: OpenAI.ChatCompletion): void {
-    const usage: OpenAI.CompletionUsage | undefined = chatCompletions.usage
+  public endSpanWithUsage<UsageType = any>(
+    resultMetadata: FunctionResultMetadata<UsageType>
+  ): void {
+    const usage = resultMetadata.getUsage()
     if (usage) {
-      this.span.setAttributes({
-        "gen_ai.usage.output_tokens": usage.completion_tokens,
-        "gen_ai.usage.input_tokens": usage.prompt_tokens,
-        "gen_ai.usage.total_tokens": usage.total_tokens,
-      })
+      this.span.setAttributes(usage)
     }
     this.span.setStatus({ code: SpanStatusCode.OK })
     this.close()

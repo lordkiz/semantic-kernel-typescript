@@ -4,7 +4,7 @@
   "description": "Semantic Kernel for Typescript",
   "main": "index.ts",
   "scripts": {
-    "build": "tsup",
+    "build": "chmod +x build.sh && ./build.sh",
     "test": "jest"
   },
   "author": "Kizito Egeonu",
