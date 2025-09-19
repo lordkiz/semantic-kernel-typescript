@@ -9,3 +9,6 @@ Semantic Kernel Typescript is an **unofficial** port of Microsoft's [Semantic Ke
 This port is modelled specifically after Semantic Kernel Java. It is designed to be future proof, easily connecting your code to the latest AI models evolving with the technology as it advances. When new models are released, you’ll simply swap them out without needing to rewrite your entire codebase.
 
 It combines prompts with existing APIs to perform actions. By describing your existing code to AI models, they’ll be called to address requests. When a request is made the model calls a function, and Semantic Kernel Typescript is the middleware translating the model's request to a function call and passes the results back to the model.
+
+## Docs
+- [Documentation Website](https://lordkiz.github.io/semantic-kernel-typescript/)
