@@ -11,12 +11,18 @@
     "semantic-kernel",
     "openai"
   ],
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
+  "peerDependencies": {
+    "rxjs": "^7.0.0"
+  },
   "dependencies": {
-    "@opentelemetry/api": "1.9.0",
-    "fast-xml-parser": "4.3.6",
-    "handlebars": "4.7.8",
-    "reflect-metadata": "0.2.2"
+    "@opentelemetry/api": "^1.9.0",
+    "fast-xml-parser": "^4.3.6",
+    "handlebars": "^4.7.8",
+    "reflect-metadata": "^0.2.2"
   }
 }

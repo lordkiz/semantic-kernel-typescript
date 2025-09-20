@@ -7,7 +7,10 @@
     "build": "chmod +x build.sh && ./build.sh",
     "test": "jest"
   },
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
   "workspaces": [
     "./core",

@@ -11,13 +11,21 @@
     "semantic-kernel",
     "huggingface"
   ],
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
+  "peerDependencies": {
+    "@huggingface/inference": "^4.0.0",
+    "rxjs": "^7.0.0",
+    "openai": "^5.0.0"
+  },
   "dependencies": {
-    "@huggingface/inference": "4.5.1",
+    "@huggingface/inference": "^4.5.1",
     "@semantic-kernel-typescript/core": "^0.0.1",
     "@semantic-kernel-typescript/openai": "^0.0.1",
-    "he": "1.2.0",
-    "openai": "5.3.0"
+    "he": "^1.2.0",
+    "openai": "^5.3.0"
   }
 }

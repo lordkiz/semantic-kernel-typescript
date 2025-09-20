@@ -11,10 +11,17 @@
     "semantic-kernel",
     "gemini"
   ],
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
+  "peerDependencies": {
+    "@google/genai": "^1.9.0",
+    "rxjs": "^7.0.0"
+  },
   "dependencies": {
-    "@google/genai": "1.9.0",
+    "@google/genai": "^1.9.0",
     "@semantic-kernel-typescript/core": "^0.0.1"
   }
 }

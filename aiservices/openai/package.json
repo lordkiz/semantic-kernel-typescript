@@ -11,11 +11,18 @@
     "semantic-kernel",
     "openai"
   ],
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
+  "peerDependencies": {
+    "rxjs": "^7.0.0",
+    "openai": "^5.0.0"
+  },
   "dependencies": {
     "@semantic-kernel-typescript/core": "^0.0.1",
-    "he": "1.2.0",
-    "openai": "5.3.0"
+    "he": "^1.2.0",
+    "openai": "^5.3.0"
   }
 }

@@ -11,7 +11,10 @@
     "semantic-kernel",
     "Agents"
   ],
-  "author": "Kizito Egeonu",
+  "author":{
+    "name": "Kizito Egeonu",
+    "email": "kizito.egeonu@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
     "@semantic-kernel-typescript/core": "^0.0.1"
