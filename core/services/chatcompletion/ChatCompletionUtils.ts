@@ -1,8 +1,7 @@
-import { Kernel } from "@semantic-kernel-typescript/core"
-import { KernelHooks, PreChatCompletionEvent } from "@semantic-kernel-typescript/core/hooks"
-import { KernelHookEvent } from "@semantic-kernel-typescript/core/hooks/types/KernelHookEvent"
-import { InvocationContext } from "@semantic-kernel-typescript/core/orchestration"
-import { ChatHistory } from "@semantic-kernel-typescript/core/services"
+import { KernelHookEvent, KernelHooks, PreChatCompletionEvent } from "../../hooks"
+import { Kernel } from "../../Kernel"
+import { InvocationContext } from "../../orchestration"
+import { ChatHistory } from "./ChatHistory"
 
 export class ChatCompletionUtils {
   static executeHook<T extends KernelHookEvent<any>>(

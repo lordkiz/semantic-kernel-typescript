@@ -1,7 +1,7 @@
 import { InputVariable, KernelFunctionMetadata } from "@semantic-kernel-typescript/core/functions"
 import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration"
+import { AIServiceFunction } from "@semantic-kernel-typescript/core/services"
 import { FunctionDefinition } from "openai/resources"
-import { AIServiceFunction } from "../../commons/AIServiceFunction"
 
 export class OpenAIFunction extends AIServiceFunction<FunctionDefinition> {
   static build(metadata: KernelFunctionMetadata, pluginName: string): OpenAIFunction {

@@ -2,9 +2,9 @@
   "name": "@semantic-kernel-typescript/openai",
   "version": "0.0.1",
   "description": "Semantic Kernel Typescript - OpenAI",
-  "main": "./index.ts",
+  "main": "index.js",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup --config ../../tsup.config.ts"
   },
   "keywords": [
     "semantic-kernel-typescript",

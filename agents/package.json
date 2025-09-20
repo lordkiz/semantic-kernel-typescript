@@ -2,9 +2,9 @@
   "name": "@semantic-kernel-typescript/agents",
   "version": "0.0.1",
   "description": "Semantic Kernel Typescript - Agents",
-  "main": "./index.ts",
+  "main": "index.js",
   "scripts": {
-    "build": "tsup"
+    "build": "tsup --config ../tsup.config.ts"
   },
   "keywords": [
     "semantic-kernel-typescript",

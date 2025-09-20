@@ -2,7 +2,7 @@ import { FunctionDeclaration } from "@google/genai"
 import { InputVariable } from "@semantic-kernel-typescript/core/functions/InputVariable"
 import { KernelFunctionMetadata } from "@semantic-kernel-typescript/core/functions/KernelFunctionMetadata"
 import { ToolCallBehavior } from "@semantic-kernel-typescript/core/orchestration/ToolCallBehavior"
-import { AIServiceFunction } from "../../commons/AIServiceFunction"
+import { AIServiceFunction } from "@semantic-kernel-typescript/core/services"
 
 export class GeminiFunction extends AIServiceFunction<FunctionDeclaration> {
   static build(metadata: KernelFunctionMetadata, pluginName: string): GeminiFunction {

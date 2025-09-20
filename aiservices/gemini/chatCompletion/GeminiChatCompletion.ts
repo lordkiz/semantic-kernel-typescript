@@ -36,6 +36,7 @@ import {
 import {
   AuthorRole,
   ChatCompletionService,
+  ChatCompletionUtils,
   ChatHistory,
   ChatMessageContent,
   StreamingChatContent,
@@ -43,7 +44,6 @@ import {
 } from "@semantic-kernel-typescript/core/services"
 import { from, mergeMap, Observable, throwError } from "rxjs"
 import { v4 as uuidv4 } from "uuid"
-import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { GeminiService } from "../GeminiService"
 import { GeminiChatMessageContent } from "./GeminiChatMessageContent"
 import { GeminiFunction } from "./GeminiFunction"

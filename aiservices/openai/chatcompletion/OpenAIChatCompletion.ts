@@ -26,6 +26,7 @@ import {
 import {
   AuthorRole,
   ChatCompletionService,
+  ChatCompletionUtils,
   ChatHistory,
   ChatMessageContent,
   StreamingChatContent,
@@ -45,7 +46,6 @@ import {
 } from "openai/resources"
 import { catchError, from, map, mergeMap, Observable, of, reduce, throwError } from "rxjs"
 import { v4 as uuid4 } from "uuid"
-import { ChatCompletionUtils } from "../../commons/utils/ChatCompletionUtils"
 import { OpenAIService } from "../OpenAIService"
 import { FunctionInvocationError } from "./FunctionInvocationError"
 import { OpenAIChatMessageContent } from "./OpenAIChatMessageContent"

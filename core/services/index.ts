@@ -1,8 +1,10 @@
 import { AIServiceCollection } from "./AIServiceCollection"
+import { AIServiceFunction } from "./AIServiceFunction"
 import { AIServiceSelection } from "./AIServiceSelection"
 import { BaseAIServiceSelector } from "./BaseAIServiceSelector"
 import { AuthorRole } from "./chatcompletion/AuthorRole"
 import { ChatCompletionService } from "./chatcompletion/ChatCompletionService"
+import { ChatCompletionUtils } from "./chatcompletion/ChatCompletionUtils"
 import { ChatHistory } from "./chatcompletion/ChatHistory"
 import { ChatMessageContent } from "./chatcompletion/ChatMessageContent"
 import { ChatMessageContentType } from "./chatcompletion/message/ChatMessageContentType"
@@ -23,10 +25,12 @@ import { TextAIService } from "./types/TextAIService"
 export {
   AIService,
   AIServiceCollection,
+  AIServiceFunction,
   AIServiceSelection,
   AuthorRole,
   BaseAIServiceSelector,
   ChatCompletionService,
+  ChatCompletionUtils,
   ChatHistory,
   ChatMessageContent,
   ChatMessageContentType,
