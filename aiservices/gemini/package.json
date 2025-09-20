@@ -21,6 +21,6 @@
     "rxjs": "^7.0.0"
   },
   "dependencies": {
-    "@semantic-kernel-typescript/core": "^0.0.1"
+    "@semantic-kernel-typescript/core": "^0.0.2"
   }
 }

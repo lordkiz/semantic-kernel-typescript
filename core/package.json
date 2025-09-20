@@ -1,6 +1,6 @@
 {
   "name": "@semantic-kernel-typescript/core",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Semantic Kernel Typescript - Core",
   "main": "index.js",
   "scripts": {

@@ -37,6 +37,8 @@ import OpenAI from "openai"
 import {
   ChatCompletion,
   ChatCompletionCreateParams,
+  ChatCompletionMessageCustomToolCall,
+  ChatCompletionMessageFunctionToolCall,
   ChatCompletionMessageParam,
   ChatCompletionMessageToolCall,
   ChatCompletionTool,
@@ -225,7 +227,11 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
     return chatRequestMessages
       .filter((m) => m.role === "assistant")
       .flatMap((f) => f.tool_calls ?? [])
-      .filter((toolCall) => toolCall.function.name === toolChoiceName)
+      .filter(
+        (toolCall) =>
+          (toolCall as ChatCompletionMessageFunctionToolCall).function?.name === toolChoiceName ||
+          (toolCall as ChatCompletionMessageCustomToolCall).custom?.name === toolChoiceName
+      )
       .every((toolCall) => {
         const id = toolCall.id
         return chatRequestMessages
@@ -337,7 +343,7 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
           throw SKException.build("Failed to parse tool arguments", jsonError as Error)
         }
       } else {
-        throw new SKException("Unknown tool call type: " + call.function.name)
+        throw new SKException("Unknown tool call type: " + call.custom.name)
       }
     })
   }
@@ -761,6 +767,12 @@ export class OpenAIChatCompletion extends OpenAIService<OpenAI> implements ChatC
   private static extractFunctionCallContent(
     toolCall: ChatCompletionMessageToolCall
   ): FunctionCallContent<any> {
+    if (toolCall.type === "custom") {
+      Logger.error("custom toolCall is not yet supported")
+      throw new SKException(
+        `custom toolCall is not yet supported. Extracting ${toolCall.custom.name}`
+      )
+    }
     // Split the full name of a function into plugin and function name
     const name = toolCall.function.name
     const parts = name.split(ToolCallBehavior.FUNCTION_NAME_SEPARATOR)

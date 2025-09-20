@@ -22,8 +22,8 @@
     "openai": "^5.0.0"
   },
   "dependencies": {
-    "@semantic-kernel-typescript/core": "^0.0.1",
-    "@semantic-kernel-typescript/openai": "^0.0.1",
+    "@semantic-kernel-typescript/core": "^0.0.2",
+    "@semantic-kernel-typescript/openai": "^0.0.2",
     "he": "^1.2.0"
   }
 }

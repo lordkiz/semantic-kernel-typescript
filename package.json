@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "build": "chmod +x build.sh && ./build.sh",
+    "publish:all": "cd core/dist && npm publish && cd ../.. && cd agents/dist && npm publish && cd ../.. && cd aiservices/gemini/dist && npm publish && cd ../../.. && cd aiservices/huggingface/dist && npm publish && cd ../../.. && cd aiservices/openai/dist && npm publish && cd ../../..",
     "test": "jest"
   },
   "author":{
@@ -36,7 +37,7 @@
     "typescript-eslint": "^8.35.0"
   },
   "dependencies": {
-    "@semantic-kernel-typescript/core": "^0.0.1",
+    "@semantic-kernel-typescript/core": "^0.0.2",
     "lodash": "4.17.21",
     "rxjs": "7.8.2",
     "uuid": "11.1.0",
