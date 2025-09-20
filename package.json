@@ -1,6 +1,6 @@
 {
   "name": "semantic-kernel-typescript",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Semantic Kernel for Typescript",
   "main": "index.ts",
   "scripts": {
@@ -36,7 +36,7 @@
     "typescript-eslint": "^8.35.0"
   },
   "dependencies": {
-    "@semantic-kernel-typescript/core": "0.0.1",
+    "@semantic-kernel-typescript/core": "^0.0.1",
     "lodash": "4.17.21",
     "rxjs": "7.8.2",
     "uuid": "11.1.0",

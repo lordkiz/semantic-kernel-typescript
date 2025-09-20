@@ -1,6 +1,6 @@
 {
   "name": "@semantic-kernel-typescript/huggingface",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Semantic Kernel Typescript - HuggingFace",
   "main": "index.js",
   "scripts": {
@@ -22,10 +22,8 @@
     "openai": "^5.0.0"
   },
   "dependencies": {
-    "@huggingface/inference": "^4.5.1",
     "@semantic-kernel-typescript/core": "^0.0.1",
     "@semantic-kernel-typescript/openai": "^0.0.1",
-    "he": "^1.2.0",
-    "openai": "^5.3.0"
+    "he": "^1.2.0"
   }
 }

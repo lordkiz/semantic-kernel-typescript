@@ -1,6 +1,6 @@
 {
   "name": "@semantic-kernel-typescript/openai",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Semantic Kernel Typescript - OpenAI",
   "main": "index.js",
   "scripts": {
@@ -22,7 +22,6 @@
   },
   "dependencies": {
     "@semantic-kernel-typescript/core": "^0.0.1",
-    "he": "^1.2.0",
-    "openai": "^5.3.0"
+    "he": "^1.2.0"
   }
 }

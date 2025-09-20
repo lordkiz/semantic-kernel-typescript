@@ -1,6 +1,6 @@
 {
   "name": "@semantic-kernel-typescript/agents",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Semantic Kernel Typescript - Agents",
   "main": "index.js",
   "scripts": {
